@@ -86,7 +86,7 @@ public class AdR_ShadingTemplate extends JoglTemplate
 		// load mesh
 		dList = MeshLoader.loadObj(gl, "models/bunny.obj", 0.5f);
 		try {
-			crate = TextureIO.newTexture(new File("crate.png"), false);
+			crate = TextureIO.newTexture(new File("textures/crate.png"), false);
 		} catch (GLException e1) {e1.printStackTrace();
 		} catch (IOException e1) {e1.printStackTrace();}
 		
