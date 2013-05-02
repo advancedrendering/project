@@ -1,0 +1,34 @@
+// OpenGL input
+struct vertexIN
+{
+  float4 position	: POSITION;
+  float3 normal		: NORMAL;
+};
+
+// vertex program output
+struct vertexOUT
+{
+  float4 cameraSpacePos : POSITION;
+  float3 objectSpacePos : TEXCOORD1;
+  float3 normal   : TEXCOORD2;
+};
+
+// OpenGL state
+uniform float4x4 ModelViewProjection : state.matrix.mvp;
+
+vertexOUT main(vertexIN vIn, 
+				uniform float stretchFactor)
+{
+  vertexOUT vOut;
+  // copy position
+  vOut.objectSpacePos = vIn.position.xyz;
+  
+  // copy Normal
+  vOut.normal = vIn.normal;
+  
+  // project point onto screen
+  vOut.cameraSpacePos = mul(ModelViewProjection, vIn.position+(0.0001*float4(vIn.normal*stretchFactor,0)));
+  
+  return vOut;
+}
+

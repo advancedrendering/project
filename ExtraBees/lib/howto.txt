@@ -1,0 +1,9 @@
+1. open properties of eclipse project
+2. go to "Java Build Path"
+3. select tab "Libraries"
+4. click "Add External JARs"
+5. select jogl.jar and click okay
+6. expand jogl.jar entry
+7. double-click "Native library location"
+8. select the subfolder of jogl-natives which fits your architecture (Linux 64bit at F1 pool)
+9. repeat steps 4-8 for the gluegen-rt-library
