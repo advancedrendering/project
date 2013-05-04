@@ -1,3 +1,4 @@
+package templates;
 
 
 /**
@@ -8,6 +9,7 @@
  * Research Group of Prof. Gitta Domik - Computer Graphics, Visualization and Digital Image Processing
  */
 
+
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +17,8 @@ import java.io.IOException;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLException;
+
+import modelloader.MeshLoader;
 
 import com.sun.opengl.cg.CGcontext;
 import com.sun.opengl.cg.CGparameter;

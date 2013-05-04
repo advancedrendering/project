@@ -1,3 +1,4 @@
+package templates;
 
 /**
  * @author Andreas Elsner / Stephan Arens / Gitta Domik
