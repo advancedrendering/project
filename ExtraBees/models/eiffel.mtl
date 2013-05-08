@@ -1,0 +1,8 @@
+newmtl eifel:Basic_Rust
+illum 4
+Kd 0.33 0.20 0.14
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 1.00 0.82 0.60
+Ns 8.17
