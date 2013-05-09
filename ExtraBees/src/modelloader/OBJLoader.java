@@ -183,7 +183,7 @@ public class OBJLoader {
 					}
 					// load material
 					else if (line.startsWith("mtllib ")) 
-						materials = new Materials(line.substring(7));
+						materials = new Materials("models/"+line.substring(7));
 					else if (line.startsWith("usemtl "))
 						faceMaterials.addUse(numberOfFaces, line.substring(7));
 					else if (line.charAt(0) == 'g') { // group name

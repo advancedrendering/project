@@ -16,8 +16,7 @@ struct vertexOUT
 // OpenGL state
 uniform float4x4 ModelViewProjection : state.matrix.mvp;
 
-vertexOUT main(vertexIN vIn, 
-				uniform float stretchFactor)
+vertexOUT main(vertexIN vIn)
 {
   vertexOUT vOut;
   // copy position
@@ -27,7 +26,7 @@ vertexOUT main(vertexIN vIn,
   vOut.normal = vIn.normal;
   
   // project point onto screen
-  vOut.cameraSpacePos = mul(ModelViewProjection, vIn.position+(0.0001*float4(vIn.normal*stretchFactor,0)));
+  vOut.cameraSpacePos = mul(ModelViewProjection, vIn.position);
   
   return vOut;
 }
