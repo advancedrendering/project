@@ -41,8 +41,11 @@ public class TableModel extends SceneGraphNode {
 	public void init(GLAutoDrawable drawable) {
 		try {
 			tex = TextureIO.newTexture(new File("models/baked-baked_blinn1SG_pCube1SG-pCube1.jpg"),false);
-		} catch (GLException | IOException e) {
+		} catch (GLException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch(IOException e){
 			e.printStackTrace();
 		}
 
