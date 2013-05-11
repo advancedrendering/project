@@ -19,7 +19,7 @@ public class CampusModel extends SceneGraphNode {
 
 	public CampusModel(GLAutoDrawable drawable, String modelPath, float scale, String vpShaderPath, String fpShaderPath) {
 		super(drawable, modelPath, scale);
-		table = new TableModel(drawable, 0.08f, vpShaderPath, fpShaderPath);
+		table = new TableModel(drawable, scale * 0.2f, vpShaderPath, fpShaderPath);
 		table.setTranslation(0, 0, 0);
 		table.setRotation(0, 45, 0);
 		this.addChild(table);

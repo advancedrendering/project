@@ -22,16 +22,16 @@ public class TableModel extends SceneGraphNode {
 	public TableModel(GLAutoDrawable drawable, float scale,
 			String vpShaderPath, String fpShaderPath) {
 		super(drawable, "models/table", scale);
-		glass = new GlassModel(drawable, 0.01f, vpShaderPath, fpShaderPath);
-		glass.setTranslation(0.4f, 0.336f, 0);
+		glass = new GlassModel(drawable, scale*0.1f, vpShaderPath, fpShaderPath);
+		glass.setTranslation(0.8f, 0.832f, 0);
 		this.addChild(glass);
 		
-		temple = new TempleModel(drawable, 0.02f, vpShaderPath, fpShaderPath);
-		temple.setTranslation(-0.4f, 0.336f, 0);
+		temple = new TempleModel(drawable, scale*0.2f, vpShaderPath, fpShaderPath);
+		temple.setTranslation(-0.8f, 0.832f, 0);
 		this.addChild(temple);
 		
-		eiffel = new EiffelModel(drawable, 0.005f, vpShaderPath, fpShaderPath);
-		eiffel.setTranslation(1f, 0, 1f);
+		eiffel = new EiffelModel(drawable, scale* 0.05f, vpShaderPath, fpShaderPath);
+		eiffel.setTranslation(1f, 0f, 2f);
 		this.addChild(eiffel);
 		this.init(drawable);
 		

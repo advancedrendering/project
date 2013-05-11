@@ -30,7 +30,14 @@ public class MainTemplate extends JoglTemplate
 	
 	private int frameCounter = 0;
 
-	private boolean animation = true;
+	private boolean animation = true,
+					keyPressedW = false,
+					keyPressedS = false,
+					keyPressedA = false,
+					keyPressedD = false,
+					keyPressedQ = false,
+					keyPressedE = false;
+	private float movementSpeed = 0.5f;
 
 	
 	public static void main(String[] args)
@@ -57,6 +64,7 @@ public class MainTemplate extends JoglTemplate
 
 	public void display(GLAutoDrawable drawable)
 	{
+		updateCamCoords();
 		// if animation is on, increase frame counter
 		if (animation)
 			incFrameCounter();
@@ -114,6 +122,22 @@ public class MainTemplate extends JoglTemplate
 		gl.glPopMatrix();
 	}
 
+	private void updateCamCoords() {
+		if(keyPressedA)
+			setView_transx(getView_transx()+movementSpeed);
+		if(keyPressedD)
+			setView_transx(getView_transx()-movementSpeed);
+		if(keyPressedQ)
+			setView_transy(getView_transy()+movementSpeed);
+		if(keyPressedE)
+			setView_transy(getView_transy()-movementSpeed);
+		if(keyPressedW)
+			setView_transz(getView_transz()+movementSpeed);
+		if(keyPressedS)
+			setView_transz(getView_transz()-movementSpeed);
+		
+	}
+
 	/**
 	 * This method increases the frame counter
 	 * 
@@ -133,18 +157,63 @@ public class MainTemplate extends JoglTemplate
 	public void keyPressed(KeyEvent e)
 	{
 		super.keyPressed(e);
-		if (e.getKeyCode() == KeyEvent.VK_M)
+		if (e.getKeyCode() == KeyEvent.VK_A)
 		{
-
+			keyPressedA = true;
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_D)
+		{
+			keyPressedD = true;
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_Q)
+		{
+			keyPressedQ = true;
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_E)
+		{
+			keyPressedE = true;
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_W)
+		{
+			keyPressedW = true;
 		}
 		else if (e.getKeyCode() == KeyEvent.VK_S)
 		{
-	
+			keyPressedS = true;
 		}
 		else if (e.getKeyCode() == KeyEvent.VK_SPACE)
 		{
 			animation = !animation;
 			System.out.println("Animation: " + animation);
+		}
+	}
+	
+	public void keyReleased(KeyEvent e)
+	{
+		super.keyPressed(e);
+		if (e.getKeyCode() == KeyEvent.VK_A)
+		{
+			keyPressedA = false;
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_D)
+		{
+			keyPressedD = false;
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_Q)
+		{
+			keyPressedQ = false;
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_E)
+		{
+			keyPressedE = false;
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_W)
+		{
+			keyPressedW = false;
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_S)
+		{
+			keyPressedS = false;
 		}
 	}
 

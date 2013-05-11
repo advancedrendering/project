@@ -79,7 +79,7 @@ public class JoglTemplate extends Frame implements GLEventListener,
 		animator = new FPSAnimator(canvas, 60);
 		setTitle("Jogl Template");
 		// set the Window size
-		setSize(600, 400);
+		setSize(1280, 720);
 		// add the canvas to it
 		add(canvas);
 		// center on screen
@@ -166,7 +166,7 @@ public class JoglTemplate extends Frame implements GLEventListener,
 		// and load it with the identity matrix
 		gl.glLoadIdentity();
 		// perspective projection
-		glu.gluPerspective(30, (float) width / height, 1, 100);
+		glu.gluPerspective(30, (float) width / height, 1, 1000);
 		// make sure to use the modelview matrix-mode
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		// load the identity matrix as the modelview (resets all previous
@@ -241,9 +241,11 @@ public class JoglTemplate extends Frame implements GLEventListener,
 		// make sure to use the modelview matrix-mode
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		// apply the rotation
+//		gl.glTranslatef(-view_transx, -view_transy, -view_transz);
 		gl.glRotatef(view_rotx, 1f, 0f, 0f);
 		gl.glRotatef(view_roty, 0f, 1f, 0f);
 		gl.glRotatef(view_rotz, 0f, 0f, 1f);
+//		gl.glTranslatef(view_transx, view_transy, view_transz);
 		gl.glMatrixMode(buffer.get(0));
 	}
 
@@ -306,8 +308,8 @@ public class JoglTemplate extends Frame implements GLEventListener,
 			prevMouseX = x;
 			prevMouseY = y;
 			// change x and y rotation value
-			view_rotx += thetaX;
-			view_roty += thetaY;
+			view_rotx += thetaX*0.5f;
+			view_roty += thetaY*0.5f;
 		}
 		// right button is dragged (translation)
 		if ((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0)
@@ -320,8 +322,8 @@ public class JoglTemplate extends Frame implements GLEventListener,
 			prevMouseX = x;
 			prevMouseY = y;
 			// change x and y rotation value
-			view_transx += thetaX;
-			view_transy += thetaY;
+			view_transx += 10*thetaX;
+			view_transy += 10*thetaY;
 		}
 	}
 
@@ -332,7 +334,7 @@ public class JoglTemplate extends Frame implements GLEventListener,
 	 */
 	public void mouseWheelMoved(MouseWheelEvent e)
 	{
-		view_transz += e.getWheelRotation() * 0.5f;
+		view_transz += e.getWheelRotation();
 	}
 
 	// Methods required for the implementation of KeyListener

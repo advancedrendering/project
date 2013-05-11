@@ -716,7 +716,7 @@ public class OBJLoader {
 						// start collecting info for new material
 						currMaterial = new Material(line.substring(7));
 					} else if (line.startsWith("map_Kd ")) { // texture filename
-						String fileName = line.substring(7);
+						String fileName = "models/"+line.substring(7);
 						currMaterial.loadTexture(fileName);
 					} else if (line.startsWith("Ka ")) // ambient colour
 						currMaterial.setKa(readTuple3(line));

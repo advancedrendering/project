@@ -9,16 +9,24 @@ public class SceneRoot extends SceneGraphNode{
 
 	private CampusModel campus = null;
 	private HeliModel heli = null;
+	private SkyBox skybox = null;
+	private float scale = 1f;
 	
 	private SceneRoot(GLAutoDrawable drawable) {
 		super(drawable);
-		heli = new HeliModel(drawable, 0.2f, "shader/vp_phongPerPixel.cg", "shader/fp_phongPerPixel.cg");
-		heli.setTranslation(0f, 0.5f, 0f);
+		skybox = new SkyBox(drawable, "models/skybox", scale*2f);
+		skybox.setRotation(0, -100, 0);
+		this.addChild(skybox);
+		
+		campus = new CampusModel(drawable, "models/campus", scale,"shader/vp_phongPerPixel.cg","shader/fp_phongPerPixel.cg");
+		this.addChild(campus);
+		
+		heli = new HeliModel(drawable, scale*0.2f, "shader/vp_phongPerPixel.cg", "shader/fp_phongPerPixel.cg");
+		heli.setTranslation(0f, 1.2f, 0f);
 		heli.setRotation(0, -100, 0);
 		this.addChild(heli);
-		campus = new CampusModel(drawable, "models/campus", 0.5f,"shader/vp_phongPerPixel.cg","shader/fp_phongPerPixel.cg");
-		this.addChild(campus);
-		// TODO: add camera, skybox?!
+		// TODO: add camera, lightsources?!
+		
 		
 	}
 
