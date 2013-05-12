@@ -22,7 +22,7 @@ public class SceneRoot extends SceneGraphNode{
 		this.addChild(campus);
 		
 		heli = new HeliModel(drawable, scale*0.2f, "shader/vp_phongPerPixel.cg", "shader/fp_phongPerPixel.cg");
-		heli.setTranslation(0f, 1.2f, 0f);
+		heli.setTranslation(0f, 0.6f, 0f);
 		heli.setRotation(0, -100, 0);
 		this.addChild(heli);
 		// TODO: add camera, lightsources?!
