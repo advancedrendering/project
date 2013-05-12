@@ -51,24 +51,11 @@ public class ShaderManager {
 		return shaderprog;
 	}
 	
+	
 	private static String defaultInitialVPPath = "shader/vp_phongPerPixel.cg";
 	private static String defaultInitialFPPath = "shader/fp_phongPerPixel.cg";
 	private static String defaultInitialVPName = "phong";
 	private static String defaultInitialFPName = "phong";
-	
-	/**
-	 * Sets the path to the initial default shader programs.
-	 * Those are loaded at the creation of the manager object.
-	 * @param defaultVertexProgPath
-	 * @param defaultFragmentProgPath
-	 */
-	static void setInitialDefaultShaderProgPaths(String parDefaultInitialVPName, String parDefaultInitialVPPath,
-			String parDefautlInitialFPName, String parDefautlInitialFPPath){
-		defaultInitialVPName = parDefaultInitialVPName;
-		defaultInitialVPPath = parDefaultInitialVPPath;
-		defaultInitialFPName = parDefautlInitialFPName;
-		defaultInitialFPPath = parDefautlInitialFPPath; 
-	}
 	
 	//use singleton design pattern.
 	private static ShaderManager shadermanager = null;
@@ -80,6 +67,10 @@ public class ShaderManager {
 	
 	//field to hold the default shader programs.
 	private String defaultVertexProgName = "", defaultFragmentProgName = "";
+
+	private int cgFragProfile;
+	private int cgVertexProfile;
+	private CGcontext cgContext;
 
 	public String getBindedVertexProgram() {
 		return cgVertexProgName;
@@ -112,10 +103,45 @@ public class ShaderManager {
 	/**
 	 * The standard constructor.
 	 */
-	private ShaderManager(String defaultVPName, String defaultVPPath, String defaultFPName, String defaultFPPath){
+	private ShaderManager(){
 		//TODO: Handling of the default shader programs.
 		this.vpshaderprograms = new HashMap<String, CGprogram>();
 		this.fpshaderprograms = new HashMap<String, CGprogram>();
+		
+		//create context
+		this.cgContext = CgGL.cgCreateContext(); 
+		
+		cgVertexProfile = CgGL.cgGLGetLatestProfile(CgGL.CG_GL_VERTEX);
+		if (cgVertexProfile == CgGL.CG_PROFILE_UNKNOWN)
+		{
+			System.err.println("Invalid vertex profile");
+			System.exit(1);
+		}
+		CgGL.cgGLSetOptimalOptions(cgVertexProfile);
+
+		cgFragProfile = CgGL.cgGLGetLatestProfile(CgGL.CG_GL_FRAGMENT);
+		if (cgFragProfile == CgGL.CG_PROFILE_UNKNOWN)
+		{
+			System.err.println("Invalid fragment profile");
+			System.exit(1);
+		}
+		CgGL.cgGLSetOptimalOptions(cgFragProfile);
+		
+		//load default shader programs
+		CGprogram loc_vertex_shader = ShaderManager.loadShader(this.cgContext, cgVertexProfile, ShaderManager.defaultInitialVPPath);
+		CGprogram loc_fragment_shader = ShaderManager.loadShader(this.cgContext, cgFragProfile,	 ShaderManager.defaultInitialFPPath);
+		
+		//put them in the hashtable
+		this.vpshaderprograms.put(ShaderManager.defaultInitialVPName, loc_vertex_shader);
+		this.fpshaderprograms.put(ShaderManager.defaultInitialFPName, loc_fragment_shader);
+		
+		//set currently loaded shader programs
+		cgVertexProgName = ShaderManager.defaultInitialVPName;
+		cgFragmentProgName = ShaderManager.defaultInitialFPName;
+		
+		//bind the programs i.e. load them.
+		CgGL.cgGLBindProgram(loc_vertex_shader);
+		CgGL.cgGLBindProgram(loc_fragment_shader);
 	}
 	
 	/**
@@ -190,7 +216,7 @@ public class ShaderManager {
 	 */
 	public static ShaderManager getInstance(){
 		if (shadermanager == null){
-			shadermanager = new ShaderManager(defaultInitialVPName, defaultInitialVPPath, defaultInitialFPName, defaultInitialFPPath);
+			shadermanager = new ShaderManager();
 		}
 		return shadermanager;
 	}
