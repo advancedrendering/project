@@ -7,8 +7,7 @@ public class TempleModel extends SceneGraphNode {
 
 	private final float[] WHITE_MATERIAL = { 0f, 0f, 0f, 0.5f, 0.5f, 0.5f, 0.7f, 0.7f, 0.7f, 0.4f, 0.4f, 0.4f, 10.0f };
 
-	public TempleModel(GLAutoDrawable drawable, float scale,
-			String vpShaderPath, String fpShaderPath) {
+	public TempleModel(GLAutoDrawable drawable, float scale) {
 		super(drawable, "models/temple", scale);
 
 	}

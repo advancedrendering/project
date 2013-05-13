@@ -17,10 +17,7 @@ uniform float4 MaterialSpecular : state.material.specular;
 uniform float MaterialShininess : state.material.shininess;
 
 
-float4 main(vertexIN vIn,
-            uniform float4 blackHolePosition,
-            uniform float time,
-            uniform sampler2D texture0 : TEX0) : COLOR
+float4 main(vertexIN vIn) : COLOR
 {
   //light calculation is done in object space (normals) 
   float3 P = vIn.objectSpacePos.xyz;
@@ -61,8 +58,6 @@ float4 main(vertexIN vIn,
   else{
   	color = float4(0.2f, 0.2f, 0.2f, 1.0f);
   }
-  
-  //color *= tex2D(texture0, vIn.objectSpacePos.xy+float2(0.5));
 
 
   return color;  

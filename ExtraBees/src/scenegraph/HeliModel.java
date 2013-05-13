@@ -18,7 +18,7 @@ public class HeliModel extends SceneGraphNode {
 	
 	private final float[] REDPLASTIC_MATERIAL = { 0.3f, 0.0f, 0.0f, 1.0f, 0.6f, 0.0f, 0.0f, 1.0f, 0.8f, 0.4f, 0.4f, 1.0f, 10.0f };
 	
-	public HeliModel(GLAutoDrawable drawable, float scale, String vpShaderName, String fpShaderName) {
+	public HeliModel(GLAutoDrawable drawable, float scale) {
 		super(drawable, "models/heli_chassis", scale);
 		heli_rotor_top = new HeliRotorTop(drawable, "models/heli_rotor_top", scale);
 		heli_rotor_back = new HeliRotorTail(drawable, "models/heli_rotor_back", scale);

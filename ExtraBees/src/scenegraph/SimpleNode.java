@@ -3,11 +3,6 @@ package scenegraph;
 import javax.media.opengl.GLAutoDrawable;
 
 public class SimpleNode extends SceneGraphNode {
-
-	public SimpleNode(GLAutoDrawable drawable, String modelPath, float scale,	String vpShaderPath, String fpShaderPath) {
-		super(drawable, modelPath, scale, vpShaderPath, fpShaderPath);
-		// TODO Auto-generated constructor stub
-	}
 	
 	public SimpleNode(GLAutoDrawable drawable, String modelPath, float scale) {
 		super(drawable, modelPath, scale);

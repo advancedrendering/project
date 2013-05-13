@@ -39,6 +39,7 @@ public class ShaderManager {
 		}
 
 		CgGL.cgGLLoadProgram(shaderprog);
+		CgGL.cgGLUnbindProgram(profile);
 
 		int err = CgGL.cgGetError();
 		if (err != CgGL.CG_NO_ERROR)
@@ -85,29 +86,48 @@ public class ShaderManager {
 	}
 
 	private int cgVertexProfile;
+	
+	public int getCgVertexProfile() {
+		return cgVertexProfile;
+	}
+
+
 	private int cgFragProfile;
+	
+	public int getCgFragProfile() {
+		return cgFragProfile;
+	}
+
+
 	private CGcontext cgContext;
+
+	public CGcontext getCgContext() {
+		return cgContext;
+	}
 
 	public String getBindedVertexProgram() {
 		return cgVertexProgName;
 	}
 
-	public void bindVertexShaderProgram(String cgNewVertexProgName) throws IllegalArgumentException{
-		if (this.vpshaderprograms.containsKey(cgNewVertexProgName)){
-			if (!this.cgVertexProgName.equals(cgNewVertexProgName)){
-				//disable profile
-				CgGL.cgGLDisableProfile(cgVertexProfile);
-				//unbind old vertex shader
-				CgGL.cgGLUnbindProgram(cgVertexProfile);
-				this.cgVertexProgName = cgNewVertexProgName;
-				//enable profile
-				CgGL.cgGLEnableProfile(cgVertexProfile);
-				//bind the new one
-				CgGL.cgGLBindProgram(this.vpshaderprograms.get(this.cgVertexProgName));
-			}
+	
+	public void bindVP() throws IllegalArgumentException{
+		//disable profile
+		CgGL.cgGLDisableProfile(cgVertexProfile);
+		//bind the new one
+		CgGL.cgGLBindProgram(this.vpshaderprograms.get(this.cgVertexProgName));
+		//enable profile
+		CgGL.cgGLEnableProfile(cgVertexProfile);
+	}
+		
+	public void bindVP(String cgVPName) throws IllegalArgumentException{
+		if (this.vpshaderprograms.containsKey(cgVPName)){
+			//enable profile
+			CgGL.cgGLEnableProfile(cgVertexProfile);
+			//bind the new one
+			CgGL.cgGLBindProgram(this.vpshaderprograms.get(cgVPName));
 		}
 		else{
-			throw new IllegalArgumentException("The shader program " + cgVertexProgName + " is unknown.");
+			throw new IllegalArgumentException("The shader program " + cgVPName + " is unknown.");
 		}
 	}
 
@@ -115,22 +135,24 @@ public class ShaderManager {
 		return cgFragmentProgName;
 	}
 
-	public void bindFragmentShaderProgram(String cgNewFragmentProgName) throws IllegalArgumentException {
-		if (this.fpshaderprograms.containsKey(cgNewFragmentProgName)){
-			if (!this.cgVertexProgName.equals(cgNewFragmentProgName)){
-				//disable profile
-				CgGL.cgGLDisableProfile(cgFragProfile);
-				//unbind old fragment shader
-				CgGL.cgGLUnbindProgram(cgFragProfile);
-				this.cgFragmentProgName = cgNewFragmentProgName;
-				//enable profile
-				CgGL.cgGLEnableProfile(cgFragProfile);
-				//bind the new one
-				CgGL.cgGLBindProgram(this.fpshaderprograms.get(this.cgFragmentProgName));
-			}
+	
+	public void bindFP() throws IllegalArgumentException {
+		//bind the new one
+		CgGL.cgGLBindProgram(this.fpshaderprograms.get(this.cgFragmentProgName));
+		//enable profile
+		CgGL.cgGLEnableProfile(cgFragProfile);
+	}
+	
+	public void bindFP(String cgFPName) throws IllegalArgumentException {
+		if (this.fpshaderprograms.containsKey(cgFPName)){
+			//enable profile
+			CgGL.cgGLEnableProfile(cgFragProfile);
+			//bind the new one
+			CgGL.cgGLBindProgram(this.fpshaderprograms.get(cgFPName));
+			
 		}
 		else{
-			throw new IllegalArgumentException("The shader program " + cgFragmentProgName + " is unknown.");
+			throw new IllegalArgumentException("The shader program " + cgFPName + " is unknown.");
 		}
 	}
 
@@ -181,7 +203,6 @@ public class ShaderManager {
 		CgGL.cgGLEnableProfile(cgVertexProfile);
 		CgGL.cgGLEnableProfile(cgFragProfile);
 		
-		
 		//bind the programs i.e. load them.
 		CgGL.cgGLBindProgram(loc_vertex_shader);
 		CgGL.cgGLBindProgram(loc_fragment_shader);
@@ -231,16 +252,16 @@ public class ShaderManager {
 			}
 			//check whether shader program is currently active.
 			if (this.cgVertexProgName.equals(name)){
-				//disable profile
-				CgGL.cgGLDisableProfile(cgVertexProfile);
 				//unbind vertex shader
 				CgGL.cgGLUnbindProgram(cgVertexProfile);
+				//disable profile
+				CgGL.cgGLDisableProfile(cgVertexProfile);
 				//reset to default.
 				this.cgVertexProgName = this.defaultVertexProgName;
-				//enable profile
-				CgGL.cgGLEnableProfile(cgVertexProfile);
 				//bind the default
 				CgGL.cgGLBindProgram(this.vpshaderprograms.get(this.cgVertexProgName));
+				//enable profile
+				CgGL.cgGLEnableProfile(cgVertexProfile);
 			}
 			//now remove shader program from hashtable.
 			this.vpshaderprograms.remove(name);
@@ -264,16 +285,16 @@ public class ShaderManager {
 			}
 			//check whether shader program is currently active.
 			if (this.cgFragmentProgName.equals(name)){
-				//disable profile
-				CgGL.cgGLDisableProfile(cgFragProfile);
 				//unbind vertex shader
 				CgGL.cgGLUnbindProgram(cgFragProfile);
+				//disable profile
+				CgGL.cgGLDisableProfile(cgFragProfile);
 				//reset to default.
 				this.cgFragmentProgName = this.defaultFragmentProgName;
-				//enable profile
-				CgGL.cgGLEnableProfile(cgFragProfile);
 				//bind the default
 				CgGL.cgGLBindProgram(this.fpshaderprograms.get(this.cgFragmentProgName));
+				//enable profile
+				CgGL.cgGLEnableProfile(cgFragProfile);
 			}
 			//now remove shader program from hashtable.
 			this.fpshaderprograms.remove(name);

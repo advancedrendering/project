@@ -2,10 +2,11 @@ package scenegraph;
 
 import javax.media.opengl.GLAutoDrawable;
 
+import com.sun.opengl.cg.CgGL;
+
 public class EiffelModel extends SceneGraphNode {
 
-	public EiffelModel(GLAutoDrawable drawable, float scale,
-			String vpShaderPath, String fpShaderPath) {
+	public EiffelModel(GLAutoDrawable drawable, float scale) {
 		super(drawable, "models/eiffel", scale);
 		// TODO Auto-generated constructor stub
 	}
@@ -30,6 +31,7 @@ public class EiffelModel extends SceneGraphNode {
 
 	@Override
 	public void draw(GLAutoDrawable drawable) {
+		this.getShaderManager().bindFP("toon");
 		drawable.getGL().glCallList(this.getObjectList());
 	}
 }

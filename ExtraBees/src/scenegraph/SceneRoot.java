@@ -2,6 +2,11 @@ package scenegraph;
 
 import javax.media.opengl.GLAutoDrawable;
 
+import com.sun.opengl.cg.CGprogram;
+import com.sun.opengl.cg.CgGL;
+
+import shadermanager.ShaderManager;
+
 public class SceneRoot extends SceneGraphNode{
 
 	// singleton pattern
@@ -14,14 +19,18 @@ public class SceneRoot extends SceneGraphNode{
 	
 	private SceneRoot(GLAutoDrawable drawable) {
 		super(drawable);
+		
+		CGprogram loc_vp_prog = ShaderManager.loadShader(this.getShaderManager().getCgContext(),this.getShaderManager().getCgFragProfile(), "shader/toon_shading.cg");
+		this.getShaderManager().addFragmentShaderProgram("toon", loc_vp_prog);
+		
 		skybox = new SkyBox(drawable, "models/skybox", scale*2f);
 		skybox.setRotation(0, -100, 0);
 		this.addChild(skybox);
 		
-		campus = new CampusModel(drawable, "models/campus", scale,"shader/vp_phongPerPixel.cg","shader/fp_phongPerPixel.cg");
+		campus = new CampusModel(drawable, "models/campus", scale);
 		this.addChild(campus);
 		
-		heli = new HeliModel(drawable, scale*0.2f, "shader/vp_phongPerPixel.cg", "shader/fp_phongPerPixel.cg");
+		heli = new HeliModel(drawable, scale*0.2f);
 		heli.setTranslation(0f, 0.6f, 0f);
 		heli.setRotation(0, -100, 0);
 		this.addChild(heli);

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 
+import shadermanager.ShaderManager;
+
 import modelloader.OBJLoader;
 
 import com.sun.opengl.cg.CGcontext;
@@ -22,10 +24,12 @@ public abstract class SceneGraphNode {
 	// objectList returned by the OBJLoader 
 	private int objectList;
 	
-	protected String fpShaderPath = "";
-
-	protected String vpShaderPath = "";
+	protected ShaderManager shaderManager = null; 
 	
+	public ShaderManager getShaderManager() {
+		return shaderManager;
+	}
+
 	private CGcontext cgContext;
 
 	protected CGprogram cgVertexProg = null;
@@ -38,19 +42,9 @@ public abstract class SceneGraphNode {
 						rotation = new float[3], 
 						scale = new float[3],
 						pivot = new float[3];
-	
-	// constructor
-	public SceneGraphNode(GLAutoDrawable drawable, String modelPath, float scale, String vpShaderPath, String fpShaderPath){
-		this.children = new ArrayList<SceneGraphNode>();
-		this.modelPath = modelPath;
-		this.fpShaderPath = fpShaderPath;
-		this.vpShaderPath = vpShaderPath;
-		objectList = new OBJLoader(modelPath,scale,drawable.getGL()).getDisplayList();
-		init(drawable);
-		initCg();
-	}
-	
+		
 	public SceneGraphNode(GLAutoDrawable drawable, String modelPath, float scale){
+		this.shaderManager = ShaderManager.getInstance();
 		this.children = new ArrayList<SceneGraphNode>();
 		this.modelPath = modelPath;
 		objectList = new OBJLoader(modelPath,scale,drawable.getGL()).getDisplayList();
@@ -59,13 +53,13 @@ public abstract class SceneGraphNode {
 	
 	// constructor
 	public SceneGraphNode(GLAutoDrawable drawable){
+		this.shaderManager = ShaderManager.getInstance();
 		this.children = new ArrayList<SceneGraphNode>();
 	}
 	
 	public abstract void init(GLAutoDrawable drawable);
 	public abstract void bindParameters();
 	public abstract void animate(GLAutoDrawable drawable);
-	
 	
 	/**
 	 * Add a child to this node.
@@ -112,6 +106,8 @@ public abstract class SceneGraphNode {
 		gl.glRotatef(rotation[0], 1, 0, 0);
 		gl.glRotatef(rotation[1], 0, 1, 0);
 		gl.glRotatef(rotation[2], 0, 0, 1);
+		this.getShaderManager().bindVP();
+		this.getShaderManager().bindFP();
 		this.draw(drawable);// draw the current object
 		for(SceneGraphNode child : children){ // render every child
 			child.render(drawable);
@@ -122,57 +118,6 @@ public abstract class SceneGraphNode {
 	
 	public abstract void draw(GLAutoDrawable drawable);
 	
-	public void initCg()
-	{
-		cgVertexProg = loadShader(getCgVertexProfile(), vpShaderPath);
-		cgFragmentProg = loadShader(getCgFragProfile(), fpShaderPath);
-		cgContext = CgGL.cgCreateContext();
-		cgVertexProfile = CgGL.cgGLGetLatestProfile(CgGL.CG_GL_VERTEX);
-		if (cgVertexProfile == CgGL.CG_PROFILE_UNKNOWN)
-		{
-			System.err.println("Invalid vertex profile");
-			System.exit(1);
-		}
-		CgGL.cgGLSetOptimalOptions(cgVertexProfile);
-
-		cgFragProfile = CgGL.cgGLGetLatestProfile(CgGL.CG_GL_FRAGMENT);
-		if (cgFragProfile == CgGL.CG_PROFILE_UNKNOWN)
-		{
-			System.err.println("Invalid fragment profile");
-			System.exit(1);
-		}
-		CgGL.cgGLSetOptimalOptions(cgFragProfile);
-	}
-
-	protected CGprogram loadShader(int profile, String filename)
-	{
-		CGprogram shaderprog = CgGL.cgCreateProgramFromFile(getCgContext(),
-				CgGL.CG_SOURCE, filename, profile, null, null);
-		if (shaderprog == null)
-		{
-			int err = CgGL.cgGetError();
-			System.err.println("Compile shader [" + filename + "] "
-					+ CgGL.cgGetErrorString(err));
-			if (CgGL.cgGetLastListing(getCgContext()) != null)
-			{
-				System.err.println(CgGL.cgGetLastListing(getCgContext()) + "\n");
-			}
-			System.exit(1);
-		}
-
-		CgGL.cgGLLoadProgram(shaderprog);
-
-		int err = CgGL.cgGetError();
-		if (err != CgGL.CG_NO_ERROR)
-		{
-			System.out.println("Load shader [" + filename + "]: "
-					+ CgGL.cgGetErrorString(err));
-			System.exit(1);
-		}
-
-		return shaderprog;
-	}
-	
 	public void setMaterial(GL gl, float[] material) {
 		gl.glMaterialfv(GL.GL_FRONT, GL.GL_AMBIENT, material, 0);
 		gl.glMaterialfv(GL.GL_FRONT, GL.GL_DIFFUSE, material, 4);
@@ -181,9 +126,9 @@ public abstract class SceneGraphNode {
 	}
 
 	
-				//////////////////////	
-				// getter and setter//
-				//////////////////////
+	//////////////////////	
+	// getter and setter//
+	//////////////////////
 	
 	public int getObjectList(){
 		return this.objectList;

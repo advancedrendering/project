@@ -4,8 +4,7 @@ import javax.media.opengl.GLAutoDrawable;
 
 public class GlassModel extends SceneGraphNode {
 
-	public GlassModel(GLAutoDrawable drawable, float scale,
-			String vpShaderPath, String fpShaderPath) {
+	public GlassModel(GLAutoDrawable drawable, float scale) {
 		super(drawable, "models/glass", scale);
 		// TODO Auto-generated constructor stub
 	}
