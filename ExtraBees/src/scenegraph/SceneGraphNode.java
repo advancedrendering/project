@@ -139,6 +139,8 @@ public abstract class SceneGraphNode {
 		//bind default shader. (if no shader is used then nothing will happen)
 		this.getShaderManager().bindFP();
 		this.draw(drawable);// draw the current object
+		this.getShaderManager().setUse_vertex_shader(false);
+		this.getShaderManager().setUse_frag_shader(false);
 		for(SceneGraphNode child : children){ // render every child
 			child.render(drawable);
 		}

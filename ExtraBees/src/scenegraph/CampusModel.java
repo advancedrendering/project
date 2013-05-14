@@ -24,6 +24,8 @@ public class CampusModel extends SceneGraphNode {
 		table.setRotation(0, 45, 0);
 		this.addChild(table);
 		this.init(drawable);
+//		this.setUse_vertex_shader(false);
+//		this.setUse_frag_shader(false);
 
 	}
 

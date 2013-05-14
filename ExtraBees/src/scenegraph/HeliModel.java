@@ -28,6 +28,8 @@ public class HeliModel extends SceneGraphNode {
 		this.addChild(heli_rotor_top);
 		this.addChild(heli_rotor_back);
 		this.addChild(heli_rotor_window);
+		this.setUse_frag_shader(false);
+		this.setUse_vertex_shader(false);
 //		initCg();
 	}
 
