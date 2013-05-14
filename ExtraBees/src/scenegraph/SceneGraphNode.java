@@ -29,14 +29,38 @@ public abstract class SceneGraphNode {
 	public ShaderManager getShaderManager() {
 		return shaderManager;
 	}
+	
+	//flags which determine whether SceneGraphNode uses a shader or not.
+	private boolean use_vertex_shader = true;
+	private boolean use_frag_shader = true;
+	
+	/**
+	 * @return Returns whether SceneGraphNode uses any vertex shader program.
+	 */
+	public boolean isUse_vertex_shader() {
+		return use_vertex_shader;
+	}
 
-	private CGcontext cgContext;
+	/**
+	 * @param Sets whether SceneGraphNode uses any vertex shader program.
+	 */
+	public void setUse_vertex_shader(boolean use_vertex_shader) {
+		this.use_vertex_shader = use_vertex_shader;
+	}
 
-	protected CGprogram cgVertexProg = null;
+	/**
+	 * @return Returns whether SceneGraphNode uses any fragment shader program.
+	 */
+	public boolean isUse_frag_shader() {
+		return use_frag_shader;
+	}
 
-	protected CGprogram cgFragmentProg = null;
-
-	private int cgVertexProfile, cgFragProfile;
+	/**
+	 * @param Sets whether SceneGraphNode uses any fragment shader program.
+	 */
+	public void setUse_frag_shader(boolean use_frag_shader) {
+		this.use_frag_shader = use_frag_shader;
+	}
 
 	protected float[] translation = new float[3],
 						rotation = new float[3], 
@@ -106,7 +130,13 @@ public abstract class SceneGraphNode {
 		gl.glRotatef(rotation[0], 1, 0, 0);
 		gl.glRotatef(rotation[1], 0, 1, 0);
 		gl.glRotatef(rotation[2], 0, 0, 1);
+		//enable or disable shader usage depending on the fields set
+		this.getShaderManager().setUse_vertex_shader(this.isUse_vertex_shader());
+		//bind default shader. (if no shader is used then nothing will happen)
 		this.getShaderManager().bindVP();
+		//enable or disable shader usage depending on the fields set
+		this.getShaderManager().setUse_frag_shader(this.isUse_frag_shader());
+		//bind default shader. (if no shader is used then nothing will happen)
 		this.getShaderManager().bindFP();
 		this.draw(drawable);// draw the current object
 		for(SceneGraphNode child : children){ // render every child
@@ -187,41 +217,5 @@ public abstract class SceneGraphNode {
 	
 	public float[] getPivot(){
 		return this.pivot;
-	}
-	
-	
-	public int getCgVertexProfile()
-	{
-		return cgVertexProfile;
-	}
-
-	public int getCgFragProfile()
-	{
-		return cgFragProfile;
-	}
-
-	public CGprogram getCgVertexProg()
-	{
-		return cgVertexProg;
-	}
-
-	public void setCgVertexProg(CGprogram cgVertexProg)
-	{
-		this.cgVertexProg = cgVertexProg;
-	}
-
-	public CGprogram getCgFragmentProg()
-	{
-		return cgFragmentProg;
-	}
-
-	public void setCgFragmentProg(CGprogram cgFragmentProg)
-	{
-		this.cgFragmentProg = cgFragmentProg;
-	}
-
-	public CGcontext getCgContext()
-	{
-		return cgContext;
 	}
 }

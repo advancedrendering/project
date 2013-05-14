@@ -2,13 +2,18 @@ package scenegraph;
 
 import javax.media.opengl.GLAutoDrawable;
 
+import com.sun.opengl.cg.CGparameter;
 import com.sun.opengl.cg.CgGL;
 
 public class EiffelModel extends SceneGraphNode {
 
+	private CGparameter cgTime = null;
+	private int counter;
+	
 	public EiffelModel(GLAutoDrawable drawable, float scale) {
 		super(drawable, "models/eiffel", scale);
-		// TODO Auto-generated constructor stub
+		this.setUse_frag_shader(true);
+		counter = 1;
 	}
 
 	@Override
@@ -19,7 +24,7 @@ public class EiffelModel extends SceneGraphNode {
 
 	@Override
 	public void bindParameters() {
-		// TODO Auto-generated method stub
+//		cgTime = CgGL.cgGetNamedParameter(cgVertexProg, "time");
 		
 	}
 
@@ -31,6 +36,10 @@ public class EiffelModel extends SceneGraphNode {
 
 	@Override
 	public void draw(GLAutoDrawable drawable) {
+//		counter += 1;
+//		System.out.println(Math.sin(counter));
+//		CgGL.cgGLSetParameter1f(cgTime, counter);
+//		this.getShaderManager().bindVP("particle");
 		this.getShaderManager().bindFP("toon");
 		drawable.getGL().glCallList(this.getObjectList());
 	}

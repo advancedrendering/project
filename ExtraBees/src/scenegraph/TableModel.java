@@ -20,7 +20,8 @@ public class TableModel extends SceneGraphNode {
 	
 	
 	public TableModel(GLAutoDrawable drawable, float scale) {
-		super(drawable, "models/table", scale);
+		super(drawable, "models/table", scale);	
+		
 		glass = new GlassModel(drawable, scale*0.1f);
 		glass.setTranslation(0.8f, 0.832f, 0);
 		this.addChild(glass);

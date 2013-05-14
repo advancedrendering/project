@@ -84,6 +84,41 @@ public class ShaderManager {
 	public void setDefaultFragmentProgName(String defaultFragmentProgName) {
 		this.defaultFragmentProgName = defaultFragmentProgName;
 	}
+	
+	
+	//flags which determine whether the default or any other shader program should be executed or not.
+	private boolean use_vertex_shader = true;
+	
+	/**
+	 * @return Whether any vertex shader should be used or not.
+	 */
+	public boolean isUse_vertex_shader() {
+		return use_vertex_shader;
+	}
+
+	/**
+	 * @param Sets whether any vertex shader should be used.
+	 */
+	public void setUse_vertex_shader(boolean use_vertex_shader) {
+		this.use_vertex_shader = use_vertex_shader;
+	}
+
+	/**
+	 * @return Whether any fragment shader should be used or not.
+	 */
+	public boolean isUse_frag_shader() {
+		return use_frag_shader;
+	}
+
+	/**
+	 * @param Sets whether any fragment shader should be used.
+	 */
+	public void setUse_frag_shader(boolean use_frag_shader) {
+		this.use_frag_shader = use_frag_shader;
+	}
+
+
+	private boolean use_frag_shader = true;
 
 	private int cgVertexProfile;
 	
@@ -121,10 +156,12 @@ public class ShaderManager {
 		
 	public void bindVP(String cgVPName) throws IllegalArgumentException{
 		if (this.vpshaderprograms.containsKey(cgVPName)){
-			//enable profile
-			CgGL.cgGLEnableProfile(cgVertexProfile);
-			//bind the new one
-			CgGL.cgGLBindProgram(this.vpshaderprograms.get(cgVPName));
+			if (this.use_vertex_shader == true){
+				//enable profile
+				CgGL.cgGLEnableProfile(cgVertexProfile);
+				//bind the new one
+				CgGL.cgGLBindProgram(this.vpshaderprograms.get(cgVPName));
+			}
 		}
 		else{
 			throw new IllegalArgumentException("The shader program " + cgVPName + " is unknown.");
@@ -145,11 +182,12 @@ public class ShaderManager {
 	
 	public void bindFP(String cgFPName) throws IllegalArgumentException {
 		if (this.fpshaderprograms.containsKey(cgFPName)){
-			//enable profile
-			CgGL.cgGLEnableProfile(cgFragProfile);
-			//bind the new one
-			CgGL.cgGLBindProgram(this.fpshaderprograms.get(cgFPName));
-			
+			if (this.use_frag_shader == true){
+				//enable profile
+				CgGL.cgGLEnableProfile(cgFragProfile);
+				//bind the new one
+				CgGL.cgGLBindProgram(this.fpshaderprograms.get(cgFPName));
+			}
 		}
 		else{
 			throw new IllegalArgumentException("The shader program " + cgFPName + " is unknown.");

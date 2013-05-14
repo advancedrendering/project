@@ -23,6 +23,12 @@ public class SceneRoot extends SceneGraphNode{
 		CGprogram loc_vp_prog = ShaderManager.loadShader(this.getShaderManager().getCgContext(),this.getShaderManager().getCgFragProfile(), "shader/toon_shading.cg");
 		this.getShaderManager().addFragmentShaderProgram("toon", loc_vp_prog);
 		
+		loc_vp_prog = ShaderManager.loadShader(this.getShaderManager().getCgContext(),this.getShaderManager().getCgVertexProfile(), "shader/basicparticlesystem.cg");
+		this.getShaderManager().addVertexShaderProgram("particle", loc_vp_prog);
+		
+		this.getShaderManager().setUse_vertex_shader(false);
+		this.getShaderManager().setUse_frag_shader(false);
+		
 		skybox = new SkyBox(drawable, "models/skybox", scale*2f);
 		skybox.setRotation(0, -100, 0);
 		this.addChild(skybox);
@@ -34,9 +40,7 @@ public class SceneRoot extends SceneGraphNode{
 		heli.setTranslation(0f, 0.6f, 0f);
 		heli.setRotation(0, -100, 0);
 		this.addChild(heli);
-		// TODO: add camera, lightsources?!
-		
-		
+		// TODO: add camera, lightsources?!	
 	}
 
 	public static SceneRoot getInstance(GLAutoDrawable drawable) {
