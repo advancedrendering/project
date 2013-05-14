@@ -23,8 +23,8 @@ public class SceneRoot extends SceneGraphNode{
 		CGprogram loc_vp_prog = ShaderManager.loadShader(this.getShaderManager().getCgContext(),this.getShaderManager().getCgFragProfile(), "shader/toon_shading.cg");
 		this.getShaderManager().addFragmentShaderProgram("toon", loc_vp_prog);
 		
-		loc_vp_prog = ShaderManager.loadShader(this.getShaderManager().getCgContext(),this.getShaderManager().getCgVertexProfile(), "shader/basicparticlesystem.cg");
-		this.getShaderManager().addVertexShaderProgram("particle", loc_vp_prog);
+//		loc_vp_prog = ShaderManager.loadShader(this.getShaderManager().getCgContext(),this.getShaderManager().getCgVertexProfile(), "shader/basicparticlesystem.cg");
+//		this.getShaderManager().addVertexShaderProgram("particle", loc_vp_prog);
 		
 		this.getShaderManager().setUse_vertex_shader(false);
 		this.getShaderManager().setUse_frag_shader(false);
