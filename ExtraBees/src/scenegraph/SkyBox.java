@@ -8,6 +8,8 @@ public class SkyBox extends SceneGraphNode {
 	public SkyBox(GLAutoDrawable drawable, String modelPath, float scale) {
 		super(drawable, modelPath, scale);
 		// TODO Auto-generated constructor stub
+		this.setUse_frag_shader(false);
+		this.setUse_vertex_shader(false);
 	}
 
 	@Override

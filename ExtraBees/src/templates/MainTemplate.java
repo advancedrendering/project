@@ -9,15 +9,23 @@ package templates;
  */
 
 import java.awt.event.KeyEvent;
+import java.nio.FloatBuffer;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 
+import com.sun.opengl.util.BufferUtil;
 import com.sun.opengl.util.GLUT;
 
 import scenegraph.SceneRoot;
 
+
 public class MainTemplate extends JoglTemplate {
+	
+	protected final static float CTRL_POINTS[] = {54.312f, -27.802f+42.209f, 17.947f,
+		43.009f, -21.505f+40.209f, 28.877f,
+		38.145f,-28.318f+40.209f,45.711f,
+		42.547f,-28.649f+40.209f,45.454f };
 
 	/**
 	 * 
@@ -39,6 +47,7 @@ public class MainTemplate extends JoglTemplate {
 	private float timePerFrame = 0f;
 	
 	private boolean showFPS = false;
+	float u = 0.0f;
 
 	public static void main(String[] args) {
 		MainTemplate assignment = new MainTemplate();
@@ -67,7 +76,6 @@ public class MainTemplate extends JoglTemplate {
 		float currentTime = System.nanoTime();
 		if (currentTime - lastTime >= 1000000000.0f) {
 			timePerFrame = (1000.0f / ((float) getFrameCounter()));
-//			System.out.println((1000.0f / timePerFrame));
 			resetFrameCounter();
 			lastTime = System.nanoTime();
 		}
@@ -75,7 +83,6 @@ public class MainTemplate extends JoglTemplate {
 		incFrameCounter();
 		updateCamCoords();
 		
-		// System.out.println(getFrameCounter());
 		// get the gl object
 		GL gl = drawable.getGL();
 		// set the erasing color (black)
@@ -89,7 +96,16 @@ public class MainTemplate extends JoglTemplate {
 		}
 		applyMouseTranslation(gl);
 		applyMouseRotation(gl);
-
+	
+		// bezier test
+		if(u> 1.0)
+			u=1.0f;
+		float[] cam = BezierCurve.getCoordsAt(CTRL_POINTS,u+=0.007f);
+		float[] target = BezierCurve.getCoordsAt(CTRL_POINTS,u+0.01f);
+		getGlu().gluLookAt(	cam[0], cam[1], cam[2], target[0], target[1], target[2], 0, 1, 0);
+		
+		
+		// lightning stuff
 		gl.glEnable(GL.GL_LIGHTING);
 		gl.glEnable(GL.GL_LIGHT0);
 		gl.glEnable(GL.GL_LIGHT1);
@@ -130,12 +146,12 @@ public class MainTemplate extends JoglTemplate {
 		gl.glColor3f(1f, 1f, 1f);
 		getGlu().gluSphere(getGlu().gluNewQuadric(), 0.3, 10, 10);
 		gl.glPopMatrix();
-
+		
 		SceneRoot.getInstance(drawable).render(drawable);
 
 		gl.glPopMatrix();
 	}
-
+	
 	private void drawFPS(GLAutoDrawable drawable) {
 		GL gl = drawable.getGL();
 		// Farbe Weiß, für die DevStrings
