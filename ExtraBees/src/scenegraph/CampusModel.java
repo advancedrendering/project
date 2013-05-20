@@ -16,6 +16,7 @@ import com.sun.opengl.util.texture.TextureIO;
 public class CampusModel extends SceneGraphNode {
 
 	private TableModel table = null;
+	private LampModel lamp = null;
 
 	public CampusModel(GLAutoDrawable drawable, String modelPath, float scale) {
 		super(drawable, modelPath, scale);
@@ -23,6 +24,12 @@ public class CampusModel extends SceneGraphNode {
 		table.setTranslation(0, 0, 0);
 		table.setRotation(0, 45, 0);
 		this.addChild(table);
+		this.init(drawable);
+		
+		lamp = new LampModel(drawable, scale*0.5f);
+		lamp.setTranslation(0,0,0);
+		lamp.setRotation(0, 0, 0);
+		this.addChild(lamp);
 		this.init(drawable);
 //		this.setUse_vertex_shader(false);
 //		this.setUse_frag_shader(false);
