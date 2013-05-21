@@ -14,7 +14,7 @@ public class SceneRoot extends SceneGraphNode{
 
 	private CampusModel campus = null;
 	private HeliModel heli = null;
-	private SkyBox skybox = null;
+	private SkyBox skydome = null;
 	private float scale = 1f;
 	
 	private SceneRoot(GLAutoDrawable drawable) {
@@ -29,9 +29,8 @@ public class SceneRoot extends SceneGraphNode{
 		this.getShaderManager().setUse_vertex_shader(false);
 		this.getShaderManager().setUse_frag_shader(false);
 		
-		skybox = new SkyBox(drawable, "models/skybox", scale*2f);
-		skybox.setRotation(0, -100, 0);
-		this.addChild(skybox);
+		skydome = new SkyBox(drawable, "models/skydome", scale);
+		this.addChild(skydome);
 		
 		campus = new CampusModel(drawable, "models/campus", scale);
 		this.addChild(campus);

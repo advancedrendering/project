@@ -22,10 +22,10 @@ import scenegraph.SceneRoot;
 
 public class MainTemplate extends JoglTemplate {
 	
-	protected final static float CTRL_POINTS[] = {54.312f, -27.802f+42.209f, 17.947f,
-		43.009f, -21.505f+40.209f, 28.877f,
-		38.145f,-28.318f+40.209f,45.711f,
-		42.547f,-28.649f+40.209f,45.454f };
+	protected final static float CTRL_POINTS[] = {33.519f, 1.071f+9.342f, -9.861f+5.160f,
+		33.13f, 8.766f+9.342f, -8.536f+5.160f,
+		29.213f,-4.754f+9.342f,10.246f+5.160f,
+		20.468f,-5.983f+9.342f,16.304f+5.160f };
 
 	/**
 	 * 
@@ -102,7 +102,11 @@ public class MainTemplate extends JoglTemplate {
 			u=1.0f;
 		float[] cam = BezierCurve.getCoordsAt(CTRL_POINTS,u+=0.007f);
 		float[] target = BezierCurve.getCoordsAt(CTRL_POINTS,u+0.01f);
-		getGlu().gluLookAt(	cam[0], cam[1], cam[2], target[0], target[1], target[2], 0, 1, 0);
+		
+		
+		
+//		getGlu().gluLookAt(	cam[0], cam[1], cam[2], target[0], target[1], target[2], 0, 1, 0);
+		getGlu().gluLookAt(	cam[0], cam[1], cam[2], 17.972, 2.302, 23.340, 0, 1, 0);
 		
 		
 		// lightning stuff

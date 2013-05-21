@@ -1,35 +1,35 @@
 package scenegraph;
 
-import java.io.File;
-import java.io.IOException;
-
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLException;
 
 import shadermanager.ShaderManager;
 
-import com.sun.opengl.cg.CgGL;
-import com.sun.opengl.util.texture.Texture;
-import com.sun.opengl.util.texture.TextureIO;
-
 public class CampusModel extends SceneGraphNode {
 
-	private TableModel table = null;
+	
 	private LampModel lamp = null;
+	private LampModel lamp2 = null;
+	private TempleModel temple = null;
+
 
 	public CampusModel(GLAutoDrawable drawable, String modelPath, float scale) {
 		super(drawable, modelPath, scale);
-		table = new TableModel(drawable, scale * 0.2f);
-		table.setTranslation(0, 0, 0);
-		table.setRotation(0, 45, 0);
-		this.addChild(table);
-		this.init(drawable);
+
 		
-		lamp = new LampModel(drawable, scale*0.5f);
+		
+		temple = new TempleModel(drawable, scale);
+		this.addChild(temple);
+		
+		lamp = new LampModel(drawable, scale);
 		lamp.setTranslation(0,0,0);
 		lamp.setRotation(0, 0, 0);
 		this.addChild(lamp);
+		
+		lamp2 = new LampModel(drawable, scale);
+		lamp2.setTranslation(-4.544f,0.875f,13.8f);
+		lamp2.setRotation(0, 0, 0);
+		this.addChild(lamp2);
 		this.init(drawable);
 //		this.setUse_vertex_shader(false);
 //		this.setUse_frag_shader(false);
