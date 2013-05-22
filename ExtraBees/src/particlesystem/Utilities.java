@@ -31,7 +31,7 @@ public class Utilities {
 		}
 		else{
 			//get new random generator (with new seed)
-			Random rand = new Random(System.nanoTime());
+			Random rand = new Random();
 			//get random number.
 			return rand.nextFloat() * (max -min) + min;
 		}

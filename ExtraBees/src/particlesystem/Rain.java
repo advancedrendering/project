@@ -16,7 +16,7 @@ public class Rain extends ParticleSystem {
 		loc_settings.capacity = 1000;
 		loc_settings.emitRate = 0.05f; //100 particles per seconds i.e. 0.1 per millisecond
 		//create external force
-		float[] loc_external_force = {5.0f, 10.0f, 0.0f};
+		float[] loc_external_force = {0.0f, 10.0f, 0.0f};
 		loc_settings.general_external_force = loc_external_force;
 		//lifetime
 		loc_settings.lifetime = 12000.0f; //5 seconds
