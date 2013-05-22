@@ -2,6 +2,8 @@ package scenegraph;
 
 import javax.media.opengl.GLAutoDrawable;
 
+import particlesystem.Rain;
+
 import com.sun.opengl.cg.CGprogram;
 import com.sun.opengl.cg.CgGL;
 
@@ -39,6 +41,10 @@ public class SceneRoot extends SceneGraphNode{
 		heli.setTranslation(0f, 0.6f, 0f);
 		heli.setRotation(0, -100, 0);
 		this.addChild(heli);
+		
+		Rain rain = new Rain(drawable);
+		this.addChild(rain);
+		
 		// TODO: add camera, lightsources?!	
 	}
 
