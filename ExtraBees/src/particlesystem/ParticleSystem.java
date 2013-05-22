@@ -110,18 +110,19 @@ public abstract class ParticleSystem extends SceneGraphNode {
 			update(elapsed_time);
 			//draw particles
 		
-			gl.glEnable(GL.GL_COLOR);
-			gl.glColor3f(1.0f, 0.0f, 0.0f);
-			gl.glPointSize(5.0f); // Set point size
-			gl.glBegin(GL.GL_POINTS);
+			gl.glEnable(GL.GL_COLOR_MATERIAL);
+			gl.glColor3f(0.0f, 0.0f, 1.0f);
+			gl.glLineWidth(0.5f); // Set point size
 			for (Particle par : this.active_particles){
+				gl.glBegin(GL.GL_LINE_STRIP);
 				float[] loc_pos = par.getPosition();
 				gl.glVertex3f(loc_pos[0],loc_pos[1] , loc_pos[2]);
+				gl.glVertex3f(loc_pos[0],loc_pos[1]+0.4f , loc_pos[2]);
+				gl.glEnd();
 			}
-			gl.glEnd();
-			gl.glPointSize(1.0f); // Set The Line Width
+			gl.glLineWidth(1.0f); // Set The Line Width
 			gl.glColor3f(1.0f, 1.0f, 1.0f);
-			gl.glDisable(GL.GL_COLOR);
+			gl.glDisable(GL.GL_COLOR_MATERIAL);
 		}
 	}
 
