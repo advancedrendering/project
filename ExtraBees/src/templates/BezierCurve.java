@@ -4,41 +4,25 @@ public class BezierCurve {
 	
 	public static float[] getCoordsAt(float[] controlPoints, float u){
 		float[] xyz = new float[3];
-		if(controlPoints.length == (3*4)){ // 4 points with xyz coords each
-			xyz[0] = controlPoints[0]*getB0(u)
-					+controlPoints[3]*getB1(u)
-					+controlPoints[6]*getB2(u)
-					+controlPoints[9]*getB3(u);
-			
-			xyz[1] = controlPoints[0+1]*getB0(u)
-					+controlPoints[3+1]*getB1(u)
-					+controlPoints[6+1]*getB2(u)
-					+controlPoints[9+1]*getB3(u);
-			
-			xyz[2] = controlPoints[0+2]*getB0(u)
-					+controlPoints[3+2]*getB1(u)
-					+controlPoints[6+2]*getB2(u)
-					+controlPoints[9+2]*getB3(u);
+		int L = (controlPoints.length/3)-1;
+		
+		for(int i = 0; i <= (L); i++){
+			xyz[0] += controlPoints[(i*3)] * getBernsteinPolynomial(L, i, u);
+			xyz[1] += controlPoints[1+(i*3)] * getBernsteinPolynomial(L, i, u);
+			xyz[2] += controlPoints[2+(i*3)] * getBernsteinPolynomial(L, i, u);
 		}
 		return xyz;
 	}
 	
 	// bernstein polynomials
-	private static float getB0(float u){
-		return (1.0f-u)*(1.0f-u)*(1.0f-u);
+	private static float getBernsteinPolynomial(int L, int k, float u){
+		return (float) (factorial(L) / (factorial(k) * factorial(L-k))* Math.pow(u, k) * Math.pow(1-u, L-k));
 	}
 	
-	private static float getB1(float u){
-		return 3.0f*u*((1.0f-u)*(1.0f-u));
+	private static  int factorial(int f){
+		if(f == 0 || f == 1)
+			return 1;
+		else
+			return f * factorial(f-1);
 	}
-	
-	private static float getB2(float u){
-		return (3.0f*(u*u))*(1.0f-u);
-	}
-	
-	private static float getB3(float u){
-		return u*u*u;
-	}
-	
-
 }
