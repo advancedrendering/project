@@ -35,6 +35,9 @@ public class Rain extends ParticleSystem {
 		if (settings.point_size > point_size_arg.get(0)){
 			settings.point_size = point_size_arg.get(0);
 		}
+		
+		this.setUse_frag_shader(false);
+		this.setUse_vertex_shader(false);
 	}
 
 	@Override
@@ -100,7 +103,7 @@ public class Rain extends ParticleSystem {
 		if (lastTime  == -1){
 			lastTime = (float)System.nanoTime() / 1000000.0f ;
 		}
-		else{
+		else{			
 			float current_time = (float)System.nanoTime() / 1000000.0f;
 			float elapsed_time = current_time - lastTime;
 			lastTime = current_time;

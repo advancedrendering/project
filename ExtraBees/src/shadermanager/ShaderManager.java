@@ -149,7 +149,7 @@ public class ShaderManager {
 		return cgContext;
 	}
 
-	public String getBindedVertexProgram() {
+	public String getBindedVertexProg() {
 		return cgVertexProgName;
 	}
 
@@ -181,8 +181,16 @@ public class ShaderManager {
 		}
 	}
 
-	public String getBindedFragmentProg() {
+	public String getBindedFragProg() {
 		return cgFragmentProgName;
+	}
+	
+	public CGprogram getBindedFragProg(String name){
+		return this.fpshaderprograms.get(name);
+	}
+	
+	public CGprogram getBindedVertexProg(String name){
+		return this.vpshaderprograms.get(name);
 	}
 
 	public void bindFP() throws IllegalArgumentException {
@@ -386,6 +394,26 @@ public class ShaderManager {
 		}
 	}
 
+	/**
+	 * Loads a vertex shader from file a stores it in the shader manager accessible via the given name.
+	 * @param filename Vertex shader source code.
+	 * @param name Name of vertex shader.
+	 */
+	public void loadVertexShader(String filename, String name){
+		CGprogram loc_fp_prog = ShaderManager.loadShader(this.getCgContext(),this.getCgVertexProfile(), filename);
+		this.addVertexShaderProgram(name, loc_fp_prog);
+	}
+	
+	/**
+	 * Loads a fragment shader from file a stores it in the shader manager accessible via the given name.
+	 * @param filename Fragment shader source code.
+	 * @param name Name of fragment shader.
+	 */
+	public void loadFragShader(String filename, String name){
+		CGprogram loc_fp_prog = ShaderManager.loadShader(this.getCgContext(),this.getCgFragProfile(), filename);
+		this.addFragmentShaderProgram(name, loc_fp_prog);
+	}
+	
 	/**
 	 * Get instance of shadermanager.
 	 * 
