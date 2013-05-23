@@ -50,7 +50,7 @@ public class Rain extends ParticleSystem {
 		float[] loc_external_force = {0.0f, -1000.0f, 0.0f};
 		loc_settings.general_external_force = loc_external_force;
 		//lifetime
-		loc_settings.lifetime = 4000.0f; //1.3 seconds
+		loc_settings.lifetime = 5000.0f; //1.3 seconds
 		loc_settings.point_size = 32.0f;
 		
 		ParticleEmitterSettings loc_emi_settings = new ParticleEmitterSettings();
@@ -142,11 +142,7 @@ public class Rain extends ParticleSystem {
 			
 			//Tell OGL to replace the coordinates upon drawing.
 			gl.glTexEnvi(GL.GL_POINT_SPRITE_ARB, GL.GL_COORD_REPLACE_ARB, GL.GL_TRUE);
-			
-			if (point_size_arg.get(0) > 63.0){
-				gl.glPointSize(point_size_arg.get(0));
-			}
-			
+					
 			//Turn off depth masking so particles in front will not occlude particles behind them.
 			gl.glDepthMask(false);
 			
