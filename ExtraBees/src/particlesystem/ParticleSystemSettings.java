@@ -14,6 +14,8 @@ public class ParticleSystemSettings {
 	
 	public float lifetime; //in nano seconds
 	
+	public float point_size;
+	
 	public ParticleEmitterSettings emitter_settings = null;
 	public ParticleEmitter emitter = null;
 		

@@ -26,6 +26,15 @@ public class Rain extends ParticleSystem {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		// get the gl object
+		GL gl = drawable.getGL();
+		//check whether point size doesn't exceed size which is displayable by the graficscard.
+		FloatBuffer point_size_arg = FloatBuffer.allocate(1);
+		gl.glGetFloatv(GL.GL_POINT_SIZE_MAX_ARB, point_size_arg);
+		if (settings.point_size > point_size_arg.get(0)){
+			settings.point_size = point_size_arg.get(0);
+		}
 	}
 
 	@Override
@@ -39,6 +48,7 @@ public class Rain extends ParticleSystem {
 		loc_settings.general_external_force = loc_external_force;
 		//lifetime
 		loc_settings.lifetime = 4000.0f; //1.3 seconds
+		loc_settings.point_size = 32.0f;
 		
 		ParticleEmitterSettings loc_emi_settings = new ParticleEmitterSettings();
 		float[] min_init_acc = {0.0f, 0.0f, 0.0f};
@@ -94,7 +104,7 @@ public class Rain extends ParticleSystem {
 			float current_time = (float)System.nanoTime() / 1000000.0f;
 			float elapsed_time = current_time - lastTime;
 			lastTime = current_time;
-			//update the particle system.
+			//update the particle system
 			update(elapsed_time);
 			//draw particles
 			
@@ -119,7 +129,7 @@ public class Rain extends ParticleSystem {
 			gl.glPointParameterf(GL.GL_POINT_FADE_THRESHOLD_SIZE_ARB, 60.0f);
 			FloatBuffer point_size_arg = FloatBuffer.allocate(1);
 			gl.glGetFloatv(GL.GL_POINT_SIZE_MAX_ARB, point_size_arg);
-			gl.glPointSize(point_size_arg.get(0));
+			gl.glPointSize(settings.point_size);
 			gl.glPointParameterfARB(GL.GL_POINT_SIZE_MAX_ARB, point_size_arg.get(0));
 			gl.glPointParameterfARB(GL.GL_POINT_SIZE_MIN_ARB, 0.0f);
 			
@@ -130,7 +140,9 @@ public class Rain extends ParticleSystem {
 			//Tell OGL to replace the coordinates upon drawing.
 			gl.glTexEnvi(GL.GL_POINT_SPRITE_ARB, GL.GL_COORD_REPLACE_ARB, GL.GL_TRUE);
 			
-			gl.glPointSize(point_size_arg.get(0));
+			if (point_size_arg.get(0) > 63.0){
+				gl.glPointSize(point_size_arg.get(0));
+			}
 			
 			//Turn off depth masking so particles in front will not occlude particles behind them.
 			gl.glDepthMask(false);
