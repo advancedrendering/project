@@ -9,6 +9,8 @@ public class ParticleEmitterSettings {
 	public float min_init_lifetime;
 	public float max_init_lifetime;
 	
+	public float[][] colors = null;
+	
 	public ParticleEmitterSettings(){
 		
 	}

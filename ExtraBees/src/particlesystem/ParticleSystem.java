@@ -11,13 +11,13 @@ public abstract class ParticleSystem extends SceneGraphNode {
 
 	
 	
-	private ArrayList<Particle> particles;
-	private ArrayList<Particle> active_particles;
-	private ArrayList<Particle> inactive_particles;
+	protected ArrayList<Particle> particles;
+	protected ArrayList<Particle> active_particles;
+	protected ArrayList<Particle> inactive_particles;
 	
-	private ParticleEmitter emitter = null;
-	private ParticleEmitterSettings emitter_settings = null;
-	private ParticleSystemSettings settings = null;
+	protected ParticleEmitter emitter = null;
+	protected ParticleEmitterSettings emitter_settings = null;
+	protected ParticleSystemSettings settings = null;
 
 	
 	public ParticleSystem(GLAutoDrawable drawable) {
@@ -76,7 +76,7 @@ public abstract class ParticleSystem extends SceneGraphNode {
 		}
 	}
 
-	private float lastTime = -1;
+	protected float lastTime = -1;
 	
 	@Override
 	public void init(GLAutoDrawable drawable) {
@@ -110,19 +110,20 @@ public abstract class ParticleSystem extends SceneGraphNode {
 			update(elapsed_time);
 			//draw particles
 		
-			gl.glEnable(GL.GL_COLOR_MATERIAL);
-			gl.glColor3f(0.0f, 0.0f, 1.0f);
-			gl.glLineWidth(0.5f); // Set point size
+//			gl.glEnable(GL.GL_COLOR_MATERIAL);
+//			gl.glColor3f(0.0f, 0.0f, 1.0f);
+//			gl.glLineWidth(0.5f); // Set point size
+			gl.glPointSize(5.0f);
+			gl.glBegin(GL.GL_POINTS);
 			for (Particle par : this.active_particles){
-				gl.glBegin(GL.GL_LINE_STRIP);
 				float[] loc_pos = par.getPosition();
 				gl.glVertex3f(loc_pos[0],loc_pos[1] , loc_pos[2]);
-				gl.glVertex3f(loc_pos[0],loc_pos[1]+0.4f , loc_pos[2]);
-				gl.glEnd();
+//				gl.glVertex3f(loc_pos[0],loc_pos[1]+0.4f , loc_pos[2]);
 			}
-			gl.glLineWidth(1.0f); // Set The Line Width
-			gl.glColor3f(1.0f, 1.0f, 1.0f);
-			gl.glDisable(GL.GL_COLOR_MATERIAL);
+			gl.glEnd();
+//			gl.glLineWidth(1.0f); // Set The Line Width
+//			gl.glColor3f(1.0f, 1.0f, 1.0f);
+//			gl.glDisable(GL.GL_COLOR_MATERIAL);
 		}
 	}
 

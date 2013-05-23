@@ -62,6 +62,14 @@ public abstract class ParticleEmitter {
 				//initialize Particle
 				par.initialize(rand_pos, rand_velocity, rand_acc, rand_age, true);
 				
+				if (this.settings.colors.length != 0){
+					//select new random color for particle.
+					//number of possible colors
+					int num_colors = this.settings.colors.length;
+					int rand_color_index = Utilities.createRandom(0, num_colors);
+					par.setColor(this.settings.colors[rand_color_index]);
+				}
+				
 				//append newly initialized particle to active ones
 				active_particles.add(par);
 				
