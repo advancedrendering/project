@@ -69,6 +69,7 @@ public class Particle {
 	private float[] acceleration = null;;
 	private float[] position = null;
 	private float[] external_force = null;;
+	private float[] color = {1.0f, 1.0f, 1.0f};
 	
 	private ParticleSystemSettings settings = null;
 	
@@ -115,12 +116,18 @@ public class Particle {
 			float loc_elapsed_time = elapsed_time / 1000.0f;
 			for (int i = 0; i < velocity.length; i++){
 				//calc the overall acceleration (note: external force means acceleration due to an external force e.g. gravity)
-				float loc_acc = acceleration[i] - external_force[i];
+				float loc_acc = acceleration[i] + external_force[i];
 				//add acceleration to velocity
 				velocity[i] += loc_acc * loc_elapsed_time;
 				//calculate new position
 				position[i] += 0.5f * loc_acc * loc_elapsed_time * loc_elapsed_time;
 			}
 		}
+	}
+	public float[] getColor() {
+		return color;
+	}
+	public void setColor(float[] color) {
+		this.color = color;
 	}
 }

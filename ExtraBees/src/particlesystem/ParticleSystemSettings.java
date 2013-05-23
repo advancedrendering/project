@@ -16,7 +16,7 @@ public class ParticleSystemSettings {
 	
 	public ParticleEmitterSettings emitter_settings = null;
 	public ParticleEmitter emitter = null;
-	
+		
 	
 
 }

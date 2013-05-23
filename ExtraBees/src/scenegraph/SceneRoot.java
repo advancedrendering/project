@@ -31,19 +31,22 @@ public class SceneRoot extends SceneGraphNode{
 		this.getShaderManager().setUse_vertex_shader(false);
 		this.getShaderManager().setUse_frag_shader(false);
 		
+		
 		skydome = new SkyBox(drawable, "models/skydome", scale);
 		this.addChild(skydome);
 		
 		campus = new CampusModel(drawable, "models/campus", scale);
 		this.addChild(campus);
 		
+		Rain rain = new Rain(drawable);
+		this.addChild(rain);
+		
 		heli = new HeliModel(drawable, scale*0.2f);
 		heli.setTranslation(0f, 0.6f, 0f);
 		heli.setRotation(0, -100, 0);
 		this.addChild(heli);
 		
-		Rain rain = new Rain(drawable);
-		this.addChild(rain);
+
 		
 		// TODO: add camera, lightsources?!	
 	}

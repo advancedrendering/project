@@ -36,4 +36,19 @@ public class Utilities {
 			return rand.nextFloat() * (max -min) + min;
 		}
 	}
+	
+	/**
+	 * Generates a new random number within certain boundaries given by min and max.
+	 * @param min Lower boundary for random number.
+	 * @param max Upper boundary for random number.
+	 * @return New random number.
+	 */
+	public static int createRandom(int min, int max){
+		if (min == max){
+			return min;
+		}
+		else{			
+			return (int)(Math.random() * (max - min) + min); 
+		}
+	}
 }
