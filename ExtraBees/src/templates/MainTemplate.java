@@ -9,15 +9,13 @@ package templates;
  */
 
 import java.awt.event.KeyEvent;
-import java.nio.FloatBuffer;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 
-import com.sun.opengl.util.BufferUtil;
-import com.sun.opengl.util.GLUT;
-
 import scenegraph.SceneRoot;
+
+import com.sun.opengl.util.GLUT;
 
 
 public class MainTemplate extends JoglTemplate {
@@ -37,7 +35,7 @@ public class MainTemplate extends JoglTemplate {
 
 	private int frameCounter = 0;
 
-	private boolean animation = true, keyPressedW = false, keyPressedS = false,
+	private boolean animation = false, keyPressedW = false, keyPressedS = false,
 			keyPressedA = false, keyPressedD = false, keyPressedQ = false,
 			keyPressedE = false;
 	private float movementSpeed = 0.5f;
@@ -98,16 +96,22 @@ public class MainTemplate extends JoglTemplate {
 		applyMouseRotation(gl);
 	
 		// bezier test
-		if(u> 1.0)
-			u=1.0f;
-		float[] cam = BezierCurve.getCoordsAt(CTRL_POINTS,u+=0.007f);
-		float[] target = BezierCurve.getCoordsAt(CTRL_POINTS,u+0.01f);
+		float[] camPosition = BezierCurve.getCoordsAt(Paths.CAMERA_1,Paths.CAMERA_1_U);
+
+		// press space to start animation
+		if(animation){
+			Blocks.heliPathActive = true; // heli animation starts
+		}
+				
+		if(Blocks.camera_1_PathActive && Paths.CAMERA_1_U < 1.0f){ // if camera 1 path is active
+			Paths.CAMERA_1_U += Paths.getCamera1Speed();
+		}
 		
 		
-		
-//		getGlu().gluLookAt(	cam[0], cam[1], cam[2], target[0], target[1], target[2], 0, 1, 0);
-		getGlu().gluLookAt(	cam[0], cam[1], cam[2], 17.972, 2.302, 23.340, 0, 1, 0);
-		
+
+		getGlu().gluLookAt(	camPosition[0], camPosition[1], camPosition[2],
+							Paths.CAMERA_TARGET_1[0], Paths.CAMERA_TARGET_1[1], Paths.CAMERA_TARGET_1[2], 
+							0, 1, 0);
 		
 		// lightning stuff
 		gl.glEnable(GL.GL_LIGHTING);

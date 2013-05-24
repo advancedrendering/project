@@ -5,13 +5,8 @@ import java.util.ArrayList;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 
-import shadermanager.ShaderManager;
-
 import modelloader.OBJLoader;
-
-import com.sun.opengl.cg.CGcontext;
-import com.sun.opengl.cg.CGprogram;
-import com.sun.opengl.cg.CgGL;
+import shadermanager.ShaderManager;
 
 public abstract class SceneGraphNode {
 	

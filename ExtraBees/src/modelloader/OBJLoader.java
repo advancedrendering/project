@@ -154,6 +154,7 @@ public class OBJLoader {
 
 		boolean isLoaded = true;
 
+		@SuppressWarnings("unused")
 		int lineNumber = 0;
 		String line;
 		boolean isFirstCoord = true;

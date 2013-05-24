@@ -29,6 +29,8 @@ import com.sun.opengl.util.texture.TextureIO;
 
 public class AdR_ShadingTemplate extends JoglTemplate
 {
+	private static final long serialVersionUID = 1L;
+
 	// TODO: Assignment 3_3: create your own toon shader and load it here
 	protected static final String FRAGMENT_SHADER = "shader/fp_phongPerPixel.cg";
 

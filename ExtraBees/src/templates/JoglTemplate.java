@@ -36,11 +36,13 @@ import com.sun.opengl.util.GLUT;
 public class JoglTemplate extends Frame implements GLEventListener,
 		MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 {
+	private static final long serialVersionUID = 1L;
+
 	// rotation variables
 	private float view_rotx = 0.0f, view_roty = 0.0f, view_rotz = 0.0f;
 
 	// translation variables
-	private float view_transx = 0.0f, view_transy = 0.0f, view_transz = -10.0f;
+	private float view_transx = 0.0f, view_transy = 0.0f, view_transz = 0.0f;
 
 	// previous mouse x and y coordinates
 	private int prevMouseX, prevMouseY;
@@ -362,7 +364,7 @@ public class JoglTemplate extends Frame implements GLEventListener,
 			view_rotz = 0f;
 			view_transx = 0f;
 			view_transy = 0f;
-			view_transz = -10f;
+			view_transz = 0f;
 		}
 		// "up arrow" for zooming out
 		else if (e.getKeyCode() == KeyEvent.VK_UP)

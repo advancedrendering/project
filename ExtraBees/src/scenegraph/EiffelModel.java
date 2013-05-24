@@ -3,11 +3,6 @@ package scenegraph;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 
-import shadermanager.ShaderManager;
-
-import com.sun.opengl.cg.CGparameter;
-import com.sun.opengl.cg.CgGL;
-
 public class EiffelModel extends SceneGraphNode {
 
 	

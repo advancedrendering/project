@@ -1,15 +1,11 @@
 package scenegraph;
 
-import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 
 import particlesystem.Rain;
 
 import com.sun.opengl.cg.CGparameter;
-import com.sun.opengl.cg.CGprogram;
 import com.sun.opengl.cg.CgGL;
-
-import shadermanager.ShaderManager;
 
 public class SceneRoot extends SceneGraphNode{
 
@@ -49,8 +45,6 @@ public class SceneRoot extends SceneGraphNode{
 		this.addChild(rain);
 				
 		heli = new HeliModel(drawable, scale*0.2f);
-		heli.setTranslation(0f, 0.6f, 0f);
-		heli.setRotation(0, -100, 0);
 		this.addChild(heli);
 		
 		init(drawable);
@@ -66,10 +60,7 @@ public class SceneRoot extends SceneGraphNode{
 	}
 
 	@Override
-	public void init(GLAutoDrawable drawable) {
-		// get the gl object
-		GL gl = drawable.getGL();
-	}
+	public void init(GLAutoDrawable drawable) {}
 
 	@Override
 	public void bindParameters() {
@@ -85,5 +76,9 @@ public class SceneRoot extends SceneGraphNode{
 		CgGL.cgGLSetParameter1f(cgFogDensity, this.fogDensity);
 		CgGL.cgGLSetParameter3fv(cgFogColor, fogColor, 0);
 		drawable.getGL().glCallList(this.getObjectList());
+	}
+	
+	public HeliModel getHeli(){
+		return this.heli;
 	}
 }

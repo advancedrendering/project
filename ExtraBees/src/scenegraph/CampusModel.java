@@ -3,8 +3,6 @@ package scenegraph;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 
-import shadermanager.ShaderManager;
-
 public class CampusModel extends SceneGraphNode {
 
 	

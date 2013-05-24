@@ -1,6 +1,5 @@
 package particlesystem;
 
-import com.sun.opengl.util.texture.Texture;
 
 public class ParticleSystemSettings {
 	

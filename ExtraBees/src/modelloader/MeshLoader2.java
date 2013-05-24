@@ -45,6 +45,7 @@ public static int loadObj(GL gl, String fName, float scale)
 
 		try
 		{
+			@SuppressWarnings("resource")
 			BufferedReader br = new BufferedReader(new FileReader(file));
 
 			while ((line = br.readLine()) != null)
@@ -228,6 +229,7 @@ public static int loadObj(GL gl, String fName, float scale)
 
 		try
 		{
+			@SuppressWarnings("resource")
 			BufferedReader br = new BufferedReader(new FileReader(file));
 
 			while ((line = br.readLine()) != null)
