@@ -25,13 +25,11 @@ public class TableModel extends SceneGraphNode {
 //		glass.setTranslation(0.8f, 0.832f, 0);
 		this.addChild(glass);
 		
-
-		
 		eiffel = new EiffelModel(drawable, scale);
 		this.addChild(eiffel);
 		this.init(drawable);
-		this.setUse_vertex_shader(false);
-		this.setUse_frag_shader(false);
+		this.setVertexShaderEnabled(false);
+		this.setFragShaderEnabled(false);
 	}
 
 	@Override

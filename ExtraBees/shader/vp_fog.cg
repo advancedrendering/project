@@ -3,12 +3,14 @@ struct vertexIN
 {
   float4 position	: POSITION;
   float3 normal		: NORMAL;
+  float2 decalCoords : TEXCOORD0;
 };
 
 // vertex program output
 struct vertexOUT
 {
   float4 cameraSpacePos : POSITION;
+  float2 decalCoords : TEXCOORD0;
   float3 objectSpacePos : TEXCOORD1;
   float3 normal   : TEXCOORD2;
   float fogExponent : TEXCOORD3;
@@ -33,6 +35,9 @@ vertexOUT main(vertexIN vIn, uniform float fogDensity)
   
   // project point onto screen
   vOut.cameraSpacePos = eyePosition;
+  
+  //hand texture coordinates over to fragment processor.
+  vOut.decalCoords = vIn.decalCoords;
   
   return vOut;
 }

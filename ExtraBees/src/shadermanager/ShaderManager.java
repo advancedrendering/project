@@ -3,6 +3,7 @@ package shadermanager;
 import java.util.HashMap;
 
 import com.sun.opengl.cg.CGcontext;
+import com.sun.opengl.cg.CGparameter;
 import com.sun.opengl.cg.CGprogram;
 import com.sun.opengl.cg.CgGL;
 
@@ -65,7 +66,7 @@ public class ShaderManager {
 	// fields to hold the currently active shader programs.
 	private String cgVertexProgName = "", cgFragmentProgName = "";
 
-	private HashMap<String, CGprogram> vpshaderprograms = null,
+	private HashMap<String, Shader> vpshaderprograms = null,
 			fpshaderprograms = null;
 
 	// field to hold the default shader programs.
@@ -89,47 +90,47 @@ public class ShaderManager {
 
 	// flags which determine whether the default or any other shader program
 	// should be executed or not.
-	private boolean use_vertex_shader = true;
+	private boolean vertexShaderEnabled = true;
 
 	/**
 	 * @return Whether any vertex shader should be used or not.
 	 */
-	public boolean isUse_vertex_shader() {
-		return use_vertex_shader;
+	public boolean isVertexShaderEnabled() {
+		return vertexShaderEnabled;
 	}
 
 	/**
 	 * @param Sets
-	 *            whether any vertex shader should be used.
+	 * @param vertexShaderEnabled Determines whether any vertex shader should be used.
 	 */
-	public void setUse_vertex_shader(boolean use_vertex_shader) {
-		if (use_vertex_shader == false){
+	public void setVertexShaderEnabled(boolean vertexShaderEnabled) {
+		if (vertexShaderEnabled == false){
 			// disable profile
 			CgGL.cgGLDisableProfile(cgVertexProfile);
 		}
-		this.use_vertex_shader = use_vertex_shader;
+		this.vertexShaderEnabled = vertexShaderEnabled;
 	}
 
 	/**
 	 * @return Whether any fragment shader should be used or not.
 	 */
-	public boolean isUse_frag_shader() {
-		return use_frag_shader;
+	public boolean isFragShaderEnabled() {
+		return fragShaderEnabled;
 	}
 
 	/**
 	 * @param Sets
-	 *            whether any fragment shader should be used.
+	 * @param fragShaderEnabled Determines whether any fragment shader should be used.
 	 */
-	public void setUse_frag_shader(boolean use_frag_shader) {
-		if (use_frag_shader == false){
+	public void setFragShaderEnabled(boolean fragShaderEnabled) {
+		if (fragShaderEnabled == false){
 			// disable profile
 			CgGL.cgGLDisableProfile(cgFragProfile);
 		}
-		this.use_frag_shader = use_frag_shader;
+		this.fragShaderEnabled = fragShaderEnabled;
 	}
 
-	private boolean use_frag_shader = true;
+	private boolean fragShaderEnabled = true;
 
 	private int cgVertexProfile;
 
@@ -149,17 +150,13 @@ public class ShaderManager {
 		return cgContext;
 	}
 
-	public String getBindedVertexProg() {
-		return cgVertexProgName;
-	}
-
 	public void bindVP() throws IllegalArgumentException {
 		// disable profile
 		CgGL.cgGLDisableProfile(cgVertexProfile);
-		if (this.use_vertex_shader == true) {
+		if (this.vertexShaderEnabled == true) {
 			// bind the new one
 			CgGL.cgGLBindProgram(this.vpshaderprograms
-					.get(this.cgVertexProgName));
+					.get(this.cgVertexProgName).getShaderProg());
 			// enable profile
 			CgGL.cgGLEnableProfile(cgVertexProfile);
 		}
@@ -169,11 +166,11 @@ public class ShaderManager {
 		if (this.vpshaderprograms.containsKey(cgVPName)) {
 			// disable profile
 			CgGL.cgGLDisableProfile(cgVertexProfile);
-			if (this.use_vertex_shader == true) {
+			if (this.vertexShaderEnabled == true) {
 				// enable profile
 				CgGL.cgGLEnableProfile(cgVertexProfile);
 				// bind the new one
-				CgGL.cgGLBindProgram(this.vpshaderprograms.get(cgVPName));
+				CgGL.cgGLBindProgram(this.vpshaderprograms.get(cgVPName).getShaderProg());
 			}
 		} else {
 			throw new IllegalArgumentException("The shader program " + cgVPName
@@ -181,27 +178,87 @@ public class ShaderManager {
 		}
 	}
 
-	public String getBindedFragProg() {
-		return cgFragmentProgName;
+	
+	/**
+	 * Get the currently loaded fragment shader program.
+	 * @return Currently loaded fragment shader program.
+	 */
+	public CGprogram getBindedFragProg(){
+		return this.fpshaderprograms.get(this.getDefaultFragmentProgName()).getShaderProg();
 	}
 	
-	public CGprogram getBindedFragProg(String name){
-		return this.fpshaderprograms.get(name);
-	}
-	
+	/**
+	 * Get the currently loaded vertex shader program.
+	 * @return Currently loaded vertex shader program.
+	 */
 	public CGprogram getBindedVertexProg(String name){
-		return this.vpshaderprograms.get(name);
+		return this.vpshaderprograms.get(this.getDefaultVertexProgName()).getShaderProg();
+	}
+	
+	/**
+	 * Get fragment shader program by name.
+	 * @param name Name of fragment shader.
+	 * @return Fragment shader.
+	 */
+	public CGprogram getFragProg(String name){
+		return this.fpshaderprograms.get(name).getShaderProg();
+	}
+	
+	/**
+	 * Get vertex shader program by name.
+	 * @param name Name of vertex shader.
+	 * @return Vertex shader.
+	 */
+	public CGprogram getVertexProg(String name){
+		return this.vpshaderprograms.get(name).getShaderProg();
+	}
+	
+	/**
+	 * Get parameter of vertex shader program by name.
+	 * @param shader_name Name of vertex shader.
+	 * @param param_name Name of parameter.
+	 * @return Vertex shader parameter.
+	 */
+	public CGparameter getVertexShaderParam(String shader_name, String param_name){
+		return this.vpshaderprograms.get(shader_name).getParameter(param_name);
+	}
+	
+	/**
+	 * Get parameter of fragment shader program by name.
+	 * @param shader_name Name of fragment shader.
+	 * @param param_name Name of parameter.
+	 * @return Fragment shader parameter.
+	 */
+	public CGparameter getFragShaderParam(String shader_name, String param_name){
+		return this.fpshaderprograms.get(shader_name).getParameter(param_name);
+	}
+	
+	/**
+	 * Add parameter of vertex shader program by name.
+	 * @param shader_name Name of vertex shader.
+	 * @param param_name Name of parameter to be added.
+	 */
+	public void addVertexShaderParam(String shader_name, String param_name){
+		this.vpshaderprograms.get(shader_name).addParameter(param_name);
+	}
+	
+	/**
+	 * Add parameter of fragment shader program by name.
+	 * @param shader_name Name of fragment shader.
+	 * @param param_name Name of parameter to be added.
+	 */
+	public void addFragShaderParam(String shader_name, String param_name){
+		this.fpshaderprograms.get(shader_name).addParameter(param_name);
 	}
 
 	public void bindFP() throws IllegalArgumentException {
 		// disable profile
 		CgGL.cgGLDisableProfile(cgFragProfile);
-		if (this.use_frag_shader == true) {
+		if (this.fragShaderEnabled == true) {
 			// bind the new one
-			CgGL.cgGLBindProgram(this.fpshaderprograms.get(this.cgFragmentProgName));
+			CgGL.cgGLBindProgram(this.fpshaderprograms.get(this.cgFragmentProgName).getShaderProg());
 			// enable profile
 			CgGL.cgGLEnableProfile(cgFragProfile);
-
 		}
 	}
 
@@ -209,11 +266,11 @@ public class ShaderManager {
 		if (this.fpshaderprograms.containsKey(cgFPName)) {
 			// disable profile
 			CgGL.cgGLDisableProfile(cgFragProfile);
-			if (this.use_frag_shader == true) {
+			if (this.fragShaderEnabled == true) {
 				// enable profile
 				CgGL.cgGLEnableProfile(cgFragProfile);
 				// bind the new one
-				CgGL.cgGLBindProgram(this.fpshaderprograms.get(cgFPName));
+				CgGL.cgGLBindProgram(this.fpshaderprograms.get(cgFPName).getShaderProg());
 			}
 		} else {
 			throw new IllegalArgumentException("The shader program " + cgFPName
@@ -226,8 +283,8 @@ public class ShaderManager {
 	 */
 	private ShaderManager() {
 		// TODO: Handling of the default shader programs.
-		this.vpshaderprograms = new HashMap<String, CGprogram>();
-		this.fpshaderprograms = new HashMap<String, CGprogram>();
+		this.vpshaderprograms = new HashMap<String, Shader>();
+		this.fpshaderprograms = new HashMap<String, Shader>();
 
 		// create context
 		this.cgContext = CgGL.cgCreateContext();
@@ -247,17 +304,21 @@ public class ShaderManager {
 		CgGL.cgGLSetOptimalOptions(cgFragProfile);
 
 		// load default shader programs
-		CGprogram loc_vertex_shader = ShaderManager.loadShader(this.cgContext,
+		CGprogram loc_vertex_shader_prog = ShaderManager.loadShader(this.cgContext,
 				cgVertexProfile, ShaderManager.defaultInitialVPPath);
-		CGprogram loc_fragment_shader = ShaderManager.loadShader(
+		CGprogram loc_fragment_shader_prog = ShaderManager.loadShader(
 				this.cgContext, cgFragProfile,
-				ShaderManager.defaultInitialFPPath);
+				ShaderManager.defaultInitialFPPath);		
 
+		//create default vertex shader
+		Shader loc_vertex_shader = new Shader(ShaderManager.defaultInitialVPName, loc_vertex_shader_prog);
+		
+		//create default fragment shader
+		Shader loc_frag_shader = new Shader(ShaderManager.defaultInitialFPName, loc_fragment_shader_prog);
+		
 		// put them in the hashtable
-		this.vpshaderprograms.put(ShaderManager.defaultInitialVPName,
-				loc_vertex_shader);
-		this.fpshaderprograms.put(ShaderManager.defaultInitialFPName,
-				loc_fragment_shader);
+		this.vpshaderprograms.put(ShaderManager.defaultInitialVPName, loc_vertex_shader);
+		this.fpshaderprograms.put(ShaderManager.defaultInitialFPName, loc_frag_shader);
 
 		// set currently loaded shader programs
 		cgVertexProgName = ShaderManager.defaultInitialVPName;
@@ -272,8 +333,8 @@ public class ShaderManager {
 		CgGL.cgGLEnableProfile(cgFragProfile);
 
 		// bind the programs i.e. load them.
-		CgGL.cgGLBindProgram(loc_vertex_shader);
-		CgGL.cgGLBindProgram(loc_fragment_shader);
+		CgGL.cgGLBindProgram(loc_vertex_shader_prog);
+		CgGL.cgGLBindProgram(loc_fragment_shader_prog);
 	}
 
 	/**
@@ -289,7 +350,9 @@ public class ShaderManager {
 	public void addVertexShaderProgram(String name, CGprogram shaderprogram)
 			throws IllegalArgumentException {
 		if (!this.vpshaderprograms.containsKey(name)) {
-			this.vpshaderprograms.put(name, shaderprogram);
+			//create a new vertex shader.
+			Shader loc_vertex_shader = new Shader(name, shaderprogram);
+			this.vpshaderprograms.put(name, loc_vertex_shader);
 		} else {
 			throw new IllegalArgumentException("The vertex shader program "
 					+ name + " was already loaded.");
@@ -309,7 +372,9 @@ public class ShaderManager {
 	public void addFragmentShaderProgram(String name, CGprogram shaderprogram)
 			throws IllegalArgumentException {
 		if (!this.fpshaderprograms.containsKey(name)) {
-			this.fpshaderprograms.put(name, shaderprogram);
+			//create a new fragment shader
+			Shader loc_frag_shader = new Shader(name, shaderprogram);
+			this.fpshaderprograms.put(name, loc_frag_shader);
 		} else {
 			throw new IllegalArgumentException("The fragment shader program "
 					+ name + " was already loaded.");
@@ -343,7 +408,7 @@ public class ShaderManager {
 				this.cgVertexProgName = this.defaultVertexProgName;
 				// bind the default
 				CgGL.cgGLBindProgram(this.vpshaderprograms
-						.get(this.cgVertexProgName));
+						.get(this.cgVertexProgName).getShaderProg());
 				// enable profile
 				CgGL.cgGLEnableProfile(cgVertexProfile);
 			}
@@ -382,7 +447,7 @@ public class ShaderManager {
 				this.cgFragmentProgName = this.defaultFragmentProgName;
 				// bind the default
 				CgGL.cgGLBindProgram(this.fpshaderprograms
-						.get(this.cgFragmentProgName));
+						.get(this.cgFragmentProgName).getShaderProg());
 				// enable profile
 				CgGL.cgGLEnableProfile(cgFragProfile);
 			}

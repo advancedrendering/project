@@ -40,8 +40,8 @@ public abstract class ParticleSystem extends SceneGraphNode {
 			this.inactive_particles.add(loc_par);
 		}
 		
-		this.setUse_frag_shader(false);
-		this.setUse_vertex_shader(false);
+		this.setFragShaderEnabled(false);
+		this.setVertexShaderEnabled(false);
 	}
 	
 	public abstract ParticleSystemSettings initializeSettings();

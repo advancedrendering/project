@@ -1,6 +1,7 @@
 // data interpolated from vertex program output
 struct vertexIN
 {
+  float2 texCoord : TEXCOORD0;
   float3 objectSpacePos : TEXCOORD1;
   float3 normal   : TEXCOORD2;
   float fogExponent : TEXCOORD3;
@@ -19,7 +20,7 @@ uniform float4 MaterialSpecular : state.material.specular;
 uniform float MaterialShininess : state.material.shininess;
 
 
-float4 main(vertexIN vIn, uniform float3 fogColor) : COLOR
+float4 main(vertexIN vIn, uniform float3 fogColor, uniform sampler2D decal) : COLOR
 {
   //light calculation is done in object space (normals) 
   float3 P = vIn.objectSpacePos.xyz;
@@ -49,11 +50,16 @@ float4 main(vertexIN vIn, uniform float3 fogColor) : COLOR
   float4 loc_color;
   loc_color = ambient0 + diffuse0 + specular0;
   
+  float4 decalColor;
+  decalColor = tex2D(decal, vIn.texCoord);
+  
+  float4 texColor = loc_color * decalColor;
+  
   float fogFactor = exp2(-abs(vIn.fogExponent));
   
   //float3 fog_color = float3(0.5, 0.5, 0.5);
   float4 color;
-  color.xyz = lerp(fogColor, vIn.color.xyz, fogFactor);  
+  color.xyz = lerp(fogColor, texColor, fogFactor);  
   color.w = vIn.color.w;
   return color;  
 }

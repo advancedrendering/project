@@ -10,8 +10,8 @@ public class TempleModel extends SceneGraphNode {
 		
 		table = new TableModel(drawable, scale);
 		this.addChild(table);
-		this.setUse_frag_shader(false);
-		this.setUse_vertex_shader(false);
+		this.setFragShaderEnabled(true);
+		this.setVertexShaderEnabled(true);
 
 	}
 
@@ -35,6 +35,8 @@ public class TempleModel extends SceneGraphNode {
 	
 	@Override
 	public void draw(GLAutoDrawable drawable) {
+		this.getShaderManager().bindVP("fog");
+		this.getShaderManager().bindFP("fog");
 		drawable.getGL().glCallList(this.getObjectList());
 	}
 }

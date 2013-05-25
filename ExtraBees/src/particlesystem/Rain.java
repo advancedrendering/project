@@ -36,8 +36,8 @@ public class Rain extends ParticleSystem {
 			settings.point_size = point_size_arg.get(0);
 		}
 		
-		this.setUse_frag_shader(false);
-		this.setUse_vertex_shader(false);
+		this.setFragShaderEnabled(false);
+		this.setVertexShaderEnabled(false);
 	}
 
 	@Override

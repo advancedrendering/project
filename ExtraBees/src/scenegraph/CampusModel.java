@@ -3,6 +3,8 @@ package scenegraph;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 
+import com.sun.opengl.cg.CgGL;
+
 import shadermanager.ShaderManager;
 
 public class CampusModel extends SceneGraphNode {
@@ -31,8 +33,8 @@ public class CampusModel extends SceneGraphNode {
 		lamp2.setRotation(0, 0, 0);
 		this.addChild(lamp2);
 		this.init(drawable);
-		this.setUse_vertex_shader(true);
-		this.setUse_frag_shader(true);
+		this.setVertexShaderEnabled(true);
+		this.setFragShaderEnabled(true);
 
 	}
 

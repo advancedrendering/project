@@ -31,35 +31,35 @@ public abstract class SceneGraphNode {
 	}
 	
 	//flags which determine whether SceneGraphNode uses a shader or not.
-	private boolean use_vertex_shader = true;
-	private boolean use_frag_shader = true;
+	private boolean vertexShaderEnabled = true;
+	private boolean fragShaderEnabled = true;
 	
 	/**
 	 * @return Returns whether SceneGraphNode uses any vertex shader program.
 	 */
-	public boolean isUse_vertex_shader() {
-		return use_vertex_shader;
+	public boolean isVertexShaderEnable() {
+		return vertexShaderEnabled;
 	}
 
 	/**
 	 * @param Sets whether SceneGraphNode uses any vertex shader program.
 	 */
-	public void setUse_vertex_shader(boolean use_vertex_shader) {
-		this.use_vertex_shader = use_vertex_shader;
+	public void setVertexShaderEnabled(boolean vertexShaderEnabled) {
+		this.vertexShaderEnabled = vertexShaderEnabled;
 	}
 
 	/**
 	 * @return Returns whether SceneGraphNode uses any fragment shader program.
 	 */
-	public boolean isUse_frag_shader() {
-		return use_frag_shader;
+	public boolean isFragShaderEnabled() {
+		return fragShaderEnabled;
 	}
 
 	/**
 	 * @param Sets whether SceneGraphNode uses any fragment shader program.
 	 */
-	public void setUse_frag_shader(boolean use_frag_shader) {
-		this.use_frag_shader = use_frag_shader;
+	public void setFragShaderEnabled(boolean fragShaderEnabled) {
+		this.fragShaderEnabled = fragShaderEnabled;
 	}
 
 	protected float[] translation = new float[3],
@@ -131,16 +131,16 @@ public abstract class SceneGraphNode {
 		gl.glRotatef(rotation[1], 0, 1, 0);
 		gl.glRotatef(rotation[2], 0, 0, 1);
 		//enable or disable shader usage depending on the fields set
-		this.getShaderManager().setUse_vertex_shader(this.isUse_vertex_shader());
+		this.getShaderManager().setVertexShaderEnabled(this.isVertexShaderEnable());
 		//bind default shader. (if no shader is used then nothing will happen)
 		this.getShaderManager().bindVP();
 		//enable or disable shader usage depending on the fields set
-		this.getShaderManager().setUse_frag_shader(this.isUse_frag_shader());
+		this.getShaderManager().setFragShaderEnabled(this.isFragShaderEnabled());
 		//bind default shader. (if no shader is used then nothing will happen)
 		this.getShaderManager().bindFP();
 		this.draw(drawable);// draw the current object
-		this.getShaderManager().setUse_vertex_shader(false);
-		this.getShaderManager().setUse_frag_shader(false);
+		this.getShaderManager().setVertexShaderEnabled(false);
+		this.getShaderManager().setFragShaderEnabled(false);
 		for(SceneGraphNode child : children){ // render every child
 			child.render(drawable);
 		}

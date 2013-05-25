@@ -27,6 +27,7 @@ public class SceneRoot extends SceneGraphNode{
 	
 	private CGparameter cgFogColor = null;
 	private float[] fogColor = {0.7f, 0.7f, 0.7f};
+	private CGparameter cgFogTex2DSampler = null;
 	
 	private SceneRoot(GLAutoDrawable drawable) {
 		super(drawable);
@@ -34,9 +35,9 @@ public class SceneRoot extends SceneGraphNode{
 		this.getShaderManager().loadFragShader("shader/toon_shading.cg", "toon");
 		this.getShaderManager().loadFragShader("shader/fp_fog.cg", "fog");
 		this.getShaderManager().loadVertexShader("shader/vp_fog.cg", "fog");
-				
-		this.getShaderManager().setUse_vertex_shader(true);
-		this.getShaderManager().setUse_frag_shader(true);
+		
+		this.getShaderManager().setVertexShaderEnabled(true);
+		this.getShaderManager().setFragShaderEnabled(true);
 		
 		
 		skydome = new SkyBox(drawable, "models/skydome", scale);
@@ -73,8 +74,10 @@ public class SceneRoot extends SceneGraphNode{
 
 	@Override
 	public void bindParameters() {
-		this.cgFogDensity = CgGL.cgGetNamedParameter(this.getShaderManager().getBindedVertexProg("fog"), "fogDensity");
-		this.cgFogColor = CgGL.cgGetNamedParameter(this.getShaderManager().getBindedFragProg("fog"), "fogColor");
+		this.getShaderManager().addFragShaderParam("phong", "decal");
+		this.getShaderManager().addVertexShaderParam("fog", "fogDensity");
+		this.getShaderManager().addFragShaderParam("fog", "fogColor");
+		this.getShaderManager().addFragShaderParam("fog", "decal");
 	}
 
 	@Override
@@ -82,8 +85,8 @@ public class SceneRoot extends SceneGraphNode{
 
 	@Override
 	public void draw(GLAutoDrawable drawable) {
-		CgGL.cgGLSetParameter1f(cgFogDensity, this.fogDensity);
-		CgGL.cgGLSetParameter3fv(cgFogColor, fogColor, 0);
+		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("fog", "fogDensity"), this.fogDensity);
+		CgGL.cgGLSetParameter3fv(this.getShaderManager().getFragShaderParam("fog", "fogColor"), this.fogColor, 0);
 		drawable.getGL().glCallList(this.getObjectList());
 	}
 }
