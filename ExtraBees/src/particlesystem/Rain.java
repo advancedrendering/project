@@ -8,6 +8,8 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLException;
 
+import templates.Blocks;
+
 import com.sun.opengl.util.texture.Texture;
 import com.sun.opengl.util.texture.TextureIO;
 
@@ -97,71 +99,73 @@ public class Rain extends ParticleSystem {
 	
 	@Override
 	public void draw(GLAutoDrawable drawable){
-		// get the gl object
-		GL gl = drawable.getGL();
-		
-		if (lastTime  == -1){
-			lastTime = (float)System.nanoTime() / 1000000.0f ;
-		}
-		else{			
-			float current_time = (float)System.nanoTime() / 1000000.0f;
-			float elapsed_time = current_time - lastTime;
-			lastTime = current_time;
-			//update the particle system
-			update(elapsed_time);
-			//draw particles
+		if(Blocks.rain){
+			// get the gl object
+			GL gl = drawable.getGL();
 			
-			//use point sprites
+			if (lastTime  == -1){
+				lastTime = (float)System.nanoTime() / 1000000.0f ;
+			}
+			else{			
+				float current_time = (float)System.nanoTime() / 1000000.0f;
+				float elapsed_time = current_time - lastTime;
+				lastTime = current_time;
+				//update the particle system
+				update(elapsed_time);
+				//draw particles
+				
+				//use point sprites
+				
+				FloatBuffer buffer_sizes = FloatBuffer.allocate(2);
+				gl.glGetFloatv(GL.GL_ALIASED_POINT_SIZE_RANGE, buffer_sizes);
+				
+				gl.glEnable(GL.GL_TEXTURE_2D);
+				
+				this.raindrop.bind();
+				
+				//Enable blending and set for particles
+				gl.glEnable(GL.GL_BLEND);
+				gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE);
 			
-			FloatBuffer buffer_sizes = FloatBuffer.allocate(2);
-			gl.glGetFloatv(GL.GL_ALIASED_POINT_SIZE_RANGE, buffer_sizes);
-			
-			gl.glEnable(GL.GL_TEXTURE_2D);
-			
-			this.raindrop.bind();
-			
-			//Enable blending and set for particles
-			gl.glEnable(GL.GL_BLEND);
-			gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE);
-		
-			gl.glEnable(GL.GL_POINT_SPRITE_ARB);
-			float[] quadratic = {1.0f, 0.0f, 0.01f};
-			FloatBuffer buffer_quadratic = FloatBuffer.wrap(quadratic);
-			
-			gl.glPointParameterfvARB(GL.GL_POINT_DISTANCE_ATTENUATION_ARB, buffer_quadratic);
-			gl.glPointParameterf(GL.GL_POINT_FADE_THRESHOLD_SIZE_ARB, 60.0f);
-			FloatBuffer point_size_arg = FloatBuffer.allocate(1);
-			gl.glGetFloatv(GL.GL_POINT_SIZE_MAX_ARB, point_size_arg);
-			gl.glPointSize(settings.point_size);
-			gl.glPointParameterfARB(GL.GL_POINT_SIZE_MAX_ARB, point_size_arg.get(0));
-			gl.glPointParameterfARB(GL.GL_POINT_SIZE_MIN_ARB, 0.0f);
-			
-			//Tell it the max and min sizes we can use using our pre-filled array.
-			gl.glPointParameterfARB(GL.GL_POINT_SIZE_MIN_ARB, buffer_sizes.get(0) );
-			gl.glPointParameterfARB(GL.GL_POINT_SIZE_MAX_ARB, buffer_sizes.get(1) );
-			
-			//Tell OGL to replace the coordinates upon drawing.
-			gl.glTexEnvi(GL.GL_POINT_SPRITE_ARB, GL.GL_COORD_REPLACE_ARB, GL.GL_TRUE);
-					
-			//Turn off depth masking so particles in front will not occlude particles behind them.
-			gl.glDepthMask(false);
-			
-			gl.glEnable(GL.GL_COLOR_MATERIAL);
-			//make green rain :-)
-			gl.glColor3f(0.0f, 1.0f, 0.0f);
-			
-			gl.glBegin(GL.GL_POINTS);
-				for (Particle par : this.active_particles){
-					gl.glColor3fv(par.getColor(), 0); //last parameter (i.e. 0) is offset
-					float[] loc_pos = par.getPosition();
-					gl.glVertex3f(loc_pos[0],loc_pos[1] , loc_pos[2]);
-				}
-			gl.glEnd();
-			gl.glDepthMask(true);	
-			gl.glDisable(GL.GL_POINT_SPRITE_ARB);
-			gl.glDisable(GL.GL_TEXTURE_2D);
-			gl.glDisable(GL.GL_BLEND);
-			gl.glDisable(GL.GL_COLOR_MATERIAL);
+				gl.glEnable(GL.GL_POINT_SPRITE_ARB);
+				float[] quadratic = {1.0f, 0.0f, 0.01f};
+				FloatBuffer buffer_quadratic = FloatBuffer.wrap(quadratic);
+				
+				gl.glPointParameterfvARB(GL.GL_POINT_DISTANCE_ATTENUATION_ARB, buffer_quadratic);
+				gl.glPointParameterf(GL.GL_POINT_FADE_THRESHOLD_SIZE_ARB, 60.0f);
+				FloatBuffer point_size_arg = FloatBuffer.allocate(1);
+				gl.glGetFloatv(GL.GL_POINT_SIZE_MAX_ARB, point_size_arg);
+				gl.glPointSize(settings.point_size);
+				gl.glPointParameterfARB(GL.GL_POINT_SIZE_MAX_ARB, point_size_arg.get(0));
+				gl.glPointParameterfARB(GL.GL_POINT_SIZE_MIN_ARB, 0.0f);
+				
+				//Tell it the max and min sizes we can use using our pre-filled array.
+				gl.glPointParameterfARB(GL.GL_POINT_SIZE_MIN_ARB, buffer_sizes.get(0) );
+				gl.glPointParameterfARB(GL.GL_POINT_SIZE_MAX_ARB, buffer_sizes.get(1) );
+				
+				//Tell OGL to replace the coordinates upon drawing.
+				gl.glTexEnvi(GL.GL_POINT_SPRITE_ARB, GL.GL_COORD_REPLACE_ARB, GL.GL_TRUE);
+						
+				//Turn off depth masking so particles in front will not occlude particles behind them.
+				gl.glDepthMask(false);
+				
+				gl.glEnable(GL.GL_COLOR_MATERIAL);
+				//make green rain :-)
+				gl.glColor3f(0.0f, 1.0f, 0.0f);
+				
+				gl.glBegin(GL.GL_POINTS);
+					for (Particle par : this.active_particles){
+						gl.glColor3fv(par.getColor(), 0); //last parameter (i.e. 0) is offset
+						float[] loc_pos = par.getPosition();
+						gl.glVertex3f(loc_pos[0],loc_pos[1] , loc_pos[2]);
+					}
+				gl.glEnd();
+				gl.glDepthMask(true);	
+				gl.glDisable(GL.GL_POINT_SPRITE_ARB);
+				gl.glDisable(GL.GL_TEXTURE_2D);
+				gl.glDisable(GL.GL_BLEND);
+				gl.glDisable(GL.GL_COLOR_MATERIAL);
+			}
 		}
 	}
 }

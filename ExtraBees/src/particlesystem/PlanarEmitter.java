@@ -1,6 +1,5 @@
 package particlesystem;
 
-import java.util.ArrayList;
 
 public class PlanarEmitter extends ParticleEmitter {
 
