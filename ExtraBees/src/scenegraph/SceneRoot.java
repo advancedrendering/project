@@ -50,8 +50,6 @@ public class SceneRoot extends SceneGraphNode{
 		this.addChild(rain);
 				
 		heli = new HeliModel(drawable, scale*0.2f);
-		heli.setTranslation(0f, 0.6f, 0f);
-		heli.setRotation(0, -100, 0);
 		this.addChild(heli);
 		
 		init(drawable);

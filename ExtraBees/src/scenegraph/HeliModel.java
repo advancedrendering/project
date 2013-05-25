@@ -5,6 +5,10 @@ import java.io.File;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 
+import templates.BezierCurve;
+import templates.Blocks;
+import templates.Paths;
+
 
 import com.sun.opengl.util.texture.TextureData;
 import com.sun.opengl.util.texture.TextureIO;
@@ -41,9 +45,33 @@ public class HeliModel extends SceneGraphNode {
 
 	@Override
 	public void animate(GLAutoDrawable drawable) {
-		drawable.getGL().glTranslatef(0f,
-				(float)(this.getTranslation()[1]+(0.01*Math.sin(rot*0.005))),
-				0f);
+
+		float[] heliPosition = BezierCurve.getCoordsAt(Paths.HELI_1,Paths.HELI_1_U);
+		float[] heliRotation = {0.0f,0.0f,0.0f};
+		float[] heliTarget = {Paths.CAMERA_1[0]-heliPosition[0],
+							  (Paths.CAMERA_1[1]-0.5f)-heliPosition[1],
+							  Paths.CAMERA_1[2]-heliPosition[2]};
+
+		if(Blocks.heliPathActive){
+			if(Paths.HELI_1_U >=0.15f){
+				Blocks.rain = true;
+			}
+			if(Paths.HELI_1_U >=0.4f){
+					Blocks.heliPathActive = false;
+					Blocks.camera_1_PathActive = true;
+			}else{
+				heliRotation[0] = -(float)Math.toDegrees(Math.atan2((double) heliTarget[1],(double) heliTarget[2]));
+				double sqrt = Math.sqrt((Math.pow((double) heliTarget[1], 2))+(Math.pow((double) heliTarget[2], 2)));
+				heliRotation[1] =  (float)Math.toDegrees(Math.atan2((double) heliTarget[0],sqrt));
+				heliRotation[2] = 180f;
+				Paths.HELI_1_U += Paths.getHeliSpeed();
+			}
+		}
+
+		this.setRotation(heliRotation);
+		this.setTranslation(heliPosition);
+
+
 		rot = rot > Integer.MAX_VALUE ? 0 : rot+30;
 	}
 	
