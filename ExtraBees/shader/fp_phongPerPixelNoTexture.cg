@@ -19,7 +19,7 @@ uniform float4 MaterialSpecular : state.material.specular;
 uniform float MaterialShininess : state.material.shininess;
 
 
-float4 main(vertexIN vIn, uniform sampler2D decal) : COLOR
+float4 main(vertexIN vIn) : COLOR
 {
   //light calculation is done in object space (normals) 
   float3 P = vIn.objectSpacePos.xyz;
@@ -49,10 +49,5 @@ float4 main(vertexIN vIn, uniform sampler2D decal) : COLOR
   float4 color;
   color = ambient0 + diffuse0 + specular0;  
   
-  float4 decalColor;
-  decalColor = tex2D(decal, vIn.texCoord);
-  
-  float4 texColor = color * decalColor;
-
-  return texColor;  
+  return color; 
 }

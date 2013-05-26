@@ -60,6 +60,6 @@ float4 main(vertexIN vIn, uniform float3 fogColor, uniform sampler2D decal) : CO
   //float3 fog_color = float3(0.5, 0.5, 0.5);
   float4 color;
   color.xyz = lerp(fogColor, texColor, fogFactor);  
-  color.w = vIn.color.w;
+
   return color;  
 }
