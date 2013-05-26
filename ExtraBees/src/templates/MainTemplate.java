@@ -116,45 +116,15 @@ public class MainTemplate extends JoglTemplate {
 		// lightning stuff
 		gl.glEnable(GL.GL_LIGHTING);
 		gl.glEnable(GL.GL_LIGHT0);
-		gl.glEnable(GL.GL_LIGHT1);
 
 		// set light properties
 		gl.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, MOVING_LIGHT_ADS, 0);
 		gl.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, MOVING_LIGHT_ADS, 4);
 		gl.glLightfv(GL.GL_LIGHT0, GL.GL_SPECULAR, MOVING_LIGHT_ADS, 8);
 
-		// set light properties
-		gl.glLightfv(GL.GL_LIGHT1, GL.GL_AMBIENT, MOVING_LIGHT_ADS, 0);
-		gl.glLightfv(GL.GL_LIGHT1, GL.GL_DIFFUSE, MOVING_LIGHT_ADS, 4);
-		gl.glLightfv(GL.GL_LIGHT1, GL.GL_SPECULAR, MOVING_LIGHT_ADS, 8);
-
-		// calculate light position
-		float dLightHeight = 5.0f;
-		double dLightRadius = 5.0d;
-		float[] lightPos = new float[] {
-				(float) (dLightRadius * Math
-						.cos(System.currentTimeMillis() * 3.14 / 4000.0)),
-				(float) (dLightRadius * Math
-						.sin(System.currentTimeMillis() * 3.14 / 4000.0)), dLightHeight,
-				1.0f };
-		float[] lightPos_Cam = new float[] { 0f, 5f, -5f, 1f };
+		float[] lightPos = new float[] { 10f, 20f, 10f, 0f };
 		gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, lightPos, 0);
-		gl.glLightfv(GL.GL_LIGHT1, GL.GL_POSITION, lightPos_Cam, 0);
 
-		// draw light as sphere (without shader)
-		gl.glPushMatrix();
-		gl.glTranslatef(lightPos[0], lightPos[1], lightPos[2]);
-		gl.glColor3f(1f, 1f, 1f);
-		getGlu().gluSphere(getGlu().gluNewQuadric(), 0.3, 10, 10);
-		gl.glPopMatrix();
-
-		// draw light as sphere (without shader)
-		gl.glPushMatrix();
-		gl.glTranslatef(lightPos_Cam[0], lightPos_Cam[1], lightPos_Cam[2]);
-		gl.glColor3f(1f, 1f, 1f);
-		getGlu().gluSphere(getGlu().gluNewQuadric(), 0.3, 10, 10);
-		gl.glPopMatrix();
-		
 		SceneRoot.getInstance(drawable).render(drawable);
 
 		gl.glPopMatrix();

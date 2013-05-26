@@ -1,13 +1,28 @@
+newmtl blinn1SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd heli_color.png
+Ni 1.00
+Ks 0.50 0.50 0.50
 newmtl initialShadingGroup
 illum 4
-Kd 0.50 0.50 0.50
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd Heli_rotor_top_rotor_top_color.png
+Ni 1.00
+newmtl lambert2SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd seatShape_color.png
+Ni 1.00
+newmtl lambert3SG
+illum 4
+Kd 0.83 1.00 1.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 Ni 1.00
-newmtl phongE1SG
-illum 4
-Kd 0.76 1.00 1.00
-Ka 0.26 0.26 0.26
-Tf 1.00 1.00 1.00
-Ni 1.00
-Ks 0.06 0.53 0.57
