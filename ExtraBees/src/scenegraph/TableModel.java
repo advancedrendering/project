@@ -34,18 +34,7 @@ public class TableModel extends SceneGraphNode {
 	}
 
 	@Override
-	public void init(GLAutoDrawable drawable) {
-		try {
-			tex = TextureIO.newTexture(new File("models/baked-baked_blinn1SG_pCube1SG-pCube1.jpg"),false);
-		} catch (GLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch(IOException e){
-			e.printStackTrace();
-		}
-
-	}
+	public void init(GLAutoDrawable drawable) {}
 
 	@Override
 	public void bindParameters() {
@@ -62,12 +51,6 @@ public class TableModel extends SceneGraphNode {
 
 	@Override
 	public void draw(GLAutoDrawable drawable) {
-		GL gl = drawable.getGL();
-		gl.glEnable(GL.GL_TEXTURE_2D);
-		tex.bind();
 		drawable.getGL().glCallList(this.getObjectList());
-		tex.disable();
-		gl.glDisable(GL.GL_TEXTURE_2D);
-		
 	}
 }
