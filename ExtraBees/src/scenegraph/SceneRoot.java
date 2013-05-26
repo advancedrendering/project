@@ -32,6 +32,7 @@ public class SceneRoot extends SceneGraphNode{
 	private SceneRoot(GLAutoDrawable drawable) {
 		super(drawable);
 				
+		this.getShaderManager().loadFragShader("shader/fp_phongPerPixelNoTexture.cg", "phongNoTex");
 		this.getShaderManager().loadFragShader("shader/toon_shading.cg", "toon");
 		this.getShaderManager().loadFragShader("shader/fp_fog.cg", "fog");
 		this.getShaderManager().loadVertexShader("shader/vp_fog.cg", "fog");

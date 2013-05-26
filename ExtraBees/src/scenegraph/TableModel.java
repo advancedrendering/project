@@ -7,6 +7,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLException;
 
+import com.sun.opengl.cg.CgGL;
 import com.sun.opengl.util.texture.Texture;
 import com.sun.opengl.util.texture.TextureIO;
 
@@ -67,5 +68,6 @@ public class TableModel extends SceneGraphNode {
 		drawable.getGL().glCallList(this.getObjectList());
 		tex.disable();
 		gl.glDisable(GL.GL_TEXTURE_2D);
+		
 	}
 }

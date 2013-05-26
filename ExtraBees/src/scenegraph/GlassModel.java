@@ -2,6 +2,8 @@ package scenegraph;
 
 import javax.media.opengl.GLAutoDrawable;
 
+import com.sun.opengl.cg.CgGL;
+
 public class GlassModel extends SceneGraphNode {
 
 	public GlassModel(GLAutoDrawable drawable, float scale) {
@@ -29,6 +31,7 @@ public class GlassModel extends SceneGraphNode {
 	
 	@Override
 	public void draw(GLAutoDrawable drawable) {
+		this.getShaderManager().bindFP("phongNoTex");
 		drawable.getGL().glCallList(this.getObjectList());
 	}
 

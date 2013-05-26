@@ -43,6 +43,7 @@ public class EiffelModel extends SceneGraphNode {
 //		gl.glCullFace(GL.GL_BACK); // Reset The Face To Be Culled
 //		gl.glPolygonMode(GL.GL_BACK, GL.GL_FILL); // Reset Polygon Drawing Mode
 //		ShaderManager.getInstance().bindFP("toon");
+		this.getShaderManager().bindFP("phongNoTex");
 		gl.glCallList(this.getObjectList()); // Call Your Display List
 	}
 }

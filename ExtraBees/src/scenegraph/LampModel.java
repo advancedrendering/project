@@ -62,8 +62,8 @@ public class LampModel extends SceneGraphNode {
 
 		@Override
 		public void draw(GLAutoDrawable drawable) {
+			this.getShaderManager().bindFP("phongNoTex");
 			drawable.getGL().glCallList(this.getObjectList());
-			
 		}
 		
 	}
