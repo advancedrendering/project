@@ -122,7 +122,7 @@ public class MainTemplate extends JoglTemplate {
 		gl.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, MOVING_LIGHT_ADS, 4);
 		gl.glLightfv(GL.GL_LIGHT0, GL.GL_SPECULAR, MOVING_LIGHT_ADS, 8);
 
-		float[] lightPos = new float[] { 10f, 20f, 10f, 0f };
+		float[] lightPos = new float[] { 20f, 20f, 50f, 1f };
 		gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, lightPos, 0);
 
 		SceneRoot.getInstance(drawable).render(drawable);

@@ -32,10 +32,10 @@ public class SkyBox extends SceneGraphNode {
 
 	@Override
 	public void draw(GLAutoDrawable drawable) {
-		drawable.getGL().glEnable(GL.GL_TEXTURE_2D); // enable texturing
-		drawable.getGL().glDisable(GL.GL_LIGHTING); // disable lights, because otherwise the sky would be shaded by the light sources
+//		drawable.getGL().glEnable(GL.GL_TEXTURE_2D); // enable texturing
+//		drawable.getGL().glDisable(GL.GL_LIGHTING); // disable lights, because otherwise the sky would be shaded by the light sources
 		drawable.getGL().glCallList(this.getObjectList());
-		drawable.getGL().glEnable(GL.GL_LIGHTING);
-		drawable.getGL().glDisable(GL.GL_TEXTURE_2D);
+//		drawable.getGL().glEnable(GL.GL_LIGHTING);
+//		drawable.getGL().glDisable(GL.GL_TEXTURE_2D);
 	}
 }
