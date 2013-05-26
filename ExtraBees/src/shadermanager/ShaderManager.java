@@ -107,6 +107,8 @@ public class ShaderManager {
 		if (vertexShaderEnabled == false){
 			// disable profile
 			CgGL.cgGLDisableProfile(cgVertexProfile);
+			//reset to default
+			this.bindVP();
 		}
 		this.vertexShaderEnabled = vertexShaderEnabled;
 	}
@@ -126,6 +128,8 @@ public class ShaderManager {
 		if (fragShaderEnabled == false){
 			// disable profile
 			CgGL.cgGLDisableProfile(cgFragProfile);
+			//reset to default
+			this.bindFP();
 		}
 		this.fragShaderEnabled = fragShaderEnabled;
 	}
@@ -153,10 +157,11 @@ public class ShaderManager {
 	public void bindVP() throws IllegalArgumentException {
 		// disable profile
 		CgGL.cgGLDisableProfile(cgVertexProfile);
+		CgGL.cgGLUnbindProgram(cgVertexProfile);
 		if (this.vertexShaderEnabled == true) {
 			// bind the new one
 			CgGL.cgGLBindProgram(this.vpshaderprograms
-					.get(this.cgVertexProgName).getShaderProg());
+					.get(this.defaultVertexProgName).getShaderProg());
 			// enable profile
 			CgGL.cgGLEnableProfile(cgVertexProfile);
 		}
@@ -166,6 +171,7 @@ public class ShaderManager {
 		if (this.vpshaderprograms.containsKey(cgVPName)) {
 			// disable profile
 			CgGL.cgGLDisableProfile(cgVertexProfile);
+			CgGL.cgGLUnbindProgram(cgVertexProfile);
 			if (this.vertexShaderEnabled == true) {
 				// enable profile
 				CgGL.cgGLEnableProfile(cgVertexProfile);
@@ -254,9 +260,10 @@ public class ShaderManager {
 	public void bindFP() throws IllegalArgumentException {
 		// disable profile
 		CgGL.cgGLDisableProfile(cgFragProfile);
+		CgGL.cgGLUnbindProgram(cgFragProfile);
 		if (this.fragShaderEnabled == true) {
 			// bind the new one
-			CgGL.cgGLBindProgram(this.fpshaderprograms.get(this.cgFragmentProgName).getShaderProg());
+			CgGL.cgGLBindProgram(this.fpshaderprograms.get(this.defaultFragmentProgName).getShaderProg());
 			// enable profile
 			CgGL.cgGLEnableProfile(cgFragProfile);
 		}
@@ -266,6 +273,7 @@ public class ShaderManager {
 		if (this.fpshaderprograms.containsKey(cgFPName)) {
 			// disable profile
 			CgGL.cgGLDisableProfile(cgFragProfile);
+			CgGL.cgGLUnbindProgram(cgFragProfile);
 			if (this.fragShaderEnabled == true) {
 				// enable profile
 				CgGL.cgGLEnableProfile(cgFragProfile);
