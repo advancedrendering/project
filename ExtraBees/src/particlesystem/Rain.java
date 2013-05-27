@@ -10,6 +10,7 @@ import javax.media.opengl.GLException;
 
 import templates.Blocks;
 
+import com.sun.opengl.cg.CgGL;
 import com.sun.opengl.util.texture.Texture;
 import com.sun.opengl.util.texture.TextureIO;
 
@@ -78,7 +79,7 @@ public class Rain extends ParticleSystem {
 		colors[0] = cornflowerblue;
 		colors[1] = lightblue;
 //		colors[2] = green;
-		colors[2] = aeroblue;
+		//colors[2] = aeroblue;
 		colors[3] = white;
 		loc_emi_settings.colors = colors;
 		

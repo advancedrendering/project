@@ -1,10 +1,8 @@
 // data interpolated from vertex program output
 struct vertexIN
 {
-  float2 texCoord : TEXCOORD0;
   float3 objectSpacePos : TEXCOORD1;
   float3 normal   : TEXCOORD2;
-  float4 color : COLOR;
 };
 
 // OpenGL state
@@ -19,7 +17,7 @@ uniform float4 MaterialSpecular : state.material.specular;
 uniform float MaterialShininess : state.material.shininess;
 
 
-float4 main(vertexIN vIn, uniform sampler2D decal) : COLOR
+float4 main(vertexIN vIn) : COLOR
 {
   //light calculation is done in object space (normals) 
   float3 P = vIn.objectSpacePos.xyz;
@@ -29,7 +27,7 @@ float4 main(vertexIN vIn, uniform sampler2D decal) : COLOR
   float3 ePos = (mul(ModelViewInverse, float4(0, 0, 0, 1))).xyz;
   
   //set lightPosition
-  float3 lPos0 = (mul(ModelViewInverse, Light0Position)).xyz;
+  float3 lPos0 = ePos;//(mul(ModelViewInverse, Light0Position)).xyz;
 
   // compute ambient term
   float4 ambient0 = MaterialAmbient * Light0Ambient;
@@ -48,12 +46,7 @@ float4 main(vertexIN vIn, uniform sampler2D decal) : COLOR
 
   float4 color;
   color = ambient0 + diffuse0 + specular0;  
-  
-  float4 decalColor;
-  decalColor = tex2D(decal, vIn.texCoord);
-  
-  float4 texColor = color * decalColor;
-  
+
   float toon = dot(L0, N);
   
   if (toon > 0.95f){
@@ -89,7 +82,7 @@ float4 main(vertexIN vIn, uniform sampler2D decal) : COLOR
   else{
   	toon = 0.0f;
   }
-  color = texColor * toon;
+  color = color * toon;
 
-  return color;
+  return color;  
 }
