@@ -45,5 +45,6 @@ public class EiffelModel extends SceneGraphNode {
 //		ShaderManager.getInstance().bindFP("toon");
 		this.getShaderManager().bindFP("phongNoTex");
 		gl.glCallList(this.getObjectList()); // Call Your Display List
+		gl.glEnable(GL.GL_CULL_FACE);
 	}
 }

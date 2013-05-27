@@ -105,10 +105,11 @@ public class ShaderManager {
 	 */
 	public void setVertexShaderEnabled(boolean vertexShaderEnabled) {
 		if (vertexShaderEnabled == false){
+			CgGL.cgGLUnbindProgram(cgVertexProfile);
 			// disable profile
 			CgGL.cgGLDisableProfile(cgVertexProfile);
 			//reset to default
-			this.bindVP();
+//			this.bindVP();
 		}
 		this.vertexShaderEnabled = vertexShaderEnabled;
 	}
@@ -126,10 +127,11 @@ public class ShaderManager {
 	 */
 	public void setFragShaderEnabled(boolean fragShaderEnabled) {
 		if (fragShaderEnabled == false){
+			CgGL.cgGLUnbindProgram(cgFragProfile);
 			// disable profile
 			CgGL.cgGLDisableProfile(cgFragProfile);
 			//reset to default
-			this.bindFP();
+//			this.bindFP();
 		}
 		this.fragShaderEnabled = fragShaderEnabled;
 	}

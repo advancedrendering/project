@@ -29,8 +29,6 @@ public class TableModel extends SceneGraphNode {
 		eiffel = new EiffelModel(drawable, scale);
 		this.addChild(eiffel);
 		this.init(drawable);
-		this.setVertexShaderEnabled(false);
-		this.setFragShaderEnabled(false);
 	}
 
 	@Override
@@ -51,6 +49,8 @@ public class TableModel extends SceneGraphNode {
 
 	@Override
 	public void draw(GLAutoDrawable drawable) {
+		this.getShaderManager().bindVP("fog");
+		this.getShaderManager().bindFP("fog");
 		drawable.getGL().glCallList(this.getObjectList());
 	}
 }

@@ -36,6 +36,7 @@ public class SceneRoot extends SceneGraphNode{
 				
 		this.getShaderManager().loadFragShader("shader/fp_phongPerPixelNoTexture.cg", "phongNoTex");
 		this.getShaderManager().loadFragShader("shader/toon_shading.cg", "toon");
+		this.getShaderManager().loadFragShader("shader/toon_shadingNoTexture.cg", "toonNoTex");
 		this.getShaderManager().loadFragShader("shader/fp_fog.cg", "fog");
 		this.getShaderManager().loadVertexShader("shader/vp_fog.cg", "fog");
 		
@@ -82,6 +83,7 @@ public class SceneRoot extends SceneGraphNode{
 		this.getShaderManager().addVertexShaderParam("fog", "fogDensity");
 		this.getShaderManager().addFragShaderParam("fog", "fogColor");
 		this.getShaderManager().addFragShaderParam("fog", "decal");
+		this.getShaderManager().addFragShaderParam("toon", "decal");
 	}
 
 	@Override
