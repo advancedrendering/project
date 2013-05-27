@@ -14,71 +14,15 @@ public class GlassModel extends SceneGraphNode {
 	public GlassModel(GLAutoDrawable drawable, float scale) {
 		super(drawable, "models/glass", scale);
 		// TODO Auto-generated constructor stub
+		this.setFragShaderEnabled(false);
+		this.setVertexShaderEnabled(false);
 	}
 
 	@Override
 	public void init(GLAutoDrawable drawable) {
 		// TODO Auto-generated method stub
 		GL gl = drawable.getGL();
-		// smooth shading
-		gl.glShadeModel(GL.GL_SMOOTH);
-		// enable depth test
-		gl.glEnable(GL.GL_DEPTH_TEST);
-		// type of depth test
-		gl.glDepthFunc(GL.GL_LEQUAL);
-		// backface culling
-		gl.glEnable(GL.GL_CULL_FACE);
-		// calculate normals automatically
-		gl.glEnable(GL.GL_AUTO_NORMAL);
-		// normalize normals
-		gl.glEnable(GL.GL_NORMALIZE);
-		// best perspective calculations
-		gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
-
-		gl.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1);
-
-		gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_WRAP_S,
-				GL.GL_REPEAT);
-		gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_WRAP_T,
-				GL.GL_REPEAT);
-		gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_WRAP_R,
-				GL.GL_REPEAT);
-		gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_MAG_FILTER,
-				GL.GL_NEAREST);
-		gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_MIN_FILTER,
-				GL.GL_LINEAR);
 		
-		//TODO: complete the array to load the cube map
-		String[] faceFile = {"quadrangle_back.png","quadrangle_down.png","quadrangle_front.png","quadrangle_left.png","quadrangle_right.png","quadrangle_top.png" };
-
-		int[] faceTarget = { GL.GL_TEXTURE_CUBE_MAP_POSITIVE_X,
-				GL.GL_TEXTURE_CUBE_MAP_NEGATIVE_X, GL.GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
-				GL.GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, GL.GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
-				GL.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z };
-		// load texture data
-		TextureData[] faces = loadTextureData(faceFile, "textures/quadrangle/");
-		// assign textures to environment map
-		for (int i = 0; i < 6; i++)
-		{
-			// Image format is GL_BGR for jpg (wrong internal format?), GL_RGB for
-			// png!
-			gl.glTexImage2D(faceTarget[i], 0, faces[i].getInternalFormat(), faces[i]
-					.getWidth(), faces[i].getHeight(), 0, GL.GL_RGB, GL.GL_UNSIGNED_BYTE,
-					faces[i].getBuffer());
-		}
-
-		// enable texture coordinates generation mode (mode must been set with
-		// glTexGeni before, otherwise glEnable fails... we change the mode
-		// afterwards in the display method)
-		gl.glTexGeni(GL.GL_S, GL.GL_TEXTURE_GEN_MODE, GL.GL_REFLECTION_MAP);
-		gl.glTexGeni(GL.GL_T, GL.GL_TEXTURE_GEN_MODE, GL.GL_REFLECTION_MAP);
-		gl.glTexGeni(GL.GL_R, GL.GL_TEXTURE_GEN_MODE, GL.GL_REFLECTION_MAP);
-		gl.glEnable(GL.GL_TEXTURE_GEN_S);
-		gl.glEnable(GL.GL_TEXTURE_GEN_T);
-		gl.glEnable(GL.GL_TEXTURE_GEN_R);
-		gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_MODULATE);
-		// enable cube map
-		gl.glEnable(GL.GL_TEXTURE_CUBE_MAP);
 	}
 
 	@Override
@@ -95,15 +39,78 @@ public class GlassModel extends SceneGraphNode {
 	
 	@Override
 	public void draw(GLAutoDrawable drawable) {
-		this.getShaderManager().bindFP("phongNoTex");
-		drawable.getGL().glCallList(this.getObjectList());
 		GL gl=drawable.getGL();
+		// smooth shading
+//				gl.glDepthFunc(GL.GL_LEQUAL);
+				// backface culling
+				// calculate normals automatically
+				gl.glEnable(GL.GL_AUTO_NORMAL);
+				// normalize normals
+				gl.glEnable(GL.GL_NORMALIZE);
+				// best perspective calculations
+				gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
+
+				gl.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1);
+
+				gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_WRAP_S,
+						GL.GL_REPEAT);
+				gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_WRAP_T,
+						GL.GL_REPEAT);
+				gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_WRAP_R,
+						GL.GL_REPEAT);
+				gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_MAG_FILTER,
+						GL.GL_NEAREST);
+				gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_MIN_FILTER,
+						GL.GL_LINEAR);
+				
+				//TODO: complete the array to load the cube map
+				String[] faceFile = {"quadrangle_back.png","quadrangle_down.png","quadrangle_front.png","quadrangle_left.png","quadrangle_right.png","quadrangle_top.png" };
+
+				int[] faceTarget = { GL.GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+						GL.GL_TEXTURE_CUBE_MAP_NEGATIVE_X, GL.GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+						GL.GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, GL.GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
+						GL.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z };
+				// load texture data
+				TextureData[] faces = loadTextureData(faceFile, "textures/quadrangle/");
+				// assign textures to environment map
+				for (int i = 0; i < 6; i++)
+				{
+					// Image format is GL_BGR for jpg (wrong internal format?), GL_RGB for
+					// png!
+					gl.glTexImage2D(faceTarget[i], 0, faces[i].getInternalFormat(), faces[i]
+							.getWidth(), faces[i].getHeight(), 0, GL.GL_RGB, GL.GL_UNSIGNED_BYTE,
+							faces[i].getBuffer());
+				}
+
+				// enable texture coordinates generation mode (mode must been set with
+				// glTexGeni before, otherwise glEnable fails... we change the mode
+				// afterwards in the display method)
+				gl.glTexGeni(GL.GL_S, GL.GL_TEXTURE_GEN_MODE, GL.GL_REFLECTION_MAP);
+				gl.glTexGeni(GL.GL_T, GL.GL_TEXTURE_GEN_MODE, GL.GL_REFLECTION_MAP);
+				gl.glTexGeni(GL.GL_R, GL.GL_TEXTURE_GEN_MODE, GL.GL_REFLECTION_MAP);
+				gl.glEnable(GL.GL_TEXTURE_GEN_S);
+				gl.glEnable(GL.GL_TEXTURE_GEN_T);
+				gl.glEnable(GL.GL_TEXTURE_GEN_R);
+				gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_MODULATE);
+				// enable cube map
+		gl.glEnable(GL.GL_TEXTURE_CUBE_MAP);
 		// set texture filter mode
 		gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
 		// set texture coordinates generation mode
 		gl.glTexGeni(GL.GL_S, GL.GL_TEXTURE_GEN_MODE, GL.GL_NORMAL_MAP);
 		gl.glTexGeni(GL.GL_T, GL.GL_TEXTURE_GEN_MODE, GL.GL_NORMAL_MAP);
 		gl.glTexGeni(GL.GL_R, GL.GL_TEXTURE_GEN_MODE, GL.GL_NORMAL_MAP);
+//		this.getShaderManager().bindFP("phongNoTex");
+		
+		drawable.getGL().glCallList(this.getObjectList());
+		gl.glDisable(GL.GL_TEXTURE_GEN_S);
+		gl.glDisable(GL.GL_TEXTURE_GEN_T);
+		gl.glDisable(GL.GL_TEXTURE_GEN_R);
+		// calculate normals automatically
+		gl.glDisable(GL.GL_AUTO_NORMAL);
+		// normalize normals
+		gl.glDisable(GL.GL_NORMALIZE);
+		gl.glDisable(GL.GL_TEXTURE_CUBE_MAP);
 		
 	}
 	
