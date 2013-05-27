@@ -3,6 +3,7 @@ package scenegraph;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 
+import particlesystem.Fire;
 import particlesystem.Rain;
 
 import com.sun.opengl.cg.CGparameter;
@@ -20,6 +21,7 @@ public class SceneRoot extends SceneGraphNode{
 	private HeliModel heli = null;
 	private SkyBox skydome = null;
 	private Rain rain = null;
+	private Fire fire = null;
 	private float scale = 1f;
 	
 	private CGparameter cgFogDensity = null;
@@ -49,7 +51,10 @@ public class SceneRoot extends SceneGraphNode{
 		
 		rain = new Rain(drawable);
 		this.addChild(rain);
-				
+		
+		fire = new Fire(drawable);
+		this.addChild(fire);
+		
 		heli = new HeliModel(drawable, scale*0.2f);
 		this.addChild(heli);
 		

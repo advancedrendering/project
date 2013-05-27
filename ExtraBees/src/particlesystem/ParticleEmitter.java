@@ -81,11 +81,15 @@ public abstract class ParticleEmitter {
 			}
 		}
 		
+		
 		//delete active particles from inactive list.
 		for (Particle par : to_be_removed){
 			//delete particle from inactive list
 			inactive_particles.remove(par);
 		}
+	}
+	public void setColor(float[][] color){
+		this.settings.colors = color;
 	}
 
 	/**
