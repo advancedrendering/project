@@ -16,7 +16,7 @@ public abstract class ParticleEmitter {
 	private float emitRate = 1.0f;
 	
 	//holds the number of particles to be inserted to hold on the average emission rate.
-	private int num_of_part_insert;
+	protected int num_of_part_insert;
 	
 	public ParticleEmitter(float emitRate, ParticleEmitterSettings settings){
 		this.emitRate = emitRate;

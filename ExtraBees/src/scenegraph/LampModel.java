@@ -29,7 +29,6 @@ public class LampModel extends SceneGraphNode {
 	
 	@Override
 	public void draw(GLAutoDrawable drawable) {
-		this.getShaderManager().bindFP("toon");
 		drawable.getGL().glCallList(this.getObjectList());
 	}
 	
@@ -38,10 +37,11 @@ public class LampModel extends SceneGraphNode {
 
 		public LampLightModel(GLAutoDrawable drawable, float scale) {
 			super(drawable, "models/lamp_light", scale);
+			this.setVertexShaderEnabled(false);
+			this.setFragShaderEnabled(false);
 			// TODO Auto-generated constructor stub
 		}
 
-		
 		@Override
 		public void init(GLAutoDrawable drawable) {
 			// TODO Auto-generated method stub

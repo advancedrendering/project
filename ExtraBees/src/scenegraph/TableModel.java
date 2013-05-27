@@ -16,8 +16,6 @@ public class TableModel extends SceneGraphNode {
 	private GlassModel glass = null;
 	private EiffelModel eiffel = null;
 	
-	private Texture tex = null;
-	
 	
 	public TableModel(GLAutoDrawable drawable, float scale) {
 		super(drawable, "models/table", scale);	
@@ -49,8 +47,6 @@ public class TableModel extends SceneGraphNode {
 
 	@Override
 	public void draw(GLAutoDrawable drawable) {
-		this.getShaderManager().bindVP("fog");
-		this.getShaderManager().bindFP("fog");
 		drawable.getGL().glCallList(this.getObjectList());
 	}
 }

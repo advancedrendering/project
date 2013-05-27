@@ -2,7 +2,7 @@ package particlesystem;
 
 public class Particle {
 
-	private float age;
+	protected float age;
 	/**
 	 * @return the acceleration
 	 */
@@ -51,8 +51,8 @@ public class Particle {
 	public float[] getPosition() {
 		return position;
 	}
-	private boolean isAlive;
-	private float lifetime;
+	protected boolean isAlive;
+	protected float lifetime;
 	/**
 	 * @return the lifetime
 	 */
@@ -65,13 +65,13 @@ public class Particle {
 	public void setLifetime(float lifetime) {
 		this.lifetime = lifetime;
 	}
-	private float[] velocity = null;
-	private float[] acceleration = null;;
-	private float[] position = null;
-	private float[] external_force = null;;
-	private float[] color = {1.0f, 1.0f, 1.0f};
+	protected float[] velocity = null;
+	protected float[] acceleration = null;;
+	protected float[] position = null;
+	protected float[] external_force = null;;
+	protected float[] color = {1.0f, 1.0f, 1.0f};
 	
-	private ParticleSystemSettings settings = null;
+	protected ParticleSystemSettings settings = null;
 	
 	/**
 	 * @return the settings
@@ -124,6 +124,7 @@ public class Particle {
 			}
 		}
 	}
+	
 	public float[] getColor() {
 		return color;
 	}

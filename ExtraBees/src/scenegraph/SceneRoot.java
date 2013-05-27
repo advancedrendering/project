@@ -4,6 +4,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 
 import particlesystem.Fire;
+import particlesystem.Fireflies;
 import particlesystem.Rain;
 
 import com.sun.opengl.cg.CGparameter;
@@ -30,6 +31,8 @@ public class SceneRoot extends SceneGraphNode{
 	private CGparameter cgFogColor = null;
 	private float[] fogColor = {0.7f, 0.7f, 0.7f};
 	private CGparameter cgFogTex2DSampler = null;
+
+	private Fireflies fireflies;
 	
 	private SceneRoot(GLAutoDrawable drawable) {
 		super(drawable);
@@ -55,6 +58,9 @@ public class SceneRoot extends SceneGraphNode{
 		
 		fire = new Fire(drawable);
 		this.addChild(fire);
+		
+		fireflies = new Fireflies(drawable);
+		this.addChild(fireflies);
 		
 		heli = new HeliModel(drawable, scale*0.2f);
 		this.addChild(heli);

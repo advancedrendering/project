@@ -38,9 +38,6 @@ public class Rain extends ParticleSystem {
 		if (settings.point_size > point_size_arg.get(0)){
 			settings.point_size = point_size_arg.get(0);
 		}
-		
-		this.setFragShaderEnabled(false);
-		this.setVertexShaderEnabled(false);
 	}
 
 	@Override
@@ -53,7 +50,7 @@ public class Rain extends ParticleSystem {
 		float[] loc_external_force = {0.0f, -1000.0f, 0.0f};
 		loc_settings.general_external_force = loc_external_force;
 		//lifetime
-		loc_settings.lifetime = 5000.0f; //1.3 seconds
+		loc_settings.lifetime = 5000.0f; //5000 seconds
 		loc_settings.point_size = 32.0f;
 		
 		ParticleEmitterSettings loc_emi_settings = new ParticleEmitterSettings();
@@ -151,8 +148,6 @@ public class Rain extends ParticleSystem {
 				gl.glDepthMask(false);
 				
 				gl.glEnable(GL.GL_COLOR_MATERIAL);
-				//make green rain :-)
-				gl.glColor3f(0.0f, 1.0f, 0.0f);
 				
 				gl.glBegin(GL.GL_POINTS);
 					for (Particle par : this.active_particles){
