@@ -86,6 +86,33 @@ Tf 1.00 1.00 1.00
 Ni 1.00
 Ks 0.00 0.00 0.00
 Ns 0.00
+newmtl blinn1SG2
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd file2-polySurface1.1.png
+bump bump2d1-polySurface1.1.png -bm 1
+Ni 1.00
+Ks 0.50 0.50 0.50
+newmtl blinn2SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd -s 0.333333 0.333333 campus_wall.jpg
+bump -s 0.333333 0.333333 campus_wall_normalMap.jpg -bm 1
+Ni 1.00
+Ks 0.50 0.50 0.50
+newmtl blinn3SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd wood1-pCube1.png
+bump bump3d1-pCube1.png -bm 1
+Ni 1.00
+Ks 0.50 0.50 0.50
 newmtl eiffel:eifel:Basic_Rust
 illum 4
 Kd 0.33 0.20 0.14
@@ -96,15 +123,30 @@ Ks 1.00 0.82 0.60
 Ns 8.17
 newmtl initialShadingGroup
 illum 4
-Kd 0.50 0.50 0.50
+Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
+map_Kd -s 0.2 0.2 lamp_texture.png
+Ni 1.00
+newmtl lambert2SG2
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd file7-lamp_lamp_pillar.png
+Ni 1.00
+newmtl lambert3SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd glass_polyShape_color_1.png
 Ni 1.00
 newmtl lamp:lamp:lambert2SG
 illum 4
 Kd 0.90 0.87 0.62
 Ka 0.12 0.12 0.12
-Tf 0.40 0.40 0.40
+Tf 0.15 0.15 0.15
 Ni 1.00
 newmtl lamp2:lamp:lambert2SG
 illum 4
@@ -112,17 +154,11 @@ Kd 0.90 0.87 0.62
 Ka 0.12 0.12 0.12
 Tf 0.40 0.40 0.40
 Ni 1.00
-newmtl table:blinn1SG
-illum 4
-Kd 0.50 0.50 0.50
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-Ni 1.00
-Ks 0.50 0.50 0.50
 newmtl temple:anisotropic1SG
 illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
+map_Kd whiteMarble.png
 Ni 1.00
 Ks 0.50 0.50 0.50

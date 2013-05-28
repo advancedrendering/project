@@ -113,18 +113,32 @@ public class MainTemplate extends JoglTemplate {
 							Paths.CAMERA_TARGET_1[0], Paths.CAMERA_TARGET_1[1], Paths.CAMERA_TARGET_1[2], 
 							0, 1, 0);
 		
-		// lightning stuff
 		gl.glEnable(GL.GL_LIGHTING);
-		gl.glEnable(GL.GL_LIGHT0);
+		
+			float[] lightPos0 = new float[] {25.099f,4.89f, 21.971f, 1f };
+			gl.glEnable(GL.GL_LIGHT0);
+			// set light properties
+			gl.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, MOVING_LIGHT_ADS, 0);
+			gl.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, MOVING_LIGHT_ADS, 4);
+			gl.glLightfv(GL.GL_LIGHT0, GL.GL_SPECULAR, MOVING_LIGHT_ADS, 8);
+			gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, lightPos0, 0);
 
-		// set light properties
-		gl.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, MOVING_LIGHT_ADS, 0);
-		gl.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, MOVING_LIGHT_ADS, 4);
-		gl.glLightfv(GL.GL_LIGHT0, GL.GL_SPECULAR, MOVING_LIGHT_ADS, 8);
-
-		float[] lightPos = new float[] { 20f, 20f, 50f, 1f };
-		gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, lightPos, 0);
-
+			float[] lightPos1 = new float[] {20.5072f,6.1059f, 35.7706f, 1f };
+			gl.glEnable(GL.GL_LIGHT1);
+			// set light properties
+			gl.glLightfv(GL.GL_LIGHT1, GL.GL_AMBIENT, MOVING_LIGHT_ADS, 0);
+			gl.glLightfv(GL.GL_LIGHT1, GL.GL_DIFFUSE, MOVING_LIGHT_ADS, 4);
+			gl.glLightfv(GL.GL_LIGHT1, GL.GL_SPECULAR, MOVING_LIGHT_ADS, 8);
+			gl.glLightfv(GL.GL_LIGHT1, GL.GL_POSITION, lightPos1, 0);
+			
+			float[] lightPos2 = new float[] {-1f,-1f,-1f, 0f };
+			gl.glEnable(GL.GL_LIGHT2);
+			// set light properties
+			gl.glLightfv(GL.GL_LIGHT2, GL.GL_AMBIENT, MOVING_LIGHT_ADS, 0);
+			gl.glLightfv(GL.GL_LIGHT2, GL.GL_DIFFUSE, MOVING_LIGHT_ADS, 4);
+			gl.glLightfv(GL.GL_LIGHT2, GL.GL_SPECULAR, MOVING_LIGHT_ADS, 8);
+			gl.glLightfv(GL.GL_LIGHT2, GL.GL_POSITION, lightPos2, 0);
+			
 		SceneRoot.getInstance(drawable).render(drawable);
 
 		gl.glPopMatrix();

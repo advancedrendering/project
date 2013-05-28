@@ -10008,7 +10008,7 @@ vn 0.380254 -0.924819 0.010836
 vn -0.382167 -0.924093 0.000000
 s 1
 g lamp:lamp_pillar lamp1
-usemtl initialShadingGroup
+usemtl lambert2SG2
 f 3304/3304/1 2/2/2 3306/3306/3
 s 2
 f 1731/1731/4 3/3/5 1732/1732/6
