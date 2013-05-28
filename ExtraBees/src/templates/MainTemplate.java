@@ -115,7 +115,7 @@ public class MainTemplate extends JoglTemplate {
 		
 		gl.glEnable(GL.GL_LIGHTING);
 		
-			float[] lightPos0 = new float[] {25.099f,4.89f, 21.971f, 1f };
+			float[] lightPos0 = new float[] {-1f,-1f,-1f, 0f };
 			gl.glEnable(GL.GL_LIGHT0);
 			// set light properties
 			gl.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, MOVING_LIGHT_ADS, 0);
@@ -131,7 +131,7 @@ public class MainTemplate extends JoglTemplate {
 			gl.glLightfv(GL.GL_LIGHT1, GL.GL_SPECULAR, MOVING_LIGHT_ADS, 8);
 			gl.glLightfv(GL.GL_LIGHT1, GL.GL_POSITION, lightPos1, 0);
 			
-			float[] lightPos2 = new float[] {-1f,-1f,-1f, 0f };
+			float[] lightPos2 = new float[] {25.099f,4.89f, 21.971f, 1f };
 			gl.glEnable(GL.GL_LIGHT2);
 			// set light properties
 			gl.glLightfv(GL.GL_LIGHT2, GL.GL_AMBIENT, MOVING_LIGHT_ADS, 0);
