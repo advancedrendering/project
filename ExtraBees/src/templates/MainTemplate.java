@@ -146,7 +146,7 @@ public class MainTemplate extends JoglTemplate {
 	
 	private void drawFPS(GLAutoDrawable drawable) {
 		GL gl = drawable.getGL();
-		// Farbe Weiß, für die DevStrings
+		// Farbe Weiï¿½, fï¿½r die DevStrings
 		gl.glWindowPos2d(5, 5);
 		getGlut().glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, "FPS: " + (1000.0f / timePerFrame));
 	}
