@@ -10,7 +10,10 @@ import com.sun.opengl.util.texture.TextureData;
 import com.sun.opengl.util.texture.TextureIO;
 
 public class GlassModel extends SceneGraphNode {
-
+	
+	private int counter=0;
+	
+	
 	public GlassModel(GLAutoDrawable drawable, float scale) {
 		super(drawable, "models/glass", scale);
 		// TODO Auto-generated constructor stub
@@ -43,24 +46,7 @@ public class GlassModel extends SceneGraphNode {
 		gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_MIN_FILTER,
 				GL.GL_LINEAR);
 		
-		//TODO: complete the array to load the cube map
-		String[] faceFile = {"quadrangle_back.png","quadrangle_down.png","quadrangle_front.png","quadrangle_left.png","quadrangle_right.png","quadrangle_top.png" };
 
-		int[] faceTarget = { GL.GL_TEXTURE_CUBE_MAP_POSITIVE_X,
-				GL.GL_TEXTURE_CUBE_MAP_NEGATIVE_X, GL.GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
-				GL.GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, GL.GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
-				GL.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z };
-		// load texture data
-		TextureData[] faces = loadTextureData(faceFile, "textures/quadrangle/");
-		// assign textures to environment map
-		for (int i = 0; i < 6; i++)
-		{
-			// Image format is GL_BGR for jpg (wrong internal format?), GL_RGB for
-			// png!
-			gl.glTexImage2D(faceTarget[i], 0, faces[i].getInternalFormat(), faces[i]
-					.getWidth(), faces[i].getHeight(), 0, GL.GL_RGB, GL.GL_UNSIGNED_BYTE,
-					faces[i].getBuffer());
-		}		
 	}
 
 	@Override
@@ -78,6 +64,38 @@ public class GlassModel extends SceneGraphNode {
 	@Override
 	public void draw(GLAutoDrawable drawable) {
 		GL gl=drawable.getGL();
+		
+		//only for the static cube map
+		//counter=counter%2;
+		/*
+		 * If we use static cube map, we need to load the face file in draw function.
+		 */
+		//TODO: complete the array to load the cube map
+		String[][] faceFile = {{"quadrangle_back.png","quadrangle_down.png","quadrangle_front.png","quadrangle_left.png","quadrangle_right.png","quadrangle_top.png"} };
+	
+		int[] faceTarget = { GL.GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+				GL.GL_TEXTURE_CUBE_MAP_NEGATIVE_X, GL.GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+				GL.GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, GL.GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
+				GL.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z };
+		// load texture data
+		TextureData[] faces = loadTextureData(faceFile[counter], "textures/quadrangle/");
+		
+				
+		
+		// assign textures to environment map
+		for (int i = 0; i < 6; i++)
+		{
+			// Image format is GL_BGR for jpg (wrong internal format?), GL_RGB for
+			// png!
+			gl.glTexImage2D(faceTarget[i], 0, faces[i].getInternalFormat(), faces[i]
+					.getWidth(), faces[i].getHeight(), 0, GL.GL_RGB, GL.GL_UNSIGNED_BYTE,
+					faces[i].getBuffer());
+		}		
+		
+		
+		
+		
+		
 		// enable texture coordinates generation mode (mode must been set with
 		// glTexGeni before, otherwise glEnable fails... we change the mode
 		// afterwards in the display method)
@@ -106,6 +124,10 @@ public class GlassModel extends SceneGraphNode {
 		// normalize normals
 		gl.glDisable(GL.GL_NORMALIZE);
 		gl.glDisable(GL.GL_TEXTURE_CUBE_MAP);
+		
+		//only for the static cube map
+		
+		//counter++;
 		
 	}
 	
