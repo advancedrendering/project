@@ -97,12 +97,10 @@ public class Fireflies extends ParticleSystem {
 		
 		loc_settings.emitter_settings = loc_emi_settings;
 		//cretae firefly emitter
-		//float[] min_midPoint = {25.0f, 2.0f, 20.0f};
-		//float[] max_midPoint = {25.0f, 5.0f, 20.0f};
-		float[] min_midPoint = {20.0f, 2.0f, 30.0f};
-		float[] max_midPoint = {20.0f, 10.0f, 30.0f};
+		float[] min_midPoint = {25.0f, 2.0f, 20.0f};
+		float[] max_midPoint = {25.0f, 5.0f, 20.0f};
 		float min_radius = 1.0f;
-		float max_radius = 3.0f;
+		float max_radius = 2.0f;
 		float min_pitch =  0.5f *(float)Math.PI;
 		float max_pitch = 1.5f * (float)Math.PI;
 		float min_roll = - 0.5f * (float)Math.PI;
