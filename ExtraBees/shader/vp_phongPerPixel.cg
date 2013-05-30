@@ -19,7 +19,7 @@ struct vertexOUT
 // OpenGL state
 uniform float4x4 ModelViewProjection : state.matrix.mvp;
 
-vertexOUT main(vertexIN vIn, uniform float fogDensity)
+vertexOUT main(vertexIN vIn, uniform float fogDensity, uniform float fog)
 {
   vertexOUT vOut;
   // copy position
@@ -30,9 +30,12 @@ vertexOUT main(vertexIN vIn, uniform float fogDensity)
   
   // project point onto screen
   vOut.cameraSpacePos = mul(ModelViewProjection, vIn.position);
-  //calculate fogDistance (is increasing with distance to camera)
-  float fogDistance = length(vOut.cameraSpacePos.xyz);
-  vOut.fogExponent = fogDistance * fogDensity;
+  
+  if (fog == 1.0f){
+  	//calculate fogDistance (is increasing with distance to camera)
+  	float fogDistance = length(vOut.cameraSpacePos.xyz);
+  	vOut.fogExponent = fogDistance * fogDensity;
+  }
   
   //hand texture coordinates over to fragment processor.
   vOut.decalCoords = vIn.decalCoords;

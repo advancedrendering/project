@@ -27,10 +27,10 @@ public class SceneRoot extends SceneGraphNode{
 	private float scale = 1f;
 	
 	private CGparameter cgFogDensity = null;
-	private float fogDensity = 0.02f;
+	private float fogDensity = 0.05f;
 	
 	private CGparameter cgFogColor = null;
-	private float[] fogColor = {0.7f, 0.7f, 0.7f};
+	private float[] fogColor = {0.5f, 0.5f, 0.5f};
 	private CGparameter cgFogTex2DSampler = null;
 
 	private Fireflies fireflies;
@@ -38,12 +38,7 @@ public class SceneRoot extends SceneGraphNode{
 	private SceneRoot(GLAutoDrawable drawable) {
 		super(drawable);
 				
-		this.getShaderManager().loadFragShader("shader/fp_phongPerPixelNoTexture.cg", "phongNoTex");
-		this.getShaderManager().loadFragShader("shader/toon_shading.cg", "toon");
-		this.getShaderManager().loadFragShader("shader/toon_shadingNoTexture.cg", "toonNoTex");
-		this.getShaderManager().loadFragShader("shader/fp_fog.cg", "fog");
 		this.getShaderManager().loadFragShader("shader/fp_normalMapping.cg", "normalMap");
-		this.getShaderManager().loadVertexShader("shader/vp_fog.cg", "fog");
 		
 		this.getShaderManager().setVertexShaderEnabled(true);
 		this.getShaderManager().setFragShaderEnabled(true);
@@ -87,16 +82,18 @@ public class SceneRoot extends SceneGraphNode{
 
 	@Override
 	public void bindParameters() {
-		this.getShaderManager().addFragShaderParam("toonNoTex", "useTexture");
-		this.getShaderManager().addFragShaderParam("toonNoTex", "toon");
-		this.getShaderManager().addFragShaderParam("toonNoTex", "fog");
-		this.getShaderManager().addVertexShaderParam("phong", "fogDensity");
-		this.getShaderManager().addFragShaderParam("toonNoTex", "fogColor");
+		// fragment shader parameter
+		this.getShaderManager().addFragShaderParam("phong", "useTexture");
+		this.getShaderManager().addFragShaderParam("phong", "toon");
+		this.getShaderManager().addFragShaderParam("phong", "fog");
+		this.getShaderManager().addFragShaderParam("phong", "fogColor");
 		this.getShaderManager().addFragShaderParam("phong", "decal");
-		this.getShaderManager().addVertexShaderParam("fog", "fogDensity");
-		this.getShaderManager().addFragShaderParam("fog", "fogColor");
-		this.getShaderManager().addFragShaderParam("fog", "decal");
-		this.getShaderManager().addFragShaderParam("toon", "decal");
+		this.getShaderManager().addFragShaderParam("phong", "bumpDecal");
+		this.getShaderManager().addFragShaderParam("phong", "bump");
+		
+		// vertex shader parameter
+		this.getShaderManager().addVertexShaderParam("phong", "fog");
+		this.getShaderManager().addVertexShaderParam("phong", "fogDensity");
 	}
 
 	@Override
@@ -105,16 +102,15 @@ public class SceneRoot extends SceneGraphNode{
 	@Override
 	public void draw(GLAutoDrawable drawable) {
 		GL gl = drawable.getGL();
-		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("fog", "fogDensity"), this.fogDensity);
-		CgGL.cgGLSetParameter3fv(this.getShaderManager().getFragShaderParam("fog", "fogColor"), this.fogColor, 0);
-		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("toonNoTex", "fog"), this.getShaderManager().FALSE);
+		//enable drawing of textures
+		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "useTexture"), this.getShaderManager().TRUE);
+		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "fog"), this.getShaderManager().TRUE);
+		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("phong", "fog"), this.getShaderManager().TRUE);
 		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("phong", "fogDensity"), this.fogDensity);
-		CgGL.cgGLSetParameter3fv(this.getShaderManager().getFragShaderParam("toonNoTex", "fogColor"), this.fogColor, 0);
-		drawable.getGL().glCallList(this.getObjectList());
+		CgGL.cgGLSetParameter3fv(this.getShaderManager().getFragShaderParam("phong", "fogColor"), this.fogColor, 0);
 	}
 	
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
-		drawable.getGL().glCallList(this.getObjectList());
 	}
 }

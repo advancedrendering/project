@@ -10,6 +10,7 @@ import templates.Blocks;
 import templates.Paths;
 
 
+import com.sun.opengl.cg.CgGL;
 import com.sun.opengl.util.texture.TextureData;
 import com.sun.opengl.util.texture.TextureIO;
 
@@ -200,8 +201,9 @@ public class HeliModel extends SceneGraphNode {
 
 		@Override
 		public void draw(GLAutoDrawable drawable) {
-			this.getShaderManager().bindFP("phongNoTex");
+			CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "useTexture"), this.getShaderManager().FALSE);
 			drawable.getGL().glCallList(this.getObjectList());
+			CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "useTexture"), this.getShaderManager().TRUE);
 		}
 		
 		@Override

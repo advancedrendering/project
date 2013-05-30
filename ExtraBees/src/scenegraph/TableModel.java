@@ -47,8 +47,10 @@ public class TableModel extends SceneGraphNode {
 
 	@Override
 	public void draw(GLAutoDrawable drawable) {
-		this.getShaderManager().bindFP("normalMap");
+		//this.getShaderManager().bindFP("normalMap");
+		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "bump"), this.getShaderManager().TRUE);
 		drawable.getGL().glCallList(this.getObjectList());
+		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "bump"), this.getShaderManager().FALSE);
 	}
 	
 	@Override

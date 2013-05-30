@@ -82,9 +82,7 @@ public class GlassModel extends SceneGraphNode {
 	
 	@Override
 	public void draw(GLAutoDrawable drawable) {
-
 		GL gl=drawable.getGL();
-
 		gl.glEnable(GL.GL_TEXTURE_GEN_S);
 		gl.glEnable(GL.GL_TEXTURE_GEN_T);
 		gl.glEnable(GL.GL_TEXTURE_GEN_R);
