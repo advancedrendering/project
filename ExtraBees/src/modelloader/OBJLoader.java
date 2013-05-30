@@ -809,11 +809,10 @@ public class OBJLoader {
 				// set up new rendering material
 				Texture tex = getTexture(renderMatName);
 				Texture bumpTex = getBumpTexture(renderMatName);
-				if (tex != null) { // use the material's texture
+				if (tex != null && bumpTex != null) { // use the material's texture
 					// System.out.println("Using texture with " + renderMatName);
 					switchOnTex(tex, gl, false);
-					if (bumpTex != null)
-						switchOnTex(bumpTex, gl, true);
+					switchOnTex(bumpTex, gl, true);
 				} else
 					// use the material's colours
 					setMaterialColors(renderMatName, gl);
@@ -825,7 +824,7 @@ public class OBJLoader {
 		// also called from ObjModel.drawToList()
 		{
 
-			if (usingTexture && usingBumpMap) {
+			if (usingTexture || usingBumpMap) {
 				gl.glDisable(GL.GL_TEXTURE_2D);
 				usingTexture = false;
 				usingBumpMap = false;
@@ -846,7 +845,7 @@ public class OBJLoader {
 			}else{
 				gl.glActiveTexture(GL.GL_TEXTURE1);
 			}
-			tex.bind();
+			gl.glBindTexture(GL.GL_TEXTURE_2D, tex.getTextureObject());
 		} // end of resetMaterials()
 
 		private Texture getTexture(String matName)
@@ -1047,6 +1046,7 @@ public class OBJLoader {
 					}else{
 						bumpTexFnm = fnm;
 						gl.glActiveTexture(GL.GL_TEXTURE1);
+						bumpTex = TextureIO.newTexture(new File(bumpTexFnm), false);
 						bumpTex.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER,
 								GL.GL_NEAREST);
 						bumpTex.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER,

@@ -1,13 +1,5 @@
 package templates;
 
-/**
- * @author Andreas Elsner / Stephan Arens / Gitta Domik
- * 
- * AdR Shading Template
- * Department of Computer Science at the University of Paderborn, Germany
- * Research Group of Prof. Gitta Domik - Computer Graphics, Visualization and Digital Image Processing
- */
-
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -25,13 +17,12 @@ import scenegraph.SceneRoot;
 
 import com.sun.opengl.util.GLUT;
 
-
 public class MainTemplate extends JoglTemplate {
 	
 	private static TimeFPSCounter fpsCounter;
 	
 	public static int[] cubemap = new int[1];
-	public static  int CUBEMAP_SIZE = 2048;
+	public static  int CUBEMAP_SIZE = 1024;
 	public static  int[] framebuffer = new int[1];
 	public static  int[] renderbuffer = new int[1];
 	
@@ -127,26 +118,52 @@ public class MainTemplate extends JoglTemplate {
 			gl.glColor3f(0, 1, 0);
 			drawFPS(drawable);
 		}
-//		renderToBuffer(drawable,drawable.getGL(),MainTemplate.getGlu());
+		renderToBuffer(drawable,drawable.getGL(),MainTemplate.getGlu());
 		applyMouseTranslation(gl);
 		applyMouseRotation(gl);
+		float[] camPosition = BezierCurve.getCoordsAt(Paths.CAMERA_1,Paths.CAMERA_1_U);
+//		float[] camTargetDirection = VectorMath.minus(Paths.CAMERA_TARGET_1,camPosition );
+//		camTargetDirection = VectorMath.normalize(camTargetDirection);
+//		float[] camRotation = new float[3];
+//		camRotation[0] = -(float)Math.toDegrees(Math.atan2((double) camTargetDirection[1],(double) camTargetDirection[2]));
+//		double sqrt = Math.sqrt((Math.pow((double) camTargetDirection[1], 2))+(Math.pow((double) camTargetDirection[2], 2)));
+//		camRotation[1] = 180+(float)Math.toDegrees(Math.atan2((double) camTargetDirection[0],sqrt));
+//		camRotation[2] = 180f;
+////		camRotation[0] = (float)Math.toDegrees(Math.atan2((double) camTargetDirection[1],(double) camTargetDirection[2]));
+////		camRotation[1] = -(float)Math.toDegrees(Math.atan2((double) camTargetDirection[0]*Math.cos(camRotation[0]),-(double) camTargetDirection[2]));
+////		camRotation[2] = (float)Math.toDegrees(Math.atan2((double)Math.cos(camRotation[0]),(double)Math.sin(camRotation[0])*(double)Math.sin(camRotation[1])));
+//		
+//		setView_transx(-camPosition[0]);
+//		setView_transy(-camPosition[1]);
+//		setView_transz(-camPosition[2]);
+//		
+//		setView_rotx(-camRotation[0]);
+//		setView_roty(-camRotation[1]);
+//		setView_rotz(-camRotation[2]);
+//		
+//		gl.glRotatef(this.getView_rotx(), 1, 0, 0);
+//		gl.glRotatef(this.getView_roty(), 0, 1, 0);
+//		gl.glRotatef(this.getView_rotz(), 0, 0, 1);
+//		gl.glTranslatef(-camTargetDirection[0],-camTargetDirection[1],-camTargetDirection[2]);
 	
 		// press space to start animation
 		if(animation){
-			float[] camPosition = BezierCurve.getCoordsAt(Paths.CAMERA_1,Paths.CAMERA_1_U);
 			Blocks.heliPathActive = true; // heli animation starts
-			setView_transx(camPosition[0]);
-			setView_transy(camPosition[1]);
-			setView_transz(camPosition[2]);
-			getGlu().gluLookAt(	getView_transx(), getView_transy(), getView_transz(),
-					Paths.CAMERA_TARGET_1[0], Paths.CAMERA_TARGET_1[1], Paths.CAMERA_TARGET_1[2], 
-					0, 1, 0);
 		}
 				
 		if(Blocks.camera_1_PathActive && Paths.CAMERA_1_U < 1.0f){ // if camera 1 path is active
 			Paths.CAMERA_1_U += Paths.getCamera1Speed();
 		}
 		
+//		getGlu().gluLookAt(	0, 0, 0, Paths.CAMERA_TARGET_1[0], Paths.CAMERA_TARGET_1[1], Paths.CAMERA_TARGET_1[2], 0, 1, 0);
+//		gl.glRotatef(this.getView_rotx(), 1, 0, 0);
+//		gl.glRotatef(this.getView_roty(), 0, 1, 0);
+//		gl.glRotatef(this.getView_rotz(), 0, 0, 1);
+//		gl.glTranslatef(-camPosition[0],-camPosition[1], -camPosition[2]);
+		
+		getGlu().gluLookAt(	camPosition[0], camPosition[1], camPosition[2],
+				Paths.CAMERA_TARGET_1[0], Paths.CAMERA_TARGET_1[1], Paths.CAMERA_TARGET_1[2], 
+				0, 1, 0);
 
 		
 		gl.glEnable(GL.GL_LIGHTING);
@@ -234,12 +251,12 @@ public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu) {
 			gl.glClear(GL.GL_COLOR_BUFFER_BIT|GL.GL_DEPTH_BUFFER_BIT);
 			gl.glLoadIdentity();
 			switch (face) {
-				case 0: glu.gluLookAt(0,0,0,  1, 0, 0, 0, -1, 0);break;  // GL_TEXTURE_CUBE_MAP_POSITIVE_X
-				case 1: glu.gluLookAt(0,0,0, -1, 0, 0, 0, -1, 0);break; // GL_TEXTURE_CUBE_MAP_NEGATIVE_X
-				case 2: glu.gluLookAt(0,0,0,  0, 1, 0, 0, 0, 1);break;  // GL_TEXTURE_CUBE_MAP_POSITIVE_Y
-				case 3:	glu.gluLookAt(0,0,0,  0,-1, 0, 0, 0, -1);break; // GL_TEXTURE_CUBE_MAP_NEGATIVE_Y
-				case 4:	glu.gluLookAt(0,0,0,  0, 0, 1, 0, -1, 0);break;  // GL_TEXTURE_CUBE_MAP_POSITIVE_Z
-				case 5:	glu.gluLookAt(0,0,0,  0, 0,-1, 0, -1, 0);break;   // GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+				case 0: glu.gluLookAt(0,0,0,  1, 0, 0, 0,-1, 0);break; // GL_TEXTURE_CUBE_MAP_POSITIVE_X
+				case 1: glu.gluLookAt(0,0,0, -1, 0, 0, 0,-1, 0);break; // GL_TEXTURE_CUBE_MAP_NEGATIVE_X
+				case 2: glu.gluLookAt(0,0,0,  0, 1, 0, 0, 0, 1);break; // GL_TEXTURE_CUBE_MAP_POSITIVE_Y
+				case 3:	glu.gluLookAt(0,0,0,  0,-1, 0, 0, 0,-1);break; // GL_TEXTURE_CUBE_MAP_NEGATIVE_Y
+				case 4:	glu.gluLookAt(0,0,0,  0, 0, 1, 0,-1, 0);break; // GL_TEXTURE_CUBE_MAP_POSITIVE_Z
+				case 5:	glu.gluLookAt(0,0,0,  0, 0,-1, 0,-1, 0);break; // GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
 			}
 			
 			gl.glRotatef(this.getView_rotx(), 1, 0, 0);
