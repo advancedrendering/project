@@ -12,6 +12,7 @@ public class CampusModel extends SceneGraphNode {
 	
 	private LampModel lamp = null;
 	private LampModel lamp2 = null;
+	private LampModel lamp3 = null;
 	private TempleModel temple = null;
 
 
@@ -32,6 +33,13 @@ public class CampusModel extends SceneGraphNode {
 		lamp2.setTranslation(-4.544f,0.875f,13.8f);
 		lamp2.setRotation(0, 0, 0);
 		this.addChild(lamp2);
+		
+		lamp3 = new LampModel(drawable, scale);
+		lamp3.setTranslation(-17.571f,0f,-12.463f);
+//		lamp3.setTranslation(-3f,0f,0f);
+		lamp3.setRotation(0, 0, 0);
+		this.addChild(lamp3);
+		
 		this.init(drawable);
 		this.setVertexShaderEnabled(true);
 		this.setFragShaderEnabled(true);

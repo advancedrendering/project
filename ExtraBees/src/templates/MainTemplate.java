@@ -62,7 +62,7 @@ public class MainTemplate extends JoglTemplate {
 	private long timeOfFirstFrame = 0;
 	private int timeSinceFirstFrame = 0;
 	/* take screenshots? */
-	static boolean takeScreenshots = true;
+	static boolean takeScreenshots = false;
 	static int xResolution = 1280, yResolution = 720;
 
 
@@ -179,6 +179,14 @@ public class MainTemplate extends JoglTemplate {
 			gl.glLightfv(GL.GL_LIGHT2, GL.GL_DIFFUSE, MOVING_LIGHT_ADS, 4);
 			gl.glLightfv(GL.GL_LIGHT2, GL.GL_SPECULAR, MOVING_LIGHT_ADS, 8);
 			gl.glLightfv(GL.GL_LIGHT2, GL.GL_POSITION, lightPos2, 0);
+			
+			float[] lightPos3 = new float[] {7.516f,4.89f, 9.5f, 1f };
+			gl.glEnable(GL.GL_LIGHT3);
+			// set light properties
+			gl.glLightfv(GL.GL_LIGHT3, GL.GL_AMBIENT, MOVING_LIGHT_ADS, 0);
+			gl.glLightfv(GL.GL_LIGHT3, GL.GL_DIFFUSE, MOVING_LIGHT_ADS, 4);
+			gl.glLightfv(GL.GL_LIGHT3, GL.GL_SPECULAR, MOVING_LIGHT_ADS, 8);
+			gl.glLightfv(GL.GL_LIGHT3, GL.GL_POSITION, lightPos3, 0);
 			
 		SceneRoot.getInstance(drawable).render(drawable);
 		
