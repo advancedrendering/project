@@ -155,15 +155,15 @@ public class MainTemplate extends JoglTemplate {
 			Paths.CAMERA_1_U += Paths.getCamera1Speed();
 		}
 		
-		getGlu().gluLookAt(	0, 0, 0, Paths.CAMERA_TARGET_1[0], Paths.CAMERA_TARGET_1[1], Paths.CAMERA_TARGET_1[2], 0, 1, 0);
-		gl.glRotatef(this.getView_rotx(), 1, 0, 0);
-		gl.glRotatef(this.getView_roty(), 0, 1, 0);
-		gl.glRotatef(this.getView_rotz(), 0, 0, 1);
-		gl.glTranslatef(-camPosition[0],-camPosition[1], -camPosition[2]);
+//		getGlu().gluLookAt(	0, 0, 0, Paths.CAMERA_TARGET_1[0], Paths.CAMERA_TARGET_1[1], Paths.CAMERA_TARGET_1[2], 0, 1, 0);
+//		gl.glRotatef(this.getView_rotx(), 1, 0, 0);
+//		gl.glRotatef(this.getView_roty(), 0, 1, 0);
+//		gl.glRotatef(this.getView_rotz(), 0, 0, 1);
+//		gl.glTranslatef(-camPosition[0],-camPosition[1], -camPosition[2]);
 		
-//		getGlu().gluLookAt(	-getView_transx(), -getView_transy(),- getView_transz(),
-//				Paths.CAMERA_TARGET_1[0], Paths.CAMERA_TARGET_1[1], Paths.CAMERA_TARGET_1[2], 
-//				0, 1, 0);
+		getGlu().gluLookAt(	camPosition[0], camPosition[1], camPosition[2],
+				Paths.CAMERA_TARGET_1[0], Paths.CAMERA_TARGET_1[1], Paths.CAMERA_TARGET_1[2], 
+				0, 1, 0);
 
 		
 		gl.glEnable(GL.GL_LIGHTING);
