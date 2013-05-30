@@ -35,11 +35,6 @@ public class MainTemplate extends JoglTemplate {
 	public static  int[] framebuffer = new int[1];
 	public static  int[] renderbuffer = new int[1];
 	
-	protected final static float CTRL_POINTS[] = {33.519f, 1.071f+9.342f, -9.861f+5.160f,
-		33.13f, 8.766f+9.342f, -8.536f+5.160f,
-		29.213f,-4.754f+9.342f,10.246f+5.160f,
-		20.468f,-5.983f+9.342f,16.304f+5.160f };
-
 	/**
 	 * 
 	 */
