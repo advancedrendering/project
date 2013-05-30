@@ -37,9 +37,7 @@ public class SceneRoot extends SceneGraphNode{
 	
 	private SceneRoot(GLAutoDrawable drawable) {
 		super(drawable);
-				
-		this.getShaderManager().loadFragShader("shader/fp_normalMapping.cg", "normalMap");
-		
+						
 		this.getShaderManager().setVertexShaderEnabled(true);
 		this.getShaderManager().setFragShaderEnabled(true);
 		
