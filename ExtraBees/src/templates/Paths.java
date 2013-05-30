@@ -19,12 +19,12 @@ public class Paths {
 
 
 	public static float getCamera1Speed() {
-		return 0.001f;
+		return (float) (MainTemplate.getFPSCounter().getTimePassedMillis()*0.0001);
 	}
 
 
 	public static float getHeliSpeed() {
-		return  (float)(0.01*Math.pow(HELI_1_U, 2));
+		return  (float)(MainTemplate.getFPSCounter().getTimePassedMillis()*0.0007*Math.pow(HELI_1_U, 2));
 	}
 
 }

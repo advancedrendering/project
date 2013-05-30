@@ -58,7 +58,7 @@ public class CampusModel extends SceneGraphNode {
 		
 //		this.getShaderManager().bindFP("fog");
 //		this.getShaderManager().bindVP("fog");
-		
+//		
 		GL gl = drawable.getGL();
 		gl.glPolygonMode(GL.GL_BACK, GL.GL_LINE); // Draw As Wireframes
 		gl.glCullFace(GL.GL_FRONT); // Don't Draw Any Front-Facing Polygons

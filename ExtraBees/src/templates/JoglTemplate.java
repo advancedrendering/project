@@ -42,15 +42,16 @@ public class JoglTemplate extends Frame implements GLEventListener,
 	private float view_rotx = 0.0f, view_roty = 0.0f, view_rotz = 0.0f;
 
 	// translation variables
-	private float view_transx = 0.0f, view_transy = 0.0f, view_transz = 0.0f;
+	private float view_transx = 0f, view_transy = 0f, view_transz = 0f;
+
 
 	// previous mouse x and y coordinates
 	private int prevMouseX, prevMouseY;
 
 	// create glu and glut objects
-	private GLU glu = new GLU();
+	private static GLU glu = new GLU();
 
-	private GLUT glut = new GLUT();
+	private static GLUT glut = new GLUT();
 
 	private FPSAnimator animator;
 
@@ -243,11 +244,11 @@ public class JoglTemplate extends Frame implements GLEventListener,
 		// make sure to use the modelview matrix-mode
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		// apply the rotation
-//		gl.glTranslatef(-view_transx, -view_transy, -view_transz);
+		gl.glTranslatef(-view_transx, -view_transy, -view_transz);
 		gl.glRotatef(view_rotx, 1f, 0f, 0f);
 		gl.glRotatef(view_roty, 0f, 1f, 0f);
 		gl.glRotatef(view_rotz, 0f, 0f, 1f);
-//		gl.glTranslatef(view_transx, view_transy, view_transz);
+		gl.glTranslatef(view_transx, view_transy, view_transz);
 		gl.glMatrixMode(buffer.get(0));
 	}
 
@@ -442,7 +443,7 @@ public class JoglTemplate extends Frame implements GLEventListener,
 		this.view_transz = view_transz;
 	}
 
-	public GLU getGlu()
+	public static GLU getGlu()
 	{
 		return glu;
 	}
@@ -452,7 +453,7 @@ public class JoglTemplate extends Frame implements GLEventListener,
 		this.glu = glu;
 	}
 
-	public GLUT getGlut()
+	public static GLUT getGlut()
 	{
 		return glut;
 	}

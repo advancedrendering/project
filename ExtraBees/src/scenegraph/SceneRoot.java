@@ -12,6 +12,7 @@ import com.sun.opengl.cg.CGprogram;
 import com.sun.opengl.cg.CgGL;
 
 import shadermanager.ShaderManager;
+import templates.JoglTemplate;
 
 public class SceneRoot extends SceneGraphNode{
 
@@ -41,6 +42,7 @@ public class SceneRoot extends SceneGraphNode{
 		this.getShaderManager().loadFragShader("shader/toon_shading.cg", "toon");
 		this.getShaderManager().loadFragShader("shader/toon_shadingNoTexture.cg", "toonNoTex");
 		this.getShaderManager().loadFragShader("shader/fp_fog.cg", "fog");
+		this.getShaderManager().loadFragShader("shader/fp_normalMapping.cg", "normalMap");
 		this.getShaderManager().loadVertexShader("shader/vp_fog.cg", "fog");
 		
 		this.getShaderManager().setVertexShaderEnabled(true);
