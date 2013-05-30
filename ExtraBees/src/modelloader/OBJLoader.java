@@ -82,6 +82,8 @@ public class OBJLoader {
 	 * Die DisplayListe des Models
 	 */
 	private int modelDisplayList; 
+	
+	private GL gl;
 
 	
 	/**
@@ -98,6 +100,7 @@ public class OBJLoader {
 	 */
 	public OBJLoader(String name, float size, GL gl) {
 
+		this.gl = gl;
 		modelFileName = name;
 		scalingFactor = size;
 		initModelData();
@@ -184,7 +187,7 @@ public class OBJLoader {
 					}
 					// load material
 					else if (line.startsWith("mtllib ")) 
-						materials = new Materials("models/"+line.substring(7));
+						materials = new Materials("models/"+line.substring(7), gl);
 					else if (line.startsWith("usemtl "))
 						faceMaterials.addUse(numberOfFaces, line.substring(7));
 					else if (line.charAt(0) == 'g') { // group name
@@ -672,6 +675,7 @@ public class OBJLoader {
 	 */
 	public class Materials {
 
+		private GL gl;
 		private ArrayList<Material> materials;
 		// stores the Material objects built from the MTL file data
 
@@ -679,9 +683,10 @@ public class OBJLoader {
 		private String renderMatName = null;
 
 		private boolean usingTexture = false;
+		private boolean usingBumpMap = false;
 
-		public Materials(String mtlFnm) {
-
+		public Materials(String mtlFnm, GL gl) {
+			this.gl = gl;
 			materials = new ArrayList<Material>();
 
 			String mfnm = mtlFnm;
@@ -715,10 +720,14 @@ public class OBJLoader {
 							materials.add(currMaterial);
 
 						// start collecting info for new material
-						currMaterial = new Material(line.substring(7));
+						currMaterial = new Material(line.substring(7),gl);
 					} else if (line.startsWith("map_Kd ")) { // texture filename
 						String fileName = "models/"+line.substring(7);
-						currMaterial.loadTexture(fileName);
+						currMaterial.loadTexture(fileName,false);
+					} else if (line.startsWith("bump ")) { // texture filename
+						String fileName = "models/"+line.substring(5);
+						this.usingBumpMap = true;
+						currMaterial.loadTexture(fileName.split(" ")[0],true);
 					} else if (line.startsWith("Ka ")) // ambient colour
 						currMaterial.setKa(readTuple3(line));
 					else if (line.startsWith("Kd ")) // diffuse colour
@@ -799,9 +808,12 @@ public class OBJLoader {
 
 				// set up new rendering material
 				Texture tex = getTexture(renderMatName);
+				Texture bumpTex = getBumpTexture(renderMatName);
 				if (tex != null) { // use the material's texture
 					// System.out.println("Using texture with " + renderMatName);
-					switchOnTex(tex, gl);
+					switchOnTex(tex, gl, false);
+					if (bumpTex != null)
+						switchOnTex(bumpTex, gl, true);
 				} else
 					// use the material's colours
 					setMaterialColors(renderMatName, gl);
@@ -813,20 +825,27 @@ public class OBJLoader {
 		// also called from ObjModel.drawToList()
 		{
 
-			if (usingTexture) {
+			if (usingTexture && usingBumpMap) {
 				gl.glDisable(GL.GL_TEXTURE_2D);
 				usingTexture = false;
+				usingBumpMap = false;
 				gl.glEnable(GL.GL_LIGHTING);
 			}
 		} // end of resetMaterials()
 
-		private void switchOnTex(Texture tex, GL gl)
+		private void switchOnTex(Texture tex, GL gl, boolean bump)
 		// switch the lights off, and texturing on
 		{
 
 			//gl.glDisable(GL.GL_LIGHTING);
 			gl.glEnable(GL.GL_TEXTURE_2D);
 			usingTexture = true;
+			usingBumpMap = true;
+			if(!bump){
+				gl.glActiveTexture(GL.GL_TEXTURE0);
+			}else{
+				gl.glActiveTexture(GL.GL_TEXTURE1);
+			}
 			tex.bind();
 		} // end of resetMaterials()
 
@@ -839,6 +858,19 @@ public class OBJLoader {
 				m = (Material)materials.get(i);
 				if (m.hasName(matName))
 					return m.getTexture();
+			}
+			return null;
+		} // end of getTexture()
+		
+		private Texture getBumpTexture(String matName)
+		// return the texture associated with the material name
+		{
+
+			Material m;
+			for (int i = 0; i < materials.size(); i++) {
+				m = (Material)materials.get(i);
+				if (m.hasName(matName))
+					return m.getBumpTexture();
 			}
 			return null;
 		} // end of getTexture()
@@ -865,6 +897,7 @@ public class OBJLoader {
 		public class Material {
 
 			private String name;
+			private GL gl;
 
 			// colour info
 			private Tuple3 ka, kd, ks; // ambient, diffuse, specular colours
@@ -873,9 +906,11 @@ public class OBJLoader {
 			// texture info
 			private String texFnm;
 			private Texture texture;
+			private String bumpTexFnm;
+			private Texture bumpTex;
 
-			public Material(String nm) {
-
+			public Material(String nm, GL gl) {
+				this.gl = gl;
 				name = nm;
 
 				d = 1.0f;
@@ -886,6 +921,8 @@ public class OBJLoader {
 
 				texFnm = null;
 				texture = null;
+				bumpTexFnm = null;
+				bumpTex = null;
 			} // end of Material()
 
 			public void showMaterial() {
@@ -903,6 +940,8 @@ public class OBJLoader {
 					System.out.println("  d: " + d);
 				if (texFnm != null)
 					System.out.println("  Texture file: " + texFnm);
+				if (bumpTexFnm != null)
+					System.out.println("  BumpTexture file: " + bumpTexFnm);
 			} // end of showMaterial()
 
 			public boolean hasName(String nm) {
@@ -994,15 +1033,25 @@ public class OBJLoader {
 
 			// --------- set/get methods for texture info --------------
 
-			public void loadTexture(String fnm) {
+			public void loadTexture(String fnm, boolean bump) {
 
 				try {
-					texFnm = fnm;
-					texture = TextureIO.newTexture(new File(texFnm), false);
-					texture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER,
-					        GL.GL_NEAREST);
-					texture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER,
-					        GL.GL_NEAREST);
+					if(!bump){
+						texFnm = fnm;
+						gl.glActiveTexture(GL.GL_TEXTURE0);
+						texture = TextureIO.newTexture(new File(texFnm), false);
+						texture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER,
+								GL.GL_NEAREST);
+						texture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER,
+								GL.GL_NEAREST);
+					}else{
+						bumpTexFnm = fnm;
+						gl.glActiveTexture(GL.GL_TEXTURE1);
+						bumpTex.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER,
+								GL.GL_NEAREST);
+						bumpTex.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER,
+								GL.GL_NEAREST);
+					}
 				} catch (Exception e) {
 					System.err.println("Error loading texture " + texFnm);
 				}
@@ -1016,6 +1065,15 @@ public class OBJLoader {
 			public Texture getTexture() {
 
 				return texture;
+			}
+			public void setBumpTexture(Texture t) {
+
+				bumpTex = t;
+			}
+
+			public Texture getBumpTexture() {
+
+				return bumpTex;
 			}
 
 		} // end of inner Class Material
