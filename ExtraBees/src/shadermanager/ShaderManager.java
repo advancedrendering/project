@@ -17,6 +17,9 @@ import com.sun.opengl.cg.CgGL;
  */
 public class ShaderManager {
 
+	public static float FALSE = 0.0f;
+	public static float TRUE = 1.0f;
+	
 	/**
 	 * Loads a shader program from file.
 	 * 

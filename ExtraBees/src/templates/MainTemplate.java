@@ -62,7 +62,7 @@ public class MainTemplate extends JoglTemplate {
 	private long timeOfFirstFrame = 0;
 	private int timeSinceFirstFrame = 0;
 	/* take screenshots? */
-	static boolean takeScreenshots = true;
+	static boolean takeScreenshots = false;
 	static int xResolution = 1280, yResolution = 720;
 
 
@@ -132,7 +132,7 @@ public class MainTemplate extends JoglTemplate {
 			gl.glColor3f(0, 1, 0);
 			drawFPS(drawable);
 		}
-		renderToBuffer(drawable,drawable.getGL(),MainTemplate.getGlu());
+//		renderToBuffer(drawable,drawable.getGL(),MainTemplate.getGlu());
 		applyMouseTranslation(gl);
 		applyMouseRotation(gl);
 	
@@ -192,6 +192,7 @@ public class MainTemplate extends JoglTemplate {
 		}
 	}
 	
+	
 public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu) {
 	float[] at = {17.96f, 2.45f, 23.346f};
 
@@ -223,45 +224,20 @@ public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu) {
 		gl.glDrawBuffers(1, drawBuffers, 0);
 		
 		for (int face = 0; face < 6; face++) {
-			gl.glFramebufferTexture2DEXT(GL.GL_FRAMEBUFFER_EXT, GL.GL_COLOR_ATTACHMENT0_EXT, GL.GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, cubemap[0], 0);
-			
-			if(gl.glCheckFramebufferStatusEXT(GL.GL_FRAMEBUFFER_EXT)!=GL.GL_FRAMEBUFFER_COMPLETE_EXT) {
-				System.out.println("Failed setting up framebuffer");
-//			} else {
-//				System.out.println("Hurray!");
-			}
-			
+			gl.glFramebufferTexture2DEXT(GL.GL_FRAMEBUFFER_EXT, GL.GL_COLOR_ATTACHMENT0_EXT, GL.GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, cubemap[0], 0);			
 			gl.glPushMatrix();
 			// set the erasing color (black)
 			gl.glClearColor(1f, 1f, 1f, 0f);
 			gl.glClear(GL.GL_COLOR_BUFFER_BIT|GL.GL_DEPTH_BUFFER_BIT);
 			gl.glLoadIdentity();
-//			switch (face) {
-//				case 0: glu.gluLookAt(0,0,0, u[0], u[1], u[2], 0, -1, 0);break;
-//				case 1: glu.gluLookAt(0,0,0,-u[0],-u[1],-u[2], 0, -1, 0);break;
-//				case 2: glu.gluLookAt(0,0,0, v[0], v[1], v[2], 0, 0, 1);break;
-//				case 3:	glu.gluLookAt(0,0,0,-v[0],-v[1],-v[2], 0, 0, 1);break;
-//				case 4:	glu.gluLookAt(0,0,0, n[0], n[1], n[2], 0, -1, 0);break;
-//				case 5:	glu.gluLookAt(0,0,0,-n[0],-n[1],-n[2], 0, -1, 0);break;
-//			}
-			
-//			switch (face) {
-//			case 0: glu.gluLookAt(at[0],at[1],at[2],  u[0], u[1], u[2], 0, -1, 0);break;  // GL_TEXTURE_CUBE_MAP_POSITIVE_X
-//			case 1: glu.gluLookAt(at[0],at[1],at[2], -u[0],-u[1],-u[2], 0, -1, 0);break; // GL_TEXTURE_CUBE_MAP_NEGATIVE_X
-//			case 2: glu.gluLookAt(at[0],at[1],at[2],  v[0], v[1], v[2], 0, 0, -1);break;  // GL_TEXTURE_CUBE_MAP_POSITIVE_Y
-//			case 3:	glu.gluLookAt(at[0],at[1],at[2], -v[0],-v[1],-v[2], 0, 0, -1);break; // GL_TEXTURE_CUBE_MAP_NEGATIVE_Y
-//			case 4:	glu.gluLookAt(at[0],at[1],at[2],  n[0], n[1], n[2], 0, -1, 0);break;  // GL_TEXTURE_CUBE_MAP_POSITIVE_Z
-//			case 5:	glu.gluLookAt(at[0],at[1],at[2], -n[0],-n[1],-n[2], 0, -1, 0);break;   // GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
-//		}
-			
 			switch (face) {
-			case 0: glu.gluLookAt(0,0,0,  1, 0, 0, 0, -1, 0);break;  // GL_TEXTURE_CUBE_MAP_POSITIVE_X
-			case 1: glu.gluLookAt(0,0,0, -1, 0, 0, 0, -1, 0);break; // GL_TEXTURE_CUBE_MAP_NEGATIVE_X
-			case 2: glu.gluLookAt(0,0,0,  0, 1, 0, 0, 0, 1);break;  // GL_TEXTURE_CUBE_MAP_POSITIVE_Y
-			case 3:	glu.gluLookAt(0,0,0,  0,-1, 0, 0, 0, -1);break; // GL_TEXTURE_CUBE_MAP_NEGATIVE_Y
-			case 4:	glu.gluLookAt(0,0,0,  0, 0, 1, 0, -1, 0);break;  // GL_TEXTURE_CUBE_MAP_POSITIVE_Z
-			case 5:	glu.gluLookAt(0,0,0,  0, 0,-1, 0, -1, 0);break;   // GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
-		}
+				case 0: glu.gluLookAt(0,0,0,  1, 0, 0, 0, -1, 0);break;  // GL_TEXTURE_CUBE_MAP_POSITIVE_X
+				case 1: glu.gluLookAt(0,0,0, -1, 0, 0, 0, -1, 0);break; // GL_TEXTURE_CUBE_MAP_NEGATIVE_X
+				case 2: glu.gluLookAt(0,0,0,  0, 1, 0, 0, 0, 1);break;  // GL_TEXTURE_CUBE_MAP_POSITIVE_Y
+				case 3:	glu.gluLookAt(0,0,0,  0,-1, 0, 0, 0, -1);break; // GL_TEXTURE_CUBE_MAP_NEGATIVE_Y
+				case 4:	glu.gluLookAt(0,0,0,  0, 0, 1, 0, -1, 0);break;  // GL_TEXTURE_CUBE_MAP_POSITIVE_Z
+				case 5:	glu.gluLookAt(0,0,0,  0, 0,-1, 0, -1, 0);break;   // GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+			}
 			
 			gl.glRotatef(this.getView_rotx(), 1, 0, 0);
 			gl.glRotatef(this.getView_roty(), 0, 1, 0);
@@ -288,7 +264,6 @@ public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu) {
 	
 	private void drawFPS(GLAutoDrawable drawable) {
 		GL gl = drawable.getGL();
-		// Farbe Wei�, f�r die DevStrings
 		gl.glWindowPos2d(5, 5);
 		getGlut().glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, "FPS: " +fpsCounter.getFPS());
 	}

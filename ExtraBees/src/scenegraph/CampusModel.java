@@ -69,6 +69,8 @@ public class CampusModel extends SceneGraphNode {
 		gl.glDepthFunc(GL.GL_LESS); // Reset The Depth-Testing Mode
 		gl.glCullFace(GL.GL_BACK); // Reset The Face To Be Culled
 		gl.glPolygonMode(GL.GL_BACK, GL.GL_FILL); // Reset Polygon Drawing Mode
+		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("toonNoTex", "useTexture"), this.getShaderManager().FALSE);
+		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("toonNoTex", "toon"), this.getShaderManager().TRUE);
 		this.getShaderManager().bindFP("toonNoTex");
 		gl.glCallList(this.getObjectList()); // Call Your Display List
 	}
