@@ -809,13 +809,17 @@ public class OBJLoader {
 				// set up new rendering material
 				Texture tex = getTexture(renderMatName);
 				Texture bumpTex = getBumpTexture(renderMatName);
-				if (tex != null && bumpTex != null) { // use the material's texture
+				if (tex != null) { // use the material's texture
 					// System.out.println("Using texture with " + renderMatName);
 					switchOnTex(tex, gl, false);
-					switchOnTex(bumpTex, gl, true);
-				} else
+				} else{
 					// use the material's colours
 					setMaterialColors(renderMatName, gl);
+				}
+				if (bumpTex != null){
+					System.out.println("Using texture with " + renderMatName);
+					switchOnTex(bumpTex, gl, true);
+				}
 			}
 		} // end of renderWithMaterial()
 
@@ -835,11 +839,10 @@ public class OBJLoader {
 		private void switchOnTex(Texture tex, GL gl, boolean bump)
 		// switch the lights off, and texturing on
 		{
-
 			//gl.glDisable(GL.GL_LIGHTING);
 			gl.glEnable(GL.GL_TEXTURE_2D);
-			usingTexture = true;
-			usingBumpMap = true;
+//			usingTexture = true;
+//			usingBumpMap = true;
 			if(!bump){
 				gl.glActiveTexture(GL.GL_TEXTURE0);
 			}else{
@@ -1036,6 +1039,7 @@ public class OBJLoader {
 
 				try {
 					if(!bump){
+						System.out.println("no bump " +fnm);
 						texFnm = fnm;
 						gl.glActiveTexture(GL.GL_TEXTURE0);
 						texture = TextureIO.newTexture(new File(texFnm), false);
@@ -1044,6 +1048,7 @@ public class OBJLoader {
 						texture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER,
 								GL.GL_NEAREST);
 					}else{
+						System.out.println("bump " + fnm);
 						bumpTexFnm = fnm;
 						gl.glActiveTexture(GL.GL_TEXTURE1);
 						bumpTex = TextureIO.newTexture(new File(bumpTexFnm), false);
