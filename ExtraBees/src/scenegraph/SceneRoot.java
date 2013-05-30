@@ -27,10 +27,10 @@ public class SceneRoot extends SceneGraphNode{
 	private float scale = 1f;
 	
 	private CGparameter cgFogDensity = null;
-	private float fogDensity = 0.02f;
+	private float fogDensity = 0.05f;
 	
 	private CGparameter cgFogColor = null;
-	private float[] fogColor = {0.7f, 0.7f, 0.7f};
+	private float[] fogColor = {0.5f, 0.5f, 0.5f};
 	private CGparameter cgFogTex2DSampler = null;
 
 	private Fireflies fireflies;
@@ -107,7 +107,7 @@ public class SceneRoot extends SceneGraphNode{
 		GL gl = drawable.getGL();
 		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("fog", "fogDensity"), this.fogDensity);
 		CgGL.cgGLSetParameter3fv(this.getShaderManager().getFragShaderParam("fog", "fogColor"), this.fogColor, 0);
-		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("toonNoTex", "fog"), this.getShaderManager().FALSE);
+		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("toonNoTex", "fog"), this.getShaderManager().TRUE);
 		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("phong", "fogDensity"), this.fogDensity);
 		CgGL.cgGLSetParameter3fv(this.getShaderManager().getFragShaderParam("toonNoTex", "fogColor"), this.fogColor, 0);
 		drawable.getGL().glCallList(this.getObjectList());

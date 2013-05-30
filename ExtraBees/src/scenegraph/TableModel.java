@@ -47,8 +47,12 @@ public class TableModel extends SceneGraphNode {
 
 	@Override
 	public void draw(GLAutoDrawable drawable) {
-		this.getShaderManager().bindFP("normalMap");
+		//this.getShaderManager().bindFP("normalMap");
+		this.getShaderManager().bindVP("phong");
+		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("toonNoTex", "useTexture"), this.getShaderManager().TRUE);
+		this.getShaderManager().bindFP("toonNoTex");
 		drawable.getGL().glCallList(this.getObjectList());
+		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("toonNoTex", "useTexture"), this.getShaderManager().FALSE);
 	}
 	
 	@Override

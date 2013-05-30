@@ -160,7 +160,7 @@ float4 main(vertexIN vIn, uniform float toon, uniform sampler2D decal, uniform f
   float4 resFogColor = loc_color;
   if (fog == 1.0f){
   	float fogFactor = exp2(-abs(vIn.fogExponent));
-  	resFogColor.xyz = lerp(fogColor, texColor, fogFactor);  
+  	resFogColor.xyz = lerp(fogColor, loc_color, fogFactor);  
   }
   
   return resFogColor; 

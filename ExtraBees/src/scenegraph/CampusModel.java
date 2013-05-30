@@ -79,7 +79,10 @@ public class CampusModel extends SceneGraphNode {
 		gl.glPolygonMode(GL.GL_BACK, GL.GL_FILL); // Reset Polygon Drawing Mode
 		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("toonNoTex", "useTexture"), this.getShaderManager().FALSE);
 		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("toonNoTex", "toon"), this.getShaderManager().TRUE);
+		this.getShaderManager().bindVP("fog");
 		this.getShaderManager().bindFP("toonNoTex");
+//		this.getShaderManager().bindVP("fog");
+//		this.getShaderManager().bindFP("fog");
 		gl.glCallList(this.getObjectList()); // Call Your Display List
 	}
 
