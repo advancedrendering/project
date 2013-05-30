@@ -114,4 +114,10 @@ public class GlassModel extends SceneGraphNode {
 			
 			gl.glDisable(GL.GL_TEXTURE_CUBE_MAP);
 	}
+	
+	@Override
+	public void postDraw(GLAutoDrawable drawable) {
+		drawable.getGL().glCallList(this.getObjectList());
+	}
+
 }

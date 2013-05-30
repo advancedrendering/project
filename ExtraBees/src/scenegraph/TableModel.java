@@ -50,4 +50,9 @@ public class TableModel extends SceneGraphNode {
 		this.getShaderManager().bindFP("normalMap");
 		drawable.getGL().glCallList(this.getObjectList());
 	}
+	
+	@Override
+	public void postDraw(GLAutoDrawable drawable) {
+		drawable.getGL().glCallList(this.getObjectList());
+	}
 }

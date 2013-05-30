@@ -168,4 +168,10 @@ public class Fire extends ParticleSystem {
 			}
 		}
 	}
+
+	@Override
+	public void postDraw(GLAutoDrawable drawable) {
+		// TODO Auto-generated method stub
+		
+	}
 }

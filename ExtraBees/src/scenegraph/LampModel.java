@@ -36,6 +36,11 @@ public class LampModel extends SceneGraphNode {
 		gl.glEnable(GL.GL_CULL_FACE);
 	}
 	
+	@Override
+	public void postDraw(GLAutoDrawable drawable) {
+		drawable.getGL().glCallList(this.getObjectList());
+	}
+	
 	
 	static class LampLightModel extends SceneGraphNode{
 		private static int i = 0;
@@ -77,6 +82,11 @@ public class LampModel extends SceneGraphNode {
 			gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE);
 			gl.glCallList(this.getObjectList());
 			gl.glDisable(GL.GL_BLEND);
+		}
+		
+		@Override
+		public void postDraw(GLAutoDrawable drawable) {
+			drawable.getGL().glCallList(this.getObjectList());
 		}
 		
 	}

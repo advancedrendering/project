@@ -99,8 +99,14 @@ public class SceneRoot extends SceneGraphNode{
 
 	@Override
 	public void draw(GLAutoDrawable drawable) {
+		GL gl = drawable.getGL();
 		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("fog", "fogDensity"), this.fogDensity);
 		CgGL.cgGLSetParameter3fv(this.getShaderManager().getFragShaderParam("fog", "fogColor"), this.fogColor, 0);
+		drawable.getGL().glCallList(this.getObjectList());
+	}
+	
+	@Override
+	public void postDraw(GLAutoDrawable drawable) {
 		drawable.getGL().glCallList(this.getObjectList());
 	}
 }

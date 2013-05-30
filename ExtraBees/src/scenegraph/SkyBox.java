@@ -38,4 +38,9 @@ public class SkyBox extends SceneGraphNode {
 //		drawable.getGL().glEnable(GL.GL_LIGHTING);
 //		drawable.getGL().glDisable(GL.GL_TEXTURE_2D);
 	}
+	
+	@Override
+	public void postDraw(GLAutoDrawable drawable) {
+		drawable.getGL().glCallList(this.getObjectList());
+	}
 }
