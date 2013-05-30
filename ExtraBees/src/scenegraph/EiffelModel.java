@@ -47,4 +47,9 @@ public class EiffelModel extends SceneGraphNode {
 		gl.glCallList(this.getObjectList()); // Call Your Display List
 		gl.glEnable(GL.GL_CULL_FACE);
 	}
+	
+	@Override
+	public void postDraw(GLAutoDrawable drawable) {
+		drawable.getGL().glCallList(this.getObjectList());
+	}
 }

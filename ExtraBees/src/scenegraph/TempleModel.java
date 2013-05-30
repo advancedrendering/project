@@ -39,4 +39,9 @@ public class TempleModel extends SceneGraphNode {
 		this.getShaderManager().bindFP("fog");
 		drawable.getGL().glCallList(this.getObjectList());
 	}
+	
+	@Override
+	public void postDraw(GLAutoDrawable drawable) {
+		drawable.getGL().glCallList(this.getObjectList());
+	}
 }

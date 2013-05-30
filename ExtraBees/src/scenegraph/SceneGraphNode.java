@@ -144,11 +144,28 @@ public abstract class SceneGraphNode {
 		for(SceneGraphNode child : children){ // render every child
 			child.render(drawable);
 		}
-
+		gl.glPopMatrix(); // restore matrix
+	}
+	
+	public void postRender(GLAutoDrawable drawable){
+		GL gl = drawable.getGL();
+		gl.glPushMatrix(); // save matrix
+		gl.glTranslatef(translation[0], translation[1], translation[2]);
+		gl.glRotatef(rotation[0], 1, 0, 0);
+		gl.glRotatef(rotation[1], 0, 1, 0);
+		gl.glRotatef(rotation[2], 0, 0, 1);
+		this.postDraw(drawable);// draw the current object
+		this.getShaderManager().setVertexShaderEnabled(false);
+		this.getShaderManager().setFragShaderEnabled(false);
+		for(SceneGraphNode child : children){ // render every child
+			child.postRender(drawable);
+		}
 		gl.glPopMatrix(); // restore matrix
 	}
 	
 	public abstract void draw(GLAutoDrawable drawable);
+	
+	public abstract void postDraw(GLAutoDrawable drawable);
 	
 	public void setMaterial(GL gl, float[] material) {
 		gl.glMaterialfv(GL.GL_FRONT, GL.GL_AMBIENT, material, 0);

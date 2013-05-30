@@ -153,5 +153,10 @@ public class GlassModel extends SceneGraphNode {
 		System.exit(1);
 		return null;
 	}
+	
+	@Override
+	public void postDraw(GLAutoDrawable drawable) {
+		drawable.getGL().glCallList(this.getObjectList());
+	}
 
 }

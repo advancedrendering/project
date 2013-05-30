@@ -72,4 +72,9 @@ public class CampusModel extends SceneGraphNode {
 		this.getShaderManager().bindFP("toonNoTex");
 		gl.glCallList(this.getObjectList()); // Call Your Display List
 	}
+
+	@Override
+	public void postDraw(GLAutoDrawable drawable) {
+		drawable.getGL().glCallList(this.getObjectList());
+	}
 }

@@ -79,6 +79,10 @@ public class HeliModel extends SceneGraphNode {
 		drawable.getGL().glCallList(this.getObjectList());
 	}
 	
+	@Override
+	public void postDraw(GLAutoDrawable drawable) {
+		drawable.getGL().glCallList(this.getObjectList());
+	}
 	
 	private class HeliRotorTop extends SceneGraphNode{
 
@@ -115,6 +119,11 @@ public class HeliModel extends SceneGraphNode {
 			gl.glCallList(this.getObjectList());
 			gl.glPopMatrix();
 			
+		}
+		
+		@Override
+		public void postDraw(GLAutoDrawable drawable) {
+			drawable.getGL().glCallList(this.getObjectList());
 		}
 		
 	}
@@ -157,6 +166,11 @@ public class HeliModel extends SceneGraphNode {
 			gl.glPopMatrix();
 			
 		}
+		
+		@Override
+		public void postDraw(GLAutoDrawable drawable) {
+			drawable.getGL().glCallList(this.getObjectList());
+		}
 	}
 	
 	public class HeliWindow extends SceneGraphNode{
@@ -187,6 +201,11 @@ public class HeliModel extends SceneGraphNode {
 		@Override
 		public void draw(GLAutoDrawable drawable) {
 			this.getShaderManager().bindFP("phongNoTex");
+			drawable.getGL().glCallList(this.getObjectList());
+		}
+		
+		@Override
+		public void postDraw(GLAutoDrawable drawable) {
 			drawable.getGL().glCallList(this.getObjectList());
 		}
 	}

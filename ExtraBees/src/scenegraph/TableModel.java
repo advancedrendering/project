@@ -49,4 +49,9 @@ public class TableModel extends SceneGraphNode {
 	public void draw(GLAutoDrawable drawable) {
 		drawable.getGL().glCallList(this.getObjectList());
 	}
+	
+	@Override
+	public void postDraw(GLAutoDrawable drawable) {
+		drawable.getGL().glCallList(this.getObjectList());
+	}
 }

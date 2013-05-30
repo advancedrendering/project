@@ -186,4 +186,10 @@ public class Fireflies extends ParticleSystem {
 			gl.glDisable(GL.GL_COLOR_MATERIAL);
 		}
 	}
+
+	@Override
+	public void postDraw(GLAutoDrawable drawable) {
+		// TODO Auto-generated method stub
+		
+	}
 }
