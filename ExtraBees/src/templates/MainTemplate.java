@@ -9,7 +9,13 @@ package templates;
  */
 
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.text.DecimalFormat;
 
+import javax.imageio.ImageIO;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.glu.GLU;
@@ -51,11 +57,33 @@ public class MainTemplate extends JoglTemplate {
 	
 	private boolean showFPS = false;
 	float u = 0.0f;
+	
+	/* necessary for time dependent rendering */
+	private long timeOfFirstFrame = 0;
+	private int timeSinceFirstFrame = 0;
+	/* take screenshots? */
+	static boolean takeScreenshots = true;
+	static int xResolution = 1280, yResolution = 720;
+
 
 	public static void main(String[] args) {
 		MainTemplate assignment = new MainTemplate();
 		assignment.setSize(1280, 720);
 		assignment.setVisible(true);
+		if(takeScreenshots){
+			assignment.setBounds(0, 0, 
+					xResolution + assignment.getInsets().left + assignment.getInsets().right, 
+					yResolution + assignment.getInsets().bottom + assignment.getInsets().top);
+			/*
+			 * Create folder "screenshots/"
+			 */
+			File dir = new File("screenshots");
+			try {
+				dir.mkdir();
+			} catch (SecurityException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void init(GLAutoDrawable drawable) {
@@ -79,14 +107,18 @@ public class MainTemplate extends JoglTemplate {
 	public void display(GLAutoDrawable drawable) {
 		fpsCounter.update();
 
-//		float currentTime = System.nanoTime();
-//		if (currentTime - lastTime >= 1000000000.0f) {
-//			timePerFrame = (1000.0f / ((float) getFrameCounter()));
-//			resetFrameCounter();
-//			lastTime = System.nanoTime();
-//		}
-//
-//		incFrameCounter();
+		if(!takeScreenshots){ // normal time measurement
+			if(timeOfFirstFrame == 0){
+				timeOfFirstFrame = System.currentTimeMillis();
+			} else {
+				timeSinceFirstFrame = (int)(System.currentTimeMillis() - timeOfFirstFrame);
+			}
+		} else { // take screenshots with 30fps
+			int fps = 30;
+			timeSinceFirstFrame = (int)(frameCounter * 1000.0/fps);
+			frameCounter++;
+		}
+
 		updateCamCoords();
 		
 		// get the gl object
@@ -149,8 +181,15 @@ public class MainTemplate extends JoglTemplate {
 			gl.glLightfv(GL.GL_LIGHT2, GL.GL_POSITION, lightPos2, 0);
 			
 		SceneRoot.getInstance(drawable).render(drawable);
+		
 
 		gl.glPopMatrix();
+		
+		if(takeScreenshots) {
+			String fileName = new DecimalFormat("0000").format(frameCounter);
+			File file = new File("screenshots/" + fileName + ".png");
+			writeBufferToFile(drawable, file);
+		}
 	}
 	
 public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu) {
@@ -270,6 +309,7 @@ public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu) {
 
 	}
 
+
 	@Override
 	public void keyPressed(KeyEvent e) {
 		super.keyPressed(e);
@@ -310,15 +350,62 @@ public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu) {
 		}
 	}
 
-	public int getFrameCounter() {
-		return this.frameCounter;
-	}
-
-	public void resetFrameCounter() {
-		this.frameCounter = 0;
-	}
-
 	public static TimeFPSCounter getFPSCounter() {
 		return fpsCounter;
 	}
+
+
+private static void writeBufferToFile(GLAutoDrawable drawable, File outputFile) {
+
+	int width = drawable.getWidth();
+	int height = drawable.getHeight();
+	ByteBuffer pixelsRGB = ByteBuffer.allocateDirect(width * height * 3);
+
+	GL gl = drawable.getGL();
+
+	gl.glReadBuffer(GL.GL_BACK);
+	gl.glPixelStorei(GL.GL_PACK_ALIGNMENT, 1);
+
+	gl.glReadPixels(0, 0, width, height, GL.GL_RGB, GL.GL_UNSIGNED_BYTE,
+			pixelsRGB);
+
+	int[] pixelInts = new int[width * height];
+
+	// Convert RGB bytes to ARGB ints with no transparency. Flip image
+	// vertically by reading the
+	// rows of pixels in the byte buffer in reverse - (0,0) is at bottom
+	// left in OpenGL.
+
+	int p = width * height * 3; // Index to first byte (red) in each row.
+	int q; // Index into ByteBuffer
+	int i = 0; // Index into target int[]
+	int w3 = width * 3; // Number of bytes in each row
+
+	for (int row = 0; row < height; row++) {
+		p -= w3;
+		q = p;
+		for (int col = 0; col < width; col++) {
+			int iR = pixelsRGB.get(q++);
+			int iG = pixelsRGB.get(q++);
+			int iB = pixelsRGB.get(q++);
+
+			pixelInts[i++] = 0xFF000000 
+					| ((iR & 0x000000FF) << 16)
+					| ((iG & 0x000000FF) << 8) 
+					| (iB & 0x000000FF);
+		}
+
+	}
+
+	BufferedImage bufferedImage = new BufferedImage(width, height,
+			BufferedImage.TYPE_INT_ARGB);
+
+	bufferedImage.setRGB(0, 0, width, height, pixelInts, 0, width);
+
+	try {
+		ImageIO.write(bufferedImage, "PNG", outputFile);
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+}
 }
