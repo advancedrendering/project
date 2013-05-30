@@ -11,6 +11,14 @@ uniform float4 Light0Position : state.light[0].position;
 uniform float4 Light0Ambient : state.light[0].ambient;
 uniform float4 Light0Diffuse : state.light[0].diffuse;
 uniform float4 Light0Specular : state.light[0].specular;
+uniform float4 Light1Position : state.light[1].position;
+uniform float4 Light1Ambient : state.light[1].ambient;
+uniform float4 Light1Diffuse : state.light[1].diffuse;
+uniform float4 Light1Specular : state.light[1].specular;
+uniform float4 Light2Position : state.light[2].position;
+uniform float4 Light2Ambient : state.light[2].ambient;
+uniform float4 Light2Diffuse : state.light[2].diffuse;
+uniform float4 Light2Specular : state.light[2].specular;
 uniform float4 MaterialAmbient : state.material.ambient;
 uniform float4 MaterialDiffuse : state.material.diffuse;
 uniform float4 MaterialSpecular : state.material.specular;
@@ -27,27 +35,53 @@ float4 main(vertexIN vIn) : COLOR
   float3 ePos = (mul(ModelViewInverse, float4(0, 0, 0, 1))).xyz;
   
   //set lightPosition
-  float3 lPos0 = ePos;//(mul(ModelViewInverse, Light0Position)).xyz;
+  float3 lPos0 = (mul(ModelViewInverse, Light0Position)).xyz;
+  	float3 lPos1 = (mul(ModelViewInverse, Light1Position)).xyz;
+  	  float3 lPos2 = (mul(ModelViewInverse, Light2Position)).xyz;
 
   // compute ambient term
   float4 ambient0 = MaterialAmbient * Light0Ambient;
+    float4 ambient1 = MaterialAmbient * Light1Ambient;
+      float4 ambient2 = MaterialAmbient * Light2Ambient;
 
   // compute the diffuse term
   float3 L0 = normalize(lPos0.xyz - P);
+    float3 L1 = normalize(lPos1.xyz - P);
+      float3 L2 = normalize(lPos2.xyz - P);
+      
   float diffuseLight0 = max(dot(L0, N), 0);
+    float diffuseLight1 = max(dot(L1, N), 0);
+      float diffuseLight2 = max(dot(L2, N), 0);
+      
   float4 diffuse0 = MaterialDiffuse * Light0Diffuse * diffuseLight0;
+   float4 diffuse1 = MaterialDiffuse * Light1Diffuse * diffuseLight1;
+    float4 diffuse2 = MaterialDiffuse * Light2Diffuse * diffuseLight2;
   
   // compute the specular term
   float3 V = normalize(ePos - P);
+  
   float3 H0 = normalize(L0 + V);
+    float3 H1 = normalize(L1 + V);
+      float3 H2 = normalize(L2 + V);
+      
   float specularLight0 = pow(max(dot(H0, N), 0), MaterialShininess);
+    float specularLight1 = pow(max(dot(H1, N), 0), MaterialShininess);
+      float specularLight2 = pow(max(dot(H2, N), 0), MaterialShininess);
+      
   if (diffuseLight0 <= 0) specularLight0 = 0;
+    if (diffuseLight1 <= 0) specularLight1 = 0;
+      if (diffuseLight2 <= 0) specularLight2 = 0;
+      
   float4 specular0 = MaterialSpecular * Light0Specular * specularLight0;
+    float4 specular1 = MaterialSpecular * Light1Specular * specularLight1;
+      float4 specular2 = MaterialSpecular * Light2Specular * specularLight2;
 
   float4 color;
-  color = ambient0 + diffuse0 + specular0;  
+  color = ambient0 + diffuse0 + specular0
+  		 +ambient1 + diffuse1 + specular1
+  		 +ambient2 + diffuse2 + specular2;  
 
-  float toon = dot(L0, N);
+  float toon = dot(L0+L1+L2, N);
   
   if (toon > 0.95f){
   	toon = 1.0f;
