@@ -27,7 +27,7 @@ public class SceneRoot extends SceneGraphNode{
 	private float scale = 1f;
 	
 	private CGparameter cgFogDensity = null;
-	private float fogDensity = 0.1f;
+	private float fogDensity = 0.05f;
 	
 	private CGparameter cgFogColor = null;
 	private float[] fogColor = {0.5f, 0.5f, 0.5f};
@@ -104,7 +104,7 @@ public class SceneRoot extends SceneGraphNode{
 		GL gl = drawable.getGL();
 		//enable drawing of textures
 		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "useTexture"), this.getShaderManager().TRUE);
-		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "fog"), this.getShaderManager().FALSE);
+		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "fog"), this.getShaderManager().TRUE);
 		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("phong", "fog"), this.getShaderManager().TRUE);
 		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("phong", "fogDensity"), this.fogDensity);
 		CgGL.cgGLSetParameter3fv(this.getShaderManager().getFragShaderParam("phong", "fogColor"), this.fogColor, 0);
