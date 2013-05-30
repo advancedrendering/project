@@ -3,6 +3,8 @@ package scenegraph;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 
+import com.sun.opengl.cg.CgGL;
+
 public class EiffelModel extends SceneGraphNode {
 
 	
@@ -32,6 +34,7 @@ public class EiffelModel extends SceneGraphNode {
 	@Override
 	public void draw(GLAutoDrawable drawable) {
 		GL gl = drawable.getGL();
+		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "useTexture"), this.getShaderManager().FALSE);
 		gl.glDisable(GL.GL_CULL_FACE);
 //		gl.glPolygonMode(GL.GL_BACK, GL.GL_LINE); // Draw As Wireframes
 //		gl.glCullFace(GL.GL_FRONT); // Don't Draw Any Front-Facing Polygons
@@ -43,9 +46,9 @@ public class EiffelModel extends SceneGraphNode {
 //		gl.glCullFace(GL.GL_BACK); // Reset The Face To Be Culled
 //		gl.glPolygonMode(GL.GL_BACK, GL.GL_FILL); // Reset Polygon Drawing Mode
 //		ShaderManager.getInstance().bindFP("toon");
-		this.getShaderManager().bindFP("phongNoTex");
 		gl.glCallList(this.getObjectList()); // Call Your Display List
 		gl.glEnable(GL.GL_CULL_FACE);
+		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "useTexture"), this.getShaderManager().TRUE);
 	}
 	
 	@Override

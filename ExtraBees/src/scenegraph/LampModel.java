@@ -3,6 +3,8 @@ package scenegraph;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 
+import com.sun.opengl.cg.CgGL;
+
 
 public class LampModel extends SceneGraphNode {
 	public LampModel(GLAutoDrawable drawable, float scale) {
@@ -77,11 +79,13 @@ public class LampModel extends SceneGraphNode {
 
 		@Override
 		public void draw(GLAutoDrawable drawable) {
+			CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "useTexture"), this.getShaderManager().FALSE);
 			GL gl = drawable.getGL();
 			gl.glEnable(GL.GL_BLEND);
 			gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE);
 			gl.glCallList(this.getObjectList());
 			gl.glDisable(GL.GL_BLEND);
+			CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "useTexture"), this.getShaderManager().TRUE);
 		}
 		
 		@Override
