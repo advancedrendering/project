@@ -122,13 +122,21 @@ public class MainTemplate extends JoglTemplate {
 		applyMouseTranslation(gl);
 		applyMouseRotation(gl);
 		float[] camPosition = BezierCurve.getCoordsAt(Paths.CAMERA_1,Paths.CAMERA_1_U);
-//		float[] camTargetDirection = VectorMath.minus(Paths.CAMERA_TARGET_1,camPosition );
-//		camTargetDirection = VectorMath.normalize(camTargetDirection);
-//		float[] camRotation = new float[3];
-//		camRotation[0] = -(float)Math.toDegrees(Math.atan2((double) camTargetDirection[1],(double) camTargetDirection[2]));
-//		double sqrt = Math.sqrt((Math.pow((double) camTargetDirection[1], 2))+(Math.pow((double) camTargetDirection[2], 2)));
-//		camRotation[1] = 180+(float)Math.toDegrees(Math.atan2((double) camTargetDirection[0],sqrt));
-//		camRotation[2] = 180f;
+		float[] n = VectorMath.minus(camPosition,Paths.CAMERA_TARGET_1);
+		n = VectorMath.normalize(n);
+		float[] up = {0f,1f,0f};
+		float[] u = VectorMath.cross(up, n);
+		u = VectorMath.normalize(u);
+//		float angleOfRotation = VectorMath.angle(up, n);
+		float[] v = VectorMath.cross(n, u);
+		
+		float[] camRotation = new float[3];
+		camRotation[0] = (float) Math.toDegrees(Math.atan2(v[2], n[2]));
+		float sqrt = (float) Math.sqrt((u[0]*u[0])+(u[1]*u[1]));
+		camRotation[1] = (float) Math.toDegrees(Math.atan2(-u[2], sqrt));
+		float s1 = (float) Math.sin(Math.toRadians(camRotation[0]));
+		float c1 = (float) Math.cos(Math.toRadians(camRotation[0]));
+		camRotation[2] = (float) Math.toDegrees(Math.atan2(s1*n[0] - c1*v[0], c1*v[1]- s1* n[1]));
 ////		camRotation[0] = (float)Math.toDegrees(Math.atan2((double) camTargetDirection[1],(double) camTargetDirection[2]));
 ////		camRotation[1] = -(float)Math.toDegrees(Math.atan2((double) camTargetDirection[0]*Math.cos(camRotation[0]),-(double) camTargetDirection[2]));
 ////		camRotation[2] = (float)Math.toDegrees(Math.atan2((double)Math.cos(camRotation[0]),(double)Math.sin(camRotation[0])*(double)Math.sin(camRotation[1])));
@@ -136,11 +144,12 @@ public class MainTemplate extends JoglTemplate {
 //		setView_transx(-camPosition[0]);
 //		setView_transy(-camPosition[1]);
 //		setView_transz(-camPosition[2]);
-//		
-//		setView_rotx(-camRotation[0]);
-//		setView_roty(-camRotation[1]);
-//		setView_rotz(-camRotation[2]);
-//		
+		
+		setView_rotx(-camRotation[0]);
+		setView_roty(-camRotation[1]);
+		setView_rotz(-camRotation[2]);
+		gl.glTranslatef(-camPosition[0], -camPosition[1], -camPosition[2]);
+//		gl.glRotatef(-angleOfRotation, axisOfRotation[0], axisOfRotation[1], axisOfRotation[2]);
 //		gl.glRotatef(this.getView_rotx(), 1, 0, 0);
 //		gl.glRotatef(this.getView_roty(), 0, 1, 0);
 //		gl.glRotatef(this.getView_rotz(), 0, 0, 1);
@@ -161,9 +170,9 @@ public class MainTemplate extends JoglTemplate {
 //		gl.glRotatef(this.getView_rotz(), 0, 0, 1);
 //		gl.glTranslatef(-camPosition[0],-camPosition[1], -camPosition[2]);
 		
-		getGlu().gluLookAt(	camPosition[0], camPosition[1], camPosition[2],
-				Paths.CAMERA_TARGET_1[0], Paths.CAMERA_TARGET_1[1], Paths.CAMERA_TARGET_1[2], 
-				0, 1, 0);
+//		getGlu().gluLookAt(	camPosition[0], camPosition[1], camPosition[2],
+//				Paths.CAMERA_TARGET_1[0], Paths.CAMERA_TARGET_1[1], Paths.CAMERA_TARGET_1[2], 
+//				0, 1, 0);
 
 		
 		gl.glEnable(GL.GL_LIGHTING);

@@ -2,6 +2,15 @@ package templates;
 
 public class VectorMath {
 	
+	private static final float[] X = {1f,0f,0f}, Y = {1f,1f,0f},Z = {0f,0f,1f};
+	
+	
+	public static void main(String[] args){
+		float result = angle(X,Y);
+//		System.out.println(result[0]+" "+result[1]+" "+result[2]);
+		System.out.println(result);
+	}
+	
 	public static float[] minus(float[] a, float[] b){
 		float[] result = {a[0]-b[0],a[1]-b[1],a[2]-b[2]};
 		return result;
@@ -27,19 +36,24 @@ public class VectorMath {
 		return sum;
 	}
 	
-	public static float[] angles(float[] a, float[] b){
-		float[] result = new float[3];
-		result[0] = (float) Math.toDegrees(Math.atan2(b[0], a[0]));
-		result[1] = (float) Math.toDegrees(Math.atan2(b[1], a[1]));
-		result[2] = (float) Math.toDegrees(Math.atan2(b[2], a[2]));
+	public static float angle(float[] a, float[] b){
+		float result = (float) Math.toDegrees(Math.acos(dot(normalize(a), normalize(b))/(length(a)*length(b))));
 		return result;
 	}
-	public static float angleY(float[] a, float[] b){
-		return 0f;
+	
+	public static float angleX(float[] a){
+//		return (float) Math.toDegrees(Math.acos((dot(normalize(a), X))/(length(a))));
+		return (float) Math.toDegrees(Math.atan2(a[2],a[1]));
 	}
 	
-	public static float angleZ(float[] a, float[] b){
-		return 0f;
+	public static float angleY(float[] a){
+//		return (float) Math.toDegrees(Math.acos((dot(normalize(a), Y))/(length(a))));
+		return (float) Math.toDegrees(Math.atan2(a[1],1));
+	}
+	
+	public static float angleZ(float[] a){
+//		return (float) Math.toDegrees(Math.acos((dot(normalize(a), Z))/(length(a))));
+		return (float) Math.toDegrees(Math.atan2(a[2],1));
 	}
 	
 	public static float length(float[] a){
