@@ -51,6 +51,10 @@ public class TableModel extends SceneGraphNode {
 		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "bump"), this.getShaderManager().TRUE);
 		drawable.getGL().glCallList(this.getObjectList());
 		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "bump"), this.getShaderManager().FALSE);
+		drawable.getGL().glActiveTexture(GL.GL_TEXTURE0);
+		drawable.getGL().glBindTexture(GL.GL_TEXTURE_2D, 0);
+		drawable.getGL().glActiveTexture(GL.GL_TEXTURE1);
+		drawable.getGL().glBindTexture(GL.GL_TEXTURE_2D, 0);
 	}
 	
 	@Override

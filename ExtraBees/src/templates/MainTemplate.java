@@ -22,7 +22,7 @@ public class MainTemplate extends JoglTemplate {
 	private static TimeFPSCounter fpsCounter;
 	
 	public static int[] cubemap = new int[1];
-	public static  int CUBEMAP_SIZE = 1024;
+	public static  int CUBEMAP_SIZE = 512;
 	public static  int[] framebuffer = new int[1];
 	public static  int[] renderbuffer = new int[1];
 	
@@ -36,7 +36,7 @@ public class MainTemplate extends JoglTemplate {
 
 	private int frameCounter = 0;
 
-	private boolean animation = false, keyPressedW = false, keyPressedS = false,
+	private boolean animationEnabled = false, cameraControlEnabled = false, cubeMappingEnabled = false, keyPressedW = false, keyPressedS = false,
 			keyPressedA = false, keyPressedD = false, keyPressedQ = false,
 			keyPressedE = false;
 	private float movementSpeed = 0.2f;
@@ -118,16 +118,20 @@ public class MainTemplate extends JoglTemplate {
 			gl.glColor3f(0, 1, 0);
 			drawFPS(drawable);
 		}
-		renderToBuffer(drawable,drawable.getGL(),MainTemplate.getGlu());
+		if (cubeMappingEnabled){
+			renderToBuffer(drawable,drawable.getGL(),MainTemplate.getGlu());
+		}
 		applyMouseTranslation(gl);
 		applyMouseRotation(gl);
+		
+		
+		/** see eulerangle.pdf in /doc **/
 		float[] camPosition = BezierCurve.getCoordsAt(Paths.CAMERA_1,Paths.CAMERA_1_U);
 		float[] n = VectorMath.minus(camPosition,Paths.CAMERA_TARGET_1);
 		n = VectorMath.normalize(n);
 		float[] up = {0f,1f,0f};
 		float[] u = VectorMath.cross(up, n);
 		u = VectorMath.normalize(u);
-//		float angleOfRotation = VectorMath.angle(up, n);
 		float[] v = VectorMath.cross(n, u);
 		
 		float[] camRotation = new float[3];
@@ -137,44 +141,31 @@ public class MainTemplate extends JoglTemplate {
 		float s1 = (float) Math.sin(Math.toRadians(camRotation[0]));
 		float c1 = (float) Math.cos(Math.toRadians(camRotation[0]));
 		camRotation[2] = (float) Math.toDegrees(Math.atan2(s1*n[0] - c1*v[0], c1*v[1]- s1* n[1]));
-////		camRotation[0] = (float)Math.toDegrees(Math.atan2((double) camTargetDirection[1],(double) camTargetDirection[2]));
-////		camRotation[1] = -(float)Math.toDegrees(Math.atan2((double) camTargetDirection[0]*Math.cos(camRotation[0]),-(double) camTargetDirection[2]));
-////		camRotation[2] = (float)Math.toDegrees(Math.atan2((double)Math.cos(camRotation[0]),(double)Math.sin(camRotation[0])*(double)Math.sin(camRotation[1])));
-//		
-//		setView_transx(-camPosition[0]);
-//		setView_transy(-camPosition[1]);
-//		setView_transz(-camPosition[2]);
-		
-		setView_rotx(-camRotation[0]);
-		setView_roty(-camRotation[1]);
-		setView_rotz(-camRotation[2]);
-		gl.glTranslatef(-camPosition[0], -camPosition[1], -camPosition[2]);
-//		gl.glRotatef(-angleOfRotation, axisOfRotation[0], axisOfRotation[1], axisOfRotation[2]);
-//		gl.glRotatef(this.getView_rotx(), 1, 0, 0);
-//		gl.glRotatef(this.getView_roty(), 0, 1, 0);
-//		gl.glRotatef(this.getView_rotz(), 0, 0, 1);
-//		gl.glTranslatef(-camTargetDirection[0],-camTargetDirection[1],-camTargetDirection[2]);
-	
+
+		// camera position and rotation
+		if(!cameraControlEnabled){
+			setView_rotx(-camRotation[0]);
+			setView_roty(-camRotation[1]);
+			setView_rotz(-camRotation[2]);
+			setView_transx(-camPosition[0]);
+			setView_transy(-camPosition[1]);
+			setView_transz(-camPosition[2]);
+		}else{
+			setView_rotx(getView_rotx());
+			setView_roty(getView_roty());
+			setView_rotz(getView_rotz());
+			setView_transx(getView_transx());
+			setView_transy(getView_transy());
+			setView_transz(getView_transz());
+		}
 		// press space to start animation
-		if(animation){
+		if(animationEnabled){
 			Blocks.heliPathActive = true; // heli animation starts
 		}
-				
 		if(Blocks.camera_1_PathActive && Paths.CAMERA_1_U < 1.0f){ // if camera 1 path is active
 			Paths.CAMERA_1_U += Paths.getCamera1Speed();
 		}
-		
-//		getGlu().gluLookAt(	0, 0, 0, Paths.CAMERA_TARGET_1[0], Paths.CAMERA_TARGET_1[1], Paths.CAMERA_TARGET_1[2], 0, 1, 0);
-//		gl.glRotatef(this.getView_rotx(), 1, 0, 0);
-//		gl.glRotatef(this.getView_roty(), 0, 1, 0);
-//		gl.glRotatef(this.getView_rotz(), 0, 0, 1);
-//		gl.glTranslatef(-camPosition[0],-camPosition[1], -camPosition[2]);
-		
-//		getGlu().gluLookAt(	camPosition[0], camPosition[1], camPosition[2],
-//				Paths.CAMERA_TARGET_1[0], Paths.CAMERA_TARGET_1[1], Paths.CAMERA_TARGET_1[2], 
-//				0, 1, 0);
-
-		
+			
 		gl.glEnable(GL.GL_LIGHTING);
 		
 			float[] lightPos0 = new float[] {-1f,-1f,-1f, 0f };
@@ -332,8 +323,11 @@ public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu) {
 		} else if (e.getKeyCode() == KeyEvent.VK_S) {
 			keyPressedS = true;
 		} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-			animation = !animation;
-			System.out.println("Animation: " + animation);
+			animationEnabled = !animationEnabled;
+		} else if (e.getKeyCode() == KeyEvent.VK_C) {
+			cameraControlEnabled = !cameraControlEnabled;
+		} else if (e.getKeyCode() == KeyEvent.VK_M) {
+			cubeMappingEnabled = !cubeMappingEnabled;
 		}
 	}
 

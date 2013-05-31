@@ -841,8 +841,8 @@ public class OBJLoader {
 		{
 			//gl.glDisable(GL.GL_LIGHTING);
 			gl.glEnable(GL.GL_TEXTURE_2D);
-//			usingTexture = true;
-//			usingBumpMap = true;
+			usingTexture = true;
+			usingBumpMap = bump;
 			if(!bump){
 				gl.glActiveTexture(GL.GL_TEXTURE0);
 			}else{
