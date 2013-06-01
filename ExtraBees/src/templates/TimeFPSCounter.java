@@ -45,16 +45,19 @@ public class TimeFPSCounter {
 	        //Update last time, it is now the current for next frame calculation
 	        lastTime = currentTime;
 	        //Accumulate time
-	        accumulatedTimeNanos += timePassedNanos;
+	        if(Blocks.animationActive)
+	        	accumulatedTimeNanos += timePassedNanos;
 
 	        //FPS
 	        frames++;
+
 
 //	        System.out.println(getAccumulatedTimePassedMillis());
 	        //Calculate fps
 	        long dt = currentTime-firstFrameTime;
 	        if(dt >= fpsRefreshTimeNanos) {
 	            fps = (float)(1000*frames)/(float)(dt / 1000000);
+		        System.out.println("fps "+fps);
 	            frames = 0;
 	            firstFrameTime = currentTime;
 	        }
@@ -94,5 +97,9 @@ public class TimeFPSCounter {
 	/** @return the number of frames per seconds */
 	public final float getFPS() {
 	    return fps;
+	}
+
+	public void resetAccumulatedTime() {
+		this.accumulatedTimeNanos = 0;		
 	}
 }

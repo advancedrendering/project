@@ -103,7 +103,9 @@ public class GlassModel extends SceneGraphNode {
 //				gl.glTranslatef(17.96f, 2.45f, 23.346f);
 //			MainTemplate.getGlut().glutSolidCube(0.5f);
 //				MainTemplate.getGlut().glutSolidSphere(0.2f,20,20);
+			gl.glDisable(GL.GL_CULL_FACE);
 			drawable.getGL().glCallList(this.getObjectList());
+			gl.glEnable(GL.GL_CULL_FACE);
 //				gl.glPopMatrix();
 		}
 		gl.glDisable(GL.GL_TEXTURE_GEN_S);

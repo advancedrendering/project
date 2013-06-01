@@ -36,10 +36,9 @@ public class MainTemplate extends JoglTemplate {
 
 	private int frameCounter = 0;
 
-	private boolean animationEnabled = false, cameraControlEnabled = false, cubeMappingEnabled = false, keyPressedW = false, keyPressedS = false,
+	private boolean cameraControlEnabled = false, cubeMappingEnabled = false, keyPressedW = false, keyPressedS = false,
 			keyPressedA = false, keyPressedD = false, keyPressedQ = false,
 			keyPressedE = false;
-	private boolean camera2ControlEnable = false;
 	private float movementSpeed = 0.2f;
 	
 	private boolean showFPS = false;
@@ -87,6 +86,21 @@ public class MainTemplate extends JoglTemplate {
 		gl.glEnable(GL.GL_CULL_FACE);
 		// load mesh
 //		lastTime = System.nanoTime();
+	}
+	
+	
+	protected void drawControlPoints(GL gl, float[] ctrlPoints)
+	{
+		//TODO implement method to draw control points
+//		gl.glBegin(GL.GL_POINTS);
+			for(int i = 0; i < ctrlPoints.length; i+=3){
+				gl.glPushMatrix();
+				gl.glColor3f(1f, 1f, 0f);
+				gl.glTranslatef(ctrlPoints[i],ctrlPoints[i+1],ctrlPoints[i+2]);
+				getGlut().glutSolidSphere(0.05f, 8, 8);
+				gl.glPopMatrix();
+			}
+//		gl.glEnd();
 	}
 	
 
@@ -148,14 +162,14 @@ public class MainTemplate extends JoglTemplate {
 			setView_transz(getView_transz());
 		}
 		// press space to start animation
-		if(animationEnabled){
-			Blocks.heliPathActive = true; // heli animation starts
-		}
-		if(Blocks.camera_1_PathActive && Paths.CAMERA_1_U < 1.0f){ // if camera 1 path is active
-			Paths.CAMERA_1_U += Paths.getCamera1Speed();
-		}
-		if (Blocks.camera_2_PathActive && Paths.CAMERA_2_U<1.0f) {
-			Paths.CAMERA_2_U+= Paths.getCamera1Speed();
+		if(Blocks.animationActive){
+			Blocks.update();
+			if(Blocks.camera_1_PathActive && (Paths.CAMERA_1_U+Paths.getCamera1Speed()) < 1.0f){ // if camera 1 path is active
+				Paths.CAMERA_1_U += Paths.getCamera1Speed();
+			}
+			if (Blocks.camera_2_PathActive && Paths.CAMERA_2_U<1.0f) {
+				Paths.CAMERA_2_U += Paths.getCamera2Speed();
+			}
 		}
 			
 		gl.glEnable(GL.GL_LIGHTING);
@@ -193,6 +207,8 @@ public class MainTemplate extends JoglTemplate {
 			gl.glLightfv(GL.GL_LIGHT3, GL.GL_POSITION, lightPos3, 0);
 			
 		SceneRoot.getInstance(drawable).render(drawable);
+//		drawControlPoints(gl, Paths.CAMERA_1);
+//		drawControlPoints(gl, Paths.GLASS_ON_TABLE);
 		
 
 		gl.glPopMatrix();
@@ -315,11 +331,18 @@ public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu) {
 		} else if (e.getKeyCode() == KeyEvent.VK_S) {
 			keyPressedS = true;
 		} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-			animationEnabled = !animationEnabled;
+			Blocks.animationActive = !Blocks.animationActive;
 		} else if (e.getKeyCode() == KeyEvent.VK_C) {
 			cameraControlEnabled = !cameraControlEnabled;
 		} else if (e.getKeyCode() == KeyEvent.VK_M) {
 			cubeMappingEnabled = !cubeMappingEnabled;
+		} else if (e.getKeyCode() == KeyEvent.VK_N) {
+			Paths.CAMERA_1_U = 0.0f;
+			Paths.CAMERA_2_U = 0.0f;
+			Paths.HELI_1_TARGET_U = 0.0f;
+			Paths.HELI_1_U = 0.0f;
+			fpsCounter.resetAccumulatedTime();
+			Blocks.animationActive = false;
 		}
 	}
 

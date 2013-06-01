@@ -9,6 +9,7 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLException;
 
 import templates.Blocks;
+import templates.MainTemplate;
 
 import com.sun.opengl.util.texture.Texture;
 import com.sun.opengl.util.texture.TextureIO;
@@ -47,13 +48,13 @@ public class Fire extends ParticleSystem {
 		ParticleSystemSettings loc_settings = new ParticleSystemSettings();
 		
 		loc_settings.capacity = 100;
-		loc_settings.emitRate = 1f; //particles per millisecond
+		loc_settings.emitRate = 10f; //particles per millisecond
 		//create external force
-		float[] loc_external_force = {0.0f,500.0f, 0.0f};
+		float[] loc_external_force = {0.0f,50.0f, 0.0f};
 		loc_settings.general_external_force = loc_external_force;
 		//lifetime
-		loc_settings.lifetime = 300.0f; //1.3 seconds
-		loc_settings.point_size = 64.0f;
+		loc_settings.lifetime = 250.0f; //1.3 seconds
+		loc_settings.point_size = 16.0f;
 		
 		ParticleEmitterSettings loc_emi_settings = new ParticleEmitterSettings();
 		float[] min_init_acc = {0.0f, 0.0f, 0.0f};
@@ -84,7 +85,8 @@ public class Fire extends ParticleSystem {
 		
 		loc_settings.emitter_settings = loc_emi_settings;
 		//create Planar Emitter
-		float[] position_vector = {16.938f, 4.762f, 23.160f};
+		float[] position_vector = {17.831f, 2.472f, 23.023f};
+		float radius = 0.005f;
 		float[] first_dir_vector = {1.0f, 0.0f, 0.0f};
 		float[] second_dir_vector = {0.0f, 0.0f, 1.0f};
 		float min_first_scalar = -0.5f* (float)Math.PI;
@@ -92,14 +94,14 @@ public class Fire extends ParticleSystem {
 		float min_second_scalar = -(float)Math.PI;
 		float max_second_scalar = +(float)Math.PI;
 		loc_settings.emitter = new FireEmitter(loc_settings.emitRate, loc_settings.emitter_settings
-				, position_vector, first_dir_vector, second_dir_vector,0.2f, min_first_scalar, max_first_scalar, min_second_scalar, max_second_scalar);
+				, position_vector, first_dir_vector, second_dir_vector,radius, min_first_scalar, max_first_scalar, min_second_scalar, max_second_scalar);
 		
 		return loc_settings;
 	}
 	
 	@Override
 	public void draw(GLAutoDrawable drawable){
-		if(true){
+		if(Blocks.candleFlameActive){
 			// get the gl object
 			GL gl = drawable.getGL();
 			
@@ -111,7 +113,7 @@ public class Fire extends ParticleSystem {
 				float elapsed_time = current_time - lastTime;
 				lastTime = current_time;
 				//update the particle system
-				update(elapsed_time);
+				update(MainTemplate.getFPSCounter().getTimePassedMillis());
 				//draw particles
 				
 				//use point sprites
@@ -150,8 +152,6 @@ public class Fire extends ParticleSystem {
 				gl.glDepthMask(false);
 				
 				gl.glEnable(GL.GL_COLOR_MATERIAL);
-				//make green rain :-)
-				gl.glColor3f(0.0f, 1.0f, 0.0f);
 				
 				gl.glBegin(GL.GL_POINTS);
 					for (Particle par : this.active_particles){

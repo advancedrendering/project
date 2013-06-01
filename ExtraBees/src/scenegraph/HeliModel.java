@@ -4,10 +4,12 @@ import java.io.File;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
+import javax.sound.midi.Patch;
 
 import templates.BezierCurve;
 import templates.Blocks;
 import templates.Paths;
+import templates.VectorMath;
 
 
 import com.sun.opengl.cg.CgGL;
@@ -47,28 +49,30 @@ public class HeliModel extends SceneGraphNode {
 	public void animate(GLAutoDrawable drawable) {
 
 		float[] heliPosition = BezierCurve.getCoordsAt(Paths.HELI_1,Paths.HELI_1_U);
-		float[] heliRotation = {0.0f,0.0f,0.0f};
-		float[] heliTarget = {Paths.CAMERA_1[0]-heliPosition[0],
-							  (Paths.CAMERA_1[1]-0.5f)-heliPosition[1],
-							  Paths.CAMERA_1[2]-heliPosition[2]};
 
-		if(Blocks.heliPathActive){
-			if(Paths.HELI_1_U >=0.15f){
-				Blocks.rain = true;
-			}
-			if(Paths.HELI_1_U >=0.4f){
-					Blocks.heliPathActive = false;
-					Blocks.camera_1_PathActive = true;
-			}else{
-				heliRotation[0] = -(float)Math.toDegrees(Math.atan2((double) heliTarget[1],(double) heliTarget[2]));
-				double sqrt = Math.sqrt((Math.pow((double) heliTarget[1], 2))+(Math.pow((double) heliTarget[2], 2)));
-				heliRotation[1] =  (float)Math.toDegrees(Math.atan2((double) heliTarget[0],sqrt));
-				heliRotation[2] = 180f;
+//		float[] heliPosition = BezierCurve.getCoordsAt(Paths.HELI_1,Paths.HELI_1_U);
+		float[] heliTarget = BezierCurve.getCoordsAt(Paths.HELI_TARGET_1,Paths.HELI_1_TARGET_U);
+
+		if(Blocks.animationActive && (Blocks.heliPath1Active)){
+			heliPosition = BezierCurve.getCoordsAt(Paths.HELI_1,Paths.HELI_1_U);
+			heliTarget = BezierCurve.getCoordsAt(Paths.HELI_TARGET_1,Paths.HELI_1_TARGET_U);
+			if(Paths.HELI_1_U < 1.0f)
 				Paths.HELI_1_U += Paths.getHeliSpeed();
-			}
 		}
+		if(Blocks.animationActive && (Blocks.heliPath1TargetActive)){
+			if(Paths.HELI_1_TARGET_U < 1.0f)
+				Paths.HELI_1_TARGET_U += Paths.getHeliTargetSpeed();
+		}
+		
+		if(Blocks.animationActive && (Blocks.heliPath2Active)){
+			heliPosition = BezierCurve.getCoordsAt(Paths.CAMERA_1,Paths.CAMERA_1_U);
+			heliPosition[1] = heliPosition[1]+0.2f;
+			heliTarget = Paths.GLASS_ON_TABLE;
+		}
+		
 
-		this.setRotation(heliRotation);
+		float[] heliRotation = VectorMath.getEulerAngles(heliPosition, heliTarget);
+		this.setRotation(-heliRotation[0],heliRotation[1]+180,heliRotation[2]);
 		this.setTranslation(heliPosition);
 
 

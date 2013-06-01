@@ -15,6 +15,7 @@ public class TableModel extends SceneGraphNode {
 	
 	private GlassModel glass = null;
 	private EiffelModel eiffel = null;
+	private CandleModel candle = null;
 	
 	
 	public TableModel(GLAutoDrawable drawable, float scale) {
@@ -26,7 +27,9 @@ public class TableModel extends SceneGraphNode {
 		
 		eiffel = new EiffelModel(drawable, scale);
 		this.addChild(eiffel);
-		this.init(drawable);
+		
+		candle = new CandleModel(drawable, scale);
+		this.addChild(candle);
 	}
 
 	@Override
