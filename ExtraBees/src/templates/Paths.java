@@ -29,6 +29,7 @@ public class Paths {
 	}	
 	public static float getCamera2Speed() {
 		return (float) (Math.pow(MainTemplate.getFPSCounter().getTimePassedMillis()*0.0001,4));
+		
 	}
 
 

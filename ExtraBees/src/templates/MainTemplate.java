@@ -129,8 +129,18 @@ public class MainTemplate extends JoglTemplate {
 		/** see eulerangle.pdf in /doc **/
 		
 		float[] camPosition = BezierCurve.getCoordsAt(Paths.CAMERA_1,Paths.CAMERA_1_U);
+		
+		if(Blocks.camera_2_PathActive){
+			camPosition = BezierCurve.getCoordsAt(Paths.CAMERA_2, Paths.CAMERA_2_U);
+		}
+		//active camera path 2
+		if(Paths.CAMERA_1_U>=1f){
+			Blocks.camera_2_PathActive= true;
+			Blocks.camera_1_PathActive=false;
+		
+		}			
 		float[] camRotation = VectorMath.getEulerAngles(camPosition, Paths.GLASS_ON_TABLE);
-
+		
 		// camera position and rotation
 		if(!cameraControlEnabled){
 			setView_rotx(-camRotation[0]);
