@@ -127,20 +127,7 @@ public class MainTemplate extends JoglTemplate {
 		
 		/** see eulerangle.pdf in /doc **/
 		float[] camPosition = BezierCurve.getCoordsAt(Paths.CAMERA_1,Paths.CAMERA_1_U);
-		float[] n = VectorMath.minus(camPosition,Paths.CAMERA_TARGET_1);
-		n = VectorMath.normalize(n);
-		float[] up = {0f,1f,0f};
-		float[] u = VectorMath.cross(up, n);
-		u = VectorMath.normalize(u);
-		float[] v = VectorMath.cross(n, u);
-		
-		float[] camRotation = new float[3];
-		camRotation[0] = (float) Math.toDegrees(Math.atan2(v[2], n[2]));
-		float sqrt = (float) Math.sqrt((u[0]*u[0])+(u[1]*u[1]));
-		camRotation[1] = (float) Math.toDegrees(Math.atan2(-u[2], sqrt));
-		float s1 = (float) Math.sin(Math.toRadians(camRotation[0]));
-		float c1 = (float) Math.cos(Math.toRadians(camRotation[0]));
-		camRotation[2] = (float) Math.toDegrees(Math.atan2(s1*n[0] - c1*v[0], c1*v[1]- s1* n[1]));
+		float[] camRotation = VectorMath.getEulerAngles(camPosition, Paths.GLASS_ON_TABLE);
 
 		// camera position and rotation
 		if(!cameraControlEnabled){

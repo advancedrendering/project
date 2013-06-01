@@ -59,4 +59,22 @@ public class VectorMath {
 	public static float length(float[] a){
 		return (float) Math.sqrt(Math.pow(a[0], 2)+Math.pow(a[1], 2)+Math.pow(a[2], 2));
 	}
+	
+	public static float[] getEulerAngles(float[] position, float[] target){
+		float[] n = VectorMath.minus(position,target);
+		n = VectorMath.normalize(n);
+		float[] up = {0f,1f,0f};
+		float[] u = VectorMath.cross(up, n);
+		u = VectorMath.normalize(u);
+		float[] v = VectorMath.cross(n, u);
+		
+		float[] camRotation = new float[3];
+		camRotation[0] = (float) Math.toDegrees(Math.atan2(v[2], n[2]));
+		float sqrt = (float) Math.sqrt((u[0]*u[0])+(u[1]*u[1]));
+		camRotation[1] = (float) Math.toDegrees(Math.atan2(-u[2], sqrt));
+		float s1 = (float) Math.sin(Math.toRadians(camRotation[0]));
+		float c1 = (float) Math.cos(Math.toRadians(camRotation[0]));
+		camRotation[2] = (float) Math.toDegrees(Math.atan2(s1*n[0] - c1*v[0], c1*v[1]- s1* n[1]));
+		return camRotation;
+	}
 }
