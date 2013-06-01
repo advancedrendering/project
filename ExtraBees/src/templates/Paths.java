@@ -2,6 +2,7 @@ package templates;
 
 //** storage class for animation paths and inherent stuff **//
 public class Paths {
+
 	public static final float[] HELI_1 = {22.399f, 3.046f, 11.647f,
 										  22.844f, 12.472f, 8.524f,
 										  
@@ -45,14 +46,18 @@ public class Paths {
 
 
 	public static float getCamera1Speed() {
-		return (float) (MainTemplate.getFPSCounter().getFPS()*0.0001);
+		return (float) (MainTemplate.getFPSCounter().getTimePassedMillis()*0.0001);
+//		return (float) (MainTemplate.getFPSCounter().getFPS()*0.0001);
 	}	
 	public static float getCamera2Speed() {
+		//return (float) (Math.pow(MainTemplate.getFPSCounter().getTimePassedMillis()*0.0001,4));
 		return (float) (MainTemplate.getFPSCounter().getFPS()*0.000001);
+		
 	}
 
 
 	public static float getHeliSpeed() {
+		//return  (float)(MainTemplate.getFPSCounter().getTimePassedMillis()*0.0007*Math.pow(HELI_1_U, 2));
 		return  (float)(0.00005f*(Math.pow(MainTemplate.getFPSCounter().getAccumulatedTimePassedMillis()*0.0004,2))+0.000001);
 	}
 	public static float getHeliTargetSpeed() {
