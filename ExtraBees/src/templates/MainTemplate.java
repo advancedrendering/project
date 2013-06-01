@@ -39,6 +39,7 @@ public class MainTemplate extends JoglTemplate {
 	private boolean animationEnabled = false, cameraControlEnabled = false, cubeMappingEnabled = false, keyPressedW = false, keyPressedS = false,
 			keyPressedA = false, keyPressedD = false, keyPressedQ = false,
 			keyPressedE = false;
+	private boolean camera2ControlEnable = false;
 	private float movementSpeed = 0.2f;
 	
 	private boolean showFPS = false;
@@ -126,6 +127,7 @@ public class MainTemplate extends JoglTemplate {
 		
 		
 		/** see eulerangle.pdf in /doc **/
+		
 		float[] camPosition = BezierCurve.getCoordsAt(Paths.CAMERA_1,Paths.CAMERA_1_U);
 		float[] camRotation = VectorMath.getEulerAngles(camPosition, Paths.GLASS_ON_TABLE);
 
@@ -151,6 +153,9 @@ public class MainTemplate extends JoglTemplate {
 		}
 		if(Blocks.camera_1_PathActive && Paths.CAMERA_1_U < 1.0f){ // if camera 1 path is active
 			Paths.CAMERA_1_U += Paths.getCamera1Speed();
+		}
+		if (Blocks.camera_2_PathActive && Paths.CAMERA_2_U<1.0f) {
+			Paths.CAMERA_2_U+= Paths.getCamera1Speed();
 		}
 			
 		gl.glEnable(GL.GL_LIGHTING);
