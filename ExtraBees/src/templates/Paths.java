@@ -15,7 +15,7 @@ public class Paths {
 	public static float CAMERA_1_U = 0.0f;
 	
 	
-	public static final float[] CAMERA_TARGET_1 = {17.972f, 2.45f, 23.340f};
+	public static final float[] GLASS_ON_TABLE = {17.972f, 2.45f, 23.340f};
 
 
 	public static float getCamera1Speed() {
