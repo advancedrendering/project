@@ -12,13 +12,13 @@ public class Blocks {
 	public static boolean dynamicCubeMappingActive = false;
 	public static boolean fogActive = true;
 	public static boolean heliPath1TargetActive= false;
-	public static boolean cubemappingGlass = false;
+	public static boolean cubemappingGlass = true;
 	public static boolean cubemappingHeli = false;
 
 	
 	public static void update(){
 		
-		if(timeIsBetween(0, 100)){
+		if(timeIsBetween(0, 1000)){
 			cubemappingGlass = true;
 		}else{
 			cubemappingGlass = false;
