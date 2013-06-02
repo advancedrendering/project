@@ -55,7 +55,7 @@ public class MainTemplate extends JoglTemplate {
 	static boolean takeScreenshots = false;
 	static int xResolution = 1280, yResolution = 720;
 
-	public static int[] frame_as_tex = new int[1];
+	public static int[] frame_as_tex = null;
 
 
 	public static void main(String[] args) {
@@ -91,25 +91,27 @@ public class MainTemplate extends JoglTemplate {
 		// backface culling
 		gl.glEnable(GL.GL_CULL_FACE);
 		
+		gl.glEnable(GL.GL_DOUBLEBUFFER);
+		
 		//generate texture to hold frame
-		gl.glGenTextures(1, MainTemplate.frame_as_tex, 0);
-		
-		FloatBuffer currentBuffer = FloatBuffer.allocate(MainTemplate.xResolution * MainTemplate.yResolution * 4);
-		for (int y = 0; y < MainTemplate.yResolution; y++) {
-			for (int x = 0; x < MainTemplate.xResolution; x++) {
-				currentBuffer.put(0.0f); //R
-				currentBuffer.put(1.0f); //G
-				currentBuffer.put(0.0f); //B
-				currentBuffer.put(1.0f); //A
-			}
-		}
-		currentBuffer.rewind();
-		
-		// create textures
-		gl.glBindTexture(GL.GL_TEXTURE_2D, MainTemplate.frame_as_tex[0]);
-		gl.glTexParameteri(GL.GL_TEXTURE_2D,GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
-		gl.glTexParameteri(GL.GL_TEXTURE_2D,GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
-		gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA,  MainTemplate.xResolution, MainTemplate.yResolution, 0, GL.GL_RGBA, GL. GL_FLOAT, null);// currentBuffer);
+//		gl.glGenTextures(1, MainTemplate.frame_as_tex, 0);
+//		
+//		FloatBuffer currentBuffer = FloatBuffer.allocate(MainTemplate.xResolution * MainTemplate.yResolution * 4);
+//		for (int y = 0; y < MainTemplate.yResolution; y++) {
+//			for (int x = 0; x < MainTemplate.xResolution; x++) {
+//				currentBuffer.put(0.0f); //R
+//				currentBuffer.put(1.0f); //G
+//				currentBuffer.put(0.0f); //B
+//				currentBuffer.put(1.0f); //A
+//			}
+//		}
+//		currentBuffer.rewind();
+//		
+//		// create textures
+//		gl.glBindTexture(GL.GL_TEXTURE_RECTANGLE_NV, MainTemplate.frame_as_tex[0]);
+//		gl.glTexParameteri(GL.GL_TEXTURE_RECTANGLE_NV,GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+//		gl.glTexParameteri(GL.GL_TEXTURE_RECTANGLE_NV,GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+//		gl.glTexImage2D(GL.GL_TEXTURE_RECTANGLE_NV, 0, GL.GL_RGBA,  MainTemplate.xResolution, MainTemplate.yResolution, 0, GL.GL_RGBA, GL. GL_FLOAT, null);// currentBuffer);
 		// load mesh
 //		lastTime = System.nanoTime();
 	}
@@ -256,35 +258,52 @@ public class MainTemplate extends JoglTemplate {
 			gl.glLightfv(GL.GL_LIGHT4, GL.GL_POSITION, lightPos4, 0);
 			
 			
-		//bind framebuffer
-		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, framebuffer[0]);	
-		gl.glBindTexture(GL.GL_TEXTURE_2D, MainTemplate.frame_as_tex[0]);	
-
-		//Set up depthbuffer
-		gl.glBindRenderbufferEXT(GL.GL_RENDERBUFFER_EXT, renderbuffer[0]);
-		gl.glRenderbufferStorageEXT(GL.GL_RENDERBUFFER_EXT, GL.GL_DEPTH_COMPONENT, MainTemplate.xResolution, MainTemplate.yResolution);
-		gl.glFramebufferRenderbufferEXT(GL.GL_FRAMEBUFFER_EXT, GL.GL_DEPTH_ATTACHMENT_EXT, GL.GL_RENDERBUFFER_EXT, renderbuffer[0]);
-	
-		int drawBuffers[] = new int[1];
-		drawBuffers[0] = GL.GL_COLOR_ATTACHMENT0_EXT;
-		gl.glDrawBuffers(1, drawBuffers, 0);
+//		//bind framebuffer
+//		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, framebuffer[0]);	
+//		gl.glBindTexture(GL.GL_TEXTURE_2D, MainTemplate.frame_as_tex[0]);	
+//
+//		//Set up depthbuffer
+//		gl.glBindRenderbufferEXT(GL.GL_RENDERBUFFER_EXT, renderbuffer[0]);
+//		gl.glRenderbufferStorageEXT(GL.GL_RENDERBUFFER_EXT, GL.GL_DEPTH_COMPONENT, MainTemplate.xResolution, MainTemplate.yResolution);
+//		gl.glFramebufferRenderbufferEXT(GL.GL_FRAMEBUFFER_EXT, GL.GL_DEPTH_ATTACHMENT_EXT, GL.GL_RENDERBUFFER_EXT, renderbuffer[0]);
+//	
+//		int drawBuffers[] = new int[1];
+//		drawBuffers[0] = GL.GL_COLOR_ATTACHMENT0_EXT;
+//		gl.glDrawBuffers(1, drawBuffers, 0);
+//		
+//		gl.glFramebufferTexture2DEXT(GL.GL_FRAMEBUFFER_EXT, GL.GL_COLOR_ATTACHMENT0_EXT, GL.GL_TEXTURE_2D, MainTemplate.frame_as_tex[0], 0);
 		
-		gl.glFramebufferTexture2DEXT(GL.GL_FRAMEBUFFER_EXT, GL.GL_COLOR_ATTACHMENT0_EXT, GL.GL_TEXTURE_2D, MainTemplate.frame_as_tex[0], 0);
+		gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 			
+		SceneRoot.getInstance(drawable).getShaderManager().setDefaultFragmentProgName("phong");
+		SceneRoot.getInstance(drawable).getShaderManager().bindFP();
 		SceneRoot.getInstance(drawable).render(drawable);
+		
+		this.copyWindowToTexture(drawable, GL.GL_TEXTURE_RECTANGLE_NV);
 //		drawControlPoints(gl, Paths.CAMERA_1);
 //		drawControlPoints(gl, Paths.GLASS_ON_TABLE);
 		
-		gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
-				
-		//finally unbind buffers to return to the normal buffers
-		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, 0); 
-		gl.glBindRenderbufferEXT(GL.GL_RENDERBUFFER_EXT, 0);
-		gl.glEnable(GL.GL_TEXTURE_2D);
+//		gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
+//				
+//		//finally unbind buffers to return to the normal buffers
+//		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, 0); 
+//		gl.glBindRenderbufferEXT(GL.GL_RENDERBUFFER_EXT, 0);
+//		gl.glEnable(GL.GL_TEXTURE_2D);
 		SceneRoot.getInstance(drawable).getShaderManager().setDefaultFragmentProgName("post");
+		SceneRoot.getInstance(drawable).getShaderManager().bindFP();
 		CgGL.cgGLSetTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"), MainTemplate.frame_as_tex[0]); 
-		SceneRoot.getInstance(drawable).postRender(drawable);
-		gl.glDisable(GL.GL_TEXTURE_2D);
+		CgGL.cgGLEnableTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"));
+		
+//		gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+//		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+//		
+//		SceneRoot.getInstance(drawable).postRender(drawable);
+		
+		drawable.swapBuffers();
+		
+		
+//		gl.glDisable(GL.GL_TEXTURE_2D);
 		gl.glPopMatrix();
 		
 		if(takeScreenshots) {
@@ -445,6 +464,35 @@ public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu, int[] cubema
 
 	public static TimeFPSCounter getFPSCounter() {
 		return fpsCounter;
+	}
+
+	
+	public void copyWindowToTexture(GLAutoDrawable drawable, int target){
+		GL gl = drawable.getGL();
+		//check whether we have to create a new texture
+		if (MainTemplate.frame_as_tex != null){
+			gl.glBindTexture(target, MainTemplate.frame_as_tex[0]);
+			//copy image to texture
+			gl.glCopyTexSubImage2D(target, 0, 0, 0, 0, 0, MainTemplate.xResolution, MainTemplate.yResolution);
+		}
+		else{
+			MainTemplate.frame_as_tex = new int[1];
+			// generate texture name
+			gl.glGenTextures(1, MainTemplate.frame_as_tex , 0);
+			
+			//CgGL.cgGLSetupSampler(this.getShaderManager().getFragShaderParam("post", "sceneTex"), MainTemplate.frame_as_tex[0]);
+			
+			//bind texture
+			gl.glBindTexture(target, MainTemplate.frame_as_tex[0]);
+
+		    gl.glTexParameteri(target, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
+		    gl.glTexParameteri(target, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+		    gl.glTexParameteri(target, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP_TO_EDGE);
+		    gl.glTexParameteri(target, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP_TO_EDGE);
+		    
+		    //copy image to texture
+		    gl.glCopyTexImage2D(target, 0, GL.GL_RGB, 0, 0, MainTemplate.xResolution, MainTemplate.yResolution, 0);
+		}
 	}
 
 

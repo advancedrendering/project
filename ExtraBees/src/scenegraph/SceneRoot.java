@@ -105,8 +105,6 @@ public class SceneRoot extends SceneGraphNode{
 		
 		//post processing parameter
 		this.getShaderManager().addFragShaderParam("post", "sceneTex");
-		
-		CgGL.cgGLSetupSampler(this.getShaderManager().getFragShaderParam("post", "sceneTex"), MainTemplate.frame_as_tex[0]);
 	}
 
 	@Override
