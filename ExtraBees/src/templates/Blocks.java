@@ -55,6 +55,10 @@ public class Blocks {
 		}else{
 			cubemappingGlass = false;
 		}
+		if(timeIsBetween(50000,300000))
+		{
+			camera_2_PathActive=true;
+		}
 	}
 	
 	
