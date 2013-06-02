@@ -49,7 +49,7 @@ public class Fireflies extends ParticleSystem {
 		loc_settings.capacity = 25;
 		loc_settings.emitRate = 1.0f; //particles per millisecond
 		//create external force
-		float[] loc_external_force = {0.0f, 0.0f, 0.0f};
+		float[] loc_external_force = {0f, 0f, 0f};
 		loc_settings.general_external_force = loc_external_force;
 		//lifetime
 		loc_settings.lifetime = 15000.0f; //15 seconds

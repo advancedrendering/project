@@ -5,6 +5,8 @@ import javax.media.opengl.GLAutoDrawable;
 
 import particlesystem.Fire;
 import particlesystem.Fireflies;
+import particlesystem.FireflyParticle;
+import particlesystem.ParticleSystemSettings;
 import particlesystem.Rain;
 
 import com.sun.opengl.cg.CGparameter;
@@ -27,7 +29,18 @@ public class SceneRoot extends SceneGraphNode{
 	private Rain rain = null;
 	private Fire fire = null;
 	private CameraModel camera = null;
+	private Fireflies fireflies1=null;
+	private Fireflies fireflies2=null;
+	private Fireflies fireflies3=null;
 	private float scale = 1f;
+	
+	
+	 float[] firefliesPos1 = new float[] {20.5072f-25.0f,6.1059f-3.5f, 35.7706f-20.0f };
+	 float[] firefliesPos2 = new float[] {25.099f-25.0f,4.89f-3.5f, 21.971f-20.0f};
+	 float[] firefliesPos3 = new float[] {7.516f-25.0f,4.89f-3.5f, 9.5f-20.0f };
+	
+	 float[] velocity = {7.0f,0.0f,0.0f};
+	 float[] acceleration= {0.0f,0.0f,0.0f};
 	
 	private CGparameter cgFogDensity = null;
 	private float fogDensity = 0.05f;
@@ -35,7 +48,8 @@ public class SceneRoot extends SceneGraphNode{
 	private CGparameter cgFogColor = null;
 	private CGparameter cgFogTex2DSampler = null;
 
-	private Fireflies fireflies;
+
+	
 	
 	private SceneRoot(GLAutoDrawable drawable) {
 		super(drawable);
@@ -50,6 +64,7 @@ public class SceneRoot extends SceneGraphNode{
 		this.addChild(skydome);
 		
 		campus = new CampusModel(drawable, "models/campus", scale);
+	
 		this.addChild(campus);
 		
 
@@ -57,8 +72,21 @@ public class SceneRoot extends SceneGraphNode{
 		fire = new Fire(drawable);
 		this.addChild(fire);
 		
-		fireflies = new Fireflies(drawable);
-		this.addChild(fireflies);
+		
+		fireflies1 = new Fireflies(drawable);
+		fireflies1.setTranslation(firefliesPos1);
+		fireflies1.setRotation(0, 0, 0);
+		this.addChild(fireflies1);
+		
+		fireflies2 = new Fireflies(drawable);
+		fireflies2.setTranslation(firefliesPos2);
+		fireflies2.setRotation(0, 0, 0);
+		this.addChild(fireflies2);
+		
+		fireflies3 = new Fireflies(drawable);
+		fireflies3.setTranslation(firefliesPos3);
+		fireflies3.setRotation(0, 0, 0);
+		this.addChild(fireflies3);
 		
 		heli = new HeliModel(drawable, scale*0.2f);
 		this.addChild(heli);
