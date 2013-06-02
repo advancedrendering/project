@@ -113,7 +113,7 @@ public class Fire extends ParticleSystem {
 				float elapsed_time = current_time - lastTime;
 				lastTime = current_time;
 				//update the particle system
-				update(elapsed_time);
+				update(15f);
 				//draw particles
 				
 				//use point sprites

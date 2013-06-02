@@ -16,11 +16,17 @@ public class CampusModel extends SceneGraphNode {
 	private LampModel lamp3 = null;
 	private TempleModel temple = null;
 
+	private FloorModel floor = null;
+	private WallModel wall = null;
 
 	public CampusModel(GLAutoDrawable drawable, String modelPath, float scale) {
 		super(drawable, modelPath, scale);
 
+		floor = new FloorModel(drawable,scale);
+		this.addChild(floor);
 		
+		wall = new WallModel(drawable, scale);
+		this.addChild(wall);		
 		
 		temple = new TempleModel(drawable, scale);
 		this.addChild(temple);
