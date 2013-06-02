@@ -44,13 +44,6 @@ public class TempleModel extends SceneGraphNode {
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
 		GL gl = drawable.getGL();
-//		gl.glBindTexture(GL.GL_TEXTURE_2D, MainTemplate.textureNames[0]);
-//		drawable.getGL().glCallList(this.getObjectList());
-		this.getShaderManager().bindFP("post");
-		gl.glPushMatrix();
-		gl.glTranslatef(20.0f, 1.0f, 23.346f);
-		MainTemplate.getGlut().glutSolidSphere(1.0f,20,20);
-		gl.glPopMatrix();
-		
+		drawable.getGL().glCallList(this.getObjectList());		
 	}
 }

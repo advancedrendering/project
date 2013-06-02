@@ -98,6 +98,7 @@ public class SceneRoot extends SceneGraphNode{
 		this.getShaderManager().addFragShaderParam("phong", "decal");
 		this.getShaderManager().addFragShaderParam("phong", "bumpDecal");
 		this.getShaderManager().addFragShaderParam("phong", "bump");
+		this.getShaderManager().addFragShaderParam("phong", "lightning");
 		
 		// vertex shader parameter
 		this.getShaderManager().addVertexShaderParam("phong", "fog");
@@ -126,6 +127,8 @@ public class SceneRoot extends SceneGraphNode{
 		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("phong", "fog"), this.getShaderManager().TRUE);
 		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("phong", "fogDensity"), this.fogDensity);
 		CgGL.cgGLSetParameter3fv(this.getShaderManager().getFragShaderParam("phong", "fogColor"), this.fogColor, 0);
+		//enable lightning
+		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "lightning"), this.getShaderManager().TRUE);
 	}
 	
 	@Override

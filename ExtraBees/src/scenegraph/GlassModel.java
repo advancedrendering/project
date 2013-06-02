@@ -16,8 +16,8 @@ public class GlassModel extends SceneGraphNode {
 		super(drawable, "models/glass", scale);
 		// TODO Auto-generated constructor stub
 		
-		this.setFragShaderEnabled(false);
-		this.setVertexShaderEnabled(false);
+		this.setFragShaderEnabled(true);
+		this.setVertexShaderEnabled(true);
 	}
 
 	@Override
@@ -113,7 +113,10 @@ public class GlassModel extends SceneGraphNode {
 	
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
-		drawable.getGL().glCallList(this.getObjectList());
+//		GL gl=drawable.getGL();
+//		gl.glDisable(GL.GL_CULL_FACE);
+//		drawable.getGL().glCallList(this.getObjectList());
+//		gl.glEnable(GL.GL_CULL_FACE);
 	}
 
 }

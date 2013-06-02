@@ -9,8 +9,8 @@ public class SkyBox extends SceneGraphNode {
 
 	public SkyBox(GLAutoDrawable drawable, String modelPath, float scale) {
 		super(drawable, modelPath, scale);
-		this.setFragShaderEnabled(false);
-		this.setVertexShaderEnabled(false);
+		this.setFragShaderEnabled(true);
+		this.setVertexShaderEnabled(true);
 	}
 
 	@Override
@@ -30,13 +30,15 @@ public class SkyBox extends SceneGraphNode {
 
 	@Override
 	public void draw(GLAutoDrawable drawable) {
-//		drawable.getGL().glEnable(GL.GL_TEXTURE_2D); // enable texturing
+		//disable lightning
+		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "lightning"), this.getShaderManager().FALSE);
 		drawable.getGL().glCallList(this.getObjectList());
-//		drawable.getGL().glDisable(GL.GL_TEXTURE_2D);
+		//enable lightning
+		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "lightning"), this.getShaderManager().TRUE);
 	}
 	
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
-//		drawable.getGL().glCallList(this.getObjectList());
+		drawable.getGL().glCallList(this.getObjectList());
 	}
 }
