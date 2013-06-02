@@ -40,8 +40,8 @@ public class WallModel extends SceneGraphNode {
 
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
-		// TODO Auto-generated method stub
-
+		GL gl = drawable.getGL();
+		gl.glCallList(this.getObjectList());
 	}
 
 }

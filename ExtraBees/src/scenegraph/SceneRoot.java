@@ -14,6 +14,7 @@ import com.sun.opengl.cg.CgGL;
 import shadermanager.ShaderManager;
 import templates.Blocks;
 import templates.JoglTemplate;
+import templates.MainTemplate;
 
 public class SceneRoot extends SceneGraphNode{
 
@@ -42,6 +43,8 @@ public class SceneRoot extends SceneGraphNode{
 		this.getShaderManager().setVertexShaderEnabled(true);
 		this.getShaderManager().setFragShaderEnabled(true);
 		
+		this.getShaderManager().loadFragShader("shader/fp_postProcessing.cg", "post");
+		
 		
 		skydome = new SkyBox(drawable, "models/skydome", scale);
 		this.addChild(skydome);
@@ -49,6 +52,7 @@ public class SceneRoot extends SceneGraphNode{
 		campus = new CampusModel(drawable, "models/campus", scale);
 		this.addChild(campus);
 		
+
 		
 		fire = new Fire(drawable);
 		this.addChild(fire);
@@ -76,7 +80,13 @@ public class SceneRoot extends SceneGraphNode{
 	}
 
 	@Override
-	public void init(GLAutoDrawable drawable) {}
+	public void init(GLAutoDrawable drawable) {
+		// get the gl object
+		GL gl = drawable.getGL();
+		
+		//enable 
+		CgGL.cgGLSetManageTextureParameters(this.getShaderManager().getCgContext(), true);
+	}
 
 	@Override
 	public void bindParameters() {
@@ -88,10 +98,14 @@ public class SceneRoot extends SceneGraphNode{
 		this.getShaderManager().addFragShaderParam("phong", "decal");
 		this.getShaderManager().addFragShaderParam("phong", "bumpDecal");
 		this.getShaderManager().addFragShaderParam("phong", "bump");
+		this.getShaderManager().addFragShaderParam("phong", "lightning");
 		
 		// vertex shader parameter
 		this.getShaderManager().addVertexShaderParam("phong", "fog");
 		this.getShaderManager().addVertexShaderParam("phong", "fogDensity");
+		
+		//post processing parameter
+		this.getShaderManager().addFragShaderParam("post", "sceneTex");
 	}
 
 	@Override
@@ -107,13 +121,14 @@ public class SceneRoot extends SceneGraphNode{
 	@Override
 	public void draw(GLAutoDrawable drawable) {
 		GL gl = drawable.getGL();
-		float[] fogColor = {0.4f, 0.4f, 0.4f};
 		//enable drawing of textures
 		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "useTexture"), this.getShaderManager().TRUE);
 		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "fog"), this.getShaderManager().TRUE);
 		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("phong", "fog"), this.getShaderManager().TRUE);
 		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("phong", "fogDensity"), this.fogDensity);
-		CgGL.cgGLSetParameter3fv(this.getShaderManager().getFragShaderParam("phong", "fogColor"), fogColor, 0);
+
+		//enable lightning
+		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "lightning"), this.getShaderManager().TRUE);
 	}
 	
 	@Override

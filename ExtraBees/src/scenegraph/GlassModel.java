@@ -16,8 +16,8 @@ public class GlassModel extends SceneGraphNode {
 		super(drawable, "models/glass", scale);
 		// TODO Auto-generated constructor stub
 		
-		this.setFragShaderEnabled(false);
-		this.setVertexShaderEnabled(false);
+		this.setFragShaderEnabled(true);
+		this.setVertexShaderEnabled(true);
 	}
 
 	@Override
@@ -49,10 +49,6 @@ public class GlassModel extends SceneGraphNode {
 		gl.glTexGeni(GL.GL_R, GL.GL_TEXTURE_GEN_MODE, GL.GL_REFLECTION_MAP);
 
 		gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_MODULATE);
-
-		//create new frame- and renderbuffer
-		gl.glGenFramebuffersEXT(1, MainTemplate.framebuffer, 0);
-		gl.glGenRenderbuffersEXT(1, MainTemplate.renderbuffer, 0);
 				
 		gl.glDisable(GL.GL_TEXTURE_GEN_S);
 		gl.glDisable(GL.GL_TEXTURE_GEN_T);
@@ -117,7 +113,10 @@ public class GlassModel extends SceneGraphNode {
 	
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
-		drawable.getGL().glCallList(this.getObjectList());
+//		GL gl=drawable.getGL();
+//		gl.glDisable(GL.GL_CULL_FACE);
+//		drawable.getGL().glCallList(this.getObjectList());
+//		gl.glEnable(GL.GL_CULL_FACE);
 	}
 
 }

@@ -1,6 +1,9 @@
 package scenegraph;
 
+import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
+
+import templates.MainTemplate;
 
 public class TempleModel extends SceneGraphNode {
 	
@@ -40,6 +43,7 @@ public class TempleModel extends SceneGraphNode {
 	
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
-		drawable.getGL().glCallList(this.getObjectList());
+		GL gl = drawable.getGL();
+		drawable.getGL().glCallList(this.getObjectList());		
 	}
 }
