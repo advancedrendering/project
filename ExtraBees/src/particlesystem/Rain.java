@@ -44,8 +44,8 @@ public class Rain extends ParticleSystem {
 	public ParticleSystemSettings initializeSettings() {
 		ParticleSystemSettings loc_settings = new ParticleSystemSettings();
 		
-		loc_settings.capacity = 70000;
-		loc_settings.emitRate = 6f; //particles per millisecond
+		loc_settings.capacity = 30000;
+		loc_settings.emitRate = 5f; //particles per millisecond
 		//create external force
 		float[] loc_external_force = {0.0f, -1000.0f, 0.0f};
 		loc_settings.general_external_force = loc_external_force;
@@ -82,13 +82,13 @@ public class Rain extends ParticleSystem {
 		
 		loc_settings.emitter_settings = loc_emi_settings;
 		//create Planar Emitter
-		float[] position_vector = {0.0f, 40.0f, 0.0f};
+		float[] position_vector = {5.0f, 25.0f, 5.0f};
 		float[] first_dir_vector = {1.0f, 0.0f, 0.0f};
 		float[] second_dir_vector = {0.0f, 0.0f, 1.0f};
 		float min_first_scalar = 0.0f;
-		float max_first_scalar = 50.0f;
+		float max_first_scalar = 25.0f;
 		float min_second_scalar = 0.0f;
-		float max_second_scalar = 50.0f;
+		float max_second_scalar = 25.0f;
 		loc_settings.emitter = new PlanarEmitter(loc_settings.emitRate, loc_settings.emitter_settings
 				, position_vector, first_dir_vector, second_dir_vector, min_first_scalar, max_first_scalar, min_second_scalar, max_second_scalar);
 		

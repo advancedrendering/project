@@ -43,6 +43,12 @@ public class Blocks {
 			camera_1_PathActive = false;
 		}
 		
+		if(timeIsBetween(2000, 45000)){
+			rainActive = true;
+		}else{
+			rainActive = false;
+		}
+		
 		if(timeIsBetween(19800, 45000)){
 			cubemappingGlass = true;
 			heliPath2Active = true;

@@ -32,7 +32,6 @@ public class SceneRoot extends SceneGraphNode{
 	private float fogDensity = 0.05f;
 	
 	private CGparameter cgFogColor = null;
-	private float[] fogColor = {0.5f, 0.5f, 0.5f};
 	private CGparameter cgFogTex2DSampler = null;
 
 	private Fireflies fireflies;
@@ -50,8 +49,6 @@ public class SceneRoot extends SceneGraphNode{
 		campus = new CampusModel(drawable, "models/campus", scale);
 		this.addChild(campus);
 		
-		rain = new Rain(drawable);
-		this.addChild(rain);
 		
 		fire = new Fire(drawable);
 		this.addChild(fire);
@@ -65,6 +62,8 @@ public class SceneRoot extends SceneGraphNode{
 		camera = new CameraModel(drawable, scale*0.8f);
 		this.addChild(camera);
 		
+		rain = new Rain(drawable);
+		this.addChild(rain);
 		init(drawable);
 		bindParameters();
 	}
@@ -108,12 +107,13 @@ public class SceneRoot extends SceneGraphNode{
 	@Override
 	public void draw(GLAutoDrawable drawable) {
 		GL gl = drawable.getGL();
+		float[] fogColor = {0.4f, 0.4f, 0.4f};
 		//enable drawing of textures
 		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "useTexture"), this.getShaderManager().TRUE);
 		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "fog"), this.getShaderManager().TRUE);
 		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("phong", "fog"), this.getShaderManager().TRUE);
 		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("phong", "fogDensity"), this.fogDensity);
-		CgGL.cgGLSetParameter3fv(this.getShaderManager().getFragShaderParam("phong", "fogColor"), this.fogColor, 0);
+		CgGL.cgGLSetParameter3fv(this.getShaderManager().getFragShaderParam("phong", "fogColor"), fogColor, 0);
 	}
 	
 	@Override
