@@ -86,7 +86,7 @@ public class Fire extends ParticleSystem {
 		loc_settings.emitter_settings = loc_emi_settings;
 		//create Planar Emitter
 		float[] position_vector = {17.831f, 2.472f, 23.023f};
-		float radius = 0.005f;
+		float radius = 0.01f;
 		float[] first_dir_vector = {1.0f, 0.0f, 0.0f};
 		float[] second_dir_vector = {0.0f, 0.0f, 1.0f};
 		float min_first_scalar = -0.5f* (float)Math.PI;
