@@ -33,9 +33,11 @@ public class FloorModel extends SceneGraphNode {
 	@Override
 	public void draw(GLAutoDrawable drawable) {
 		GL gl = drawable.getGL();
+
 		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "bump"), this.getShaderManager().TRUE);
 		gl.glCallList(this.getObjectList());
 		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "bump"), this.getShaderManager().FALSE);
+		
 	}
 
 	@Override

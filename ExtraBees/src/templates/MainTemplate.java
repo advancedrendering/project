@@ -35,9 +35,6 @@ public class MainTemplate extends JoglTemplate {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	static final float[] MOVING_LIGHT_ADS = { 0.2f, 0.2f, 0.2f, 1f, 0.95f,
-			0.95f, 0.95f, 1f, 0.95f, 0.95f, 0.95f, 1f };
-
 	private int frameCounter = 0;
 
 	private boolean cameraControlEnabled = false, cubeMappingEnabled = false, keyPressedW = false, keyPressedS = false,
@@ -163,7 +160,7 @@ public class MainTemplate extends JoglTemplate {
 		}
 		if (Blocks.cubemappingHeli){
 			float[] heliPosition = BezierCurve.getCoordsAt(Paths.HELI_1, Paths.HELI_1_U);
-			heliPosition[1] = heliPosition[1]+0.253f;
+			heliPosition[1] = heliPosition[1]+0.27f;
 			renderToBuffer(drawable,drawable.getGL(),MainTemplate.getGlu(),cubemap2,heliPosition,false);
 		}
 		if (Blocks.cubemappingGlass){
@@ -220,41 +217,49 @@ public class MainTemplate extends JoglTemplate {
 			float[] lightPos0 = new float[] {-1f,-1f,-1f, 0f };
 			gl.glEnable(GL.GL_LIGHT0);
 			// set light properties
-			gl.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, MOVING_LIGHT_ADS, 0);
-			gl.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, MOVING_LIGHT_ADS, 4);
-			gl.glLightfv(GL.GL_LIGHT0, GL.GL_SPECULAR, MOVING_LIGHT_ADS, 8);
+			float[] SUN = { 0.2f, 0.2f, 0.2f, 1f,
+							0.95f, 0.95f, 0.95f, 1f,
+							0.95f, 0.95f, 0.95f, 1f
+							};
+			gl.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, SUN, 0);
+			gl.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, SUN, 4);
+			gl.glLightfv(GL.GL_LIGHT0, GL.GL_SPECULAR, SUN, 8);
 			gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, lightPos0, 0);
-
+			
+			float[] LAMPS = { 0.1f,  0.1f,  0.0f, 1f,
+							1f,	1f, 0f, 1f,
+							 0.95f, 0.95f, 0f, 1f };
+		
 			float[] lightPos1 = new float[] {20.5072f,6.1059f, 35.7706f, 1f };
 			gl.glEnable(GL.GL_LIGHT1);
 			// set light properties
-			gl.glLightfv(GL.GL_LIGHT1, GL.GL_AMBIENT, MOVING_LIGHT_ADS, 0);
-			gl.glLightfv(GL.GL_LIGHT1, GL.GL_DIFFUSE, MOVING_LIGHT_ADS, 4);
-			gl.glLightfv(GL.GL_LIGHT1, GL.GL_SPECULAR, MOVING_LIGHT_ADS, 8);
+			gl.glLightfv(GL.GL_LIGHT1, GL.GL_AMBIENT, LAMPS, 0);
+			gl.glLightfv(GL.GL_LIGHT1, GL.GL_DIFFUSE, LAMPS, 4);
+			gl.glLightfv(GL.GL_LIGHT1, GL.GL_SPECULAR, LAMPS, 8);
 			gl.glLightfv(GL.GL_LIGHT1, GL.GL_POSITION, lightPos1, 0);
 			
 			float[] lightPos2 = new float[] {25.099f,4.89f, 21.971f, 1f };
 			gl.glEnable(GL.GL_LIGHT2);
 			// set light properties
-			gl.glLightfv(GL.GL_LIGHT2, GL.GL_AMBIENT, MOVING_LIGHT_ADS, 0);
-			gl.glLightfv(GL.GL_LIGHT2, GL.GL_DIFFUSE, MOVING_LIGHT_ADS, 4);
-			gl.glLightfv(GL.GL_LIGHT2, GL.GL_SPECULAR, MOVING_LIGHT_ADS, 8);
+			gl.glLightfv(GL.GL_LIGHT2, GL.GL_AMBIENT, LAMPS, 0);
+			gl.glLightfv(GL.GL_LIGHT2, GL.GL_DIFFUSE, LAMPS, 4);
+			gl.glLightfv(GL.GL_LIGHT2, GL.GL_SPECULAR, LAMPS, 8);
 			gl.glLightfv(GL.GL_LIGHT2, GL.GL_POSITION, lightPos2, 0);
 			
 			float[] lightPos3 = new float[] {7.516f,4.89f, 9.5f, 1f };
 			gl.glEnable(GL.GL_LIGHT3);
 			// set light properties
-			gl.glLightfv(GL.GL_LIGHT3, GL.GL_AMBIENT, MOVING_LIGHT_ADS, 0);
-			gl.glLightfv(GL.GL_LIGHT3, GL.GL_DIFFUSE, MOVING_LIGHT_ADS, 4);
-			gl.glLightfv(GL.GL_LIGHT3, GL.GL_SPECULAR, MOVING_LIGHT_ADS, 8);
+			gl.glLightfv(GL.GL_LIGHT3, GL.GL_AMBIENT, LAMPS, 0);
+			gl.glLightfv(GL.GL_LIGHT3, GL.GL_DIFFUSE, LAMPS, 4);
+			gl.glLightfv(GL.GL_LIGHT3, GL.GL_SPECULAR, LAMPS, 8);
 			gl.glLightfv(GL.GL_LIGHT3, GL.GL_POSITION, lightPos3, 0);
 			
 			float[] lightPos4 = {Paths.CAMERA_1[0],Paths.CAMERA_1[1]+10f,Paths.CAMERA_1[2]};
 			gl.glEnable(GL.GL_LIGHT4);
 			// set light properties
-			gl.glLightfv(GL.GL_LIGHT4, GL.GL_AMBIENT, MOVING_LIGHT_ADS, 0);
-			gl.glLightfv(GL.GL_LIGHT4, GL.GL_DIFFUSE, MOVING_LIGHT_ADS, 4);
-			gl.glLightfv(GL.GL_LIGHT4, GL.GL_SPECULAR, MOVING_LIGHT_ADS, 8);
+			gl.glLightfv(GL.GL_LIGHT4, GL.GL_AMBIENT, LAMPS, 0);
+			gl.glLightfv(GL.GL_LIGHT4, GL.GL_DIFFUSE, LAMPS, 4);
+			gl.glLightfv(GL.GL_LIGHT4, GL.GL_SPECULAR, LAMPS, 8);
 			gl.glLightfv(GL.GL_LIGHT4, GL.GL_POSITION, lightPos4, 0);
 			
 			
