@@ -97,7 +97,7 @@ public class Rain extends ParticleSystem {
 	
 	@Override
 	public void draw(GLAutoDrawable drawable){
-		if(Blocks.rain){
+		if(Blocks.rainActive){
 			// get the gl object
 			GL gl = drawable.getGL();
 			

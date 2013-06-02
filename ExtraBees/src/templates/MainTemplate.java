@@ -14,6 +14,7 @@ import javax.media.opengl.glu.GLU;
 
 import scenegraph.GlassModel;
 import scenegraph.SceneRoot;
+import scenegraph.HeliModel.HeliWindow;
 
 import com.sun.opengl.util.GLUT;
 
@@ -22,6 +23,7 @@ public class MainTemplate extends JoglTemplate {
 	private static TimeFPSCounter fpsCounter;
 	
 	public static int[] cubemap = new int[1];
+	public static int[] cubemap2 = new int[1];
 	public static  int CUBEMAP_SIZE = 512;
 	public static  int[] framebuffer = new int[1];
 	public static  int[] renderbuffer = new int[1];
@@ -36,10 +38,9 @@ public class MainTemplate extends JoglTemplate {
 
 	private int frameCounter = 0;
 
-	private boolean animationEnabled = false, cameraControlEnabled = false, cubeMappingEnabled = false, keyPressedW = false, keyPressedS = false,
+	private boolean cameraControlEnabled = false, cubeMappingEnabled = false, keyPressedW = false, keyPressedS = false,
 			keyPressedA = false, keyPressedD = false, keyPressedQ = false,
 			keyPressedE = false;
-	private boolean camera2ControlEnable = false;
 	private float movementSpeed = 0.2f;
 	
 	private boolean showFPS = false;
@@ -89,6 +90,21 @@ public class MainTemplate extends JoglTemplate {
 //		lastTime = System.nanoTime();
 	}
 	
+	
+	protected void drawControlPoints(GL gl, float[] ctrlPoints)
+	{
+		//TODO implement method to draw control points
+//		gl.glBegin(GL.GL_POINTS);
+			for(int i = 0; i < ctrlPoints.length; i+=3){
+				gl.glPushMatrix();
+				gl.glColor3f(1f, 1f, 0f);
+				gl.glTranslatef(ctrlPoints[i],ctrlPoints[i+1],ctrlPoints[i+2]);
+				getGlut().glutSolidSphere(0.05f, 8, 8);
+				gl.glPopMatrix();
+			}
+//		gl.glEnd();
+	}
+	
 
 
 	public void display(GLAutoDrawable drawable) {
@@ -119,8 +135,13 @@ public class MainTemplate extends JoglTemplate {
 			gl.glColor3f(0, 1, 0);
 			drawFPS(drawable);
 		}
-		if (cubeMappingEnabled){
-			renderToBuffer(drawable,drawable.getGL(),MainTemplate.getGlu());
+		if (Blocks.cubemappingHeli){
+			float[] heliPosition = BezierCurve.getCoordsAt(Paths.HELI_1, Paths.HELI_1_U);
+			heliPosition[1] = heliPosition[1]+0.253f;
+			renderToBuffer(drawable,drawable.getGL(),MainTemplate.getGlu(),cubemap2,heliPosition,false);
+		}
+		if (Blocks.cubemappingGlass){
+			renderToBuffer(drawable,drawable.getGL(),MainTemplate.getGlu(),cubemap,Paths.GLASS_ON_TABLE,true);
 		}
 		applyMouseTranslation(gl);
 		applyMouseRotation(gl);
@@ -129,32 +150,18 @@ public class MainTemplate extends JoglTemplate {
 		/** see eulerangle.pdf in /doc **/
 		
 		float[] camPosition = BezierCurve.getCoordsAt(Paths.CAMERA_1,Paths.CAMERA_1_U);
+		
 		if(Blocks.camera_2_PathActive){
 			camPosition = BezierCurve.getCoordsAt(Paths.CAMERA_2, Paths.CAMERA_2_U);
 		}
-		
+		//active camera path 2
 		if(Paths.CAMERA_1_U>=1f){
 			Blocks.camera_2_PathActive= true;
 			Blocks.camera_1_PathActive=false;
 		
-		}
+		}			
+		float[] camRotation = VectorMath.getEulerAngles(camPosition, Paths.GLASS_ON_TABLE);
 		
-		
-		float[] n = VectorMath.minus(camPosition,Paths.CAMERA_TARGET_1);
-		n = VectorMath.normalize(n);
-		float[] up = {0f,1f,0f};
-		float[] u = VectorMath.cross(up, n);
-		u = VectorMath.normalize(u);
-		float[] v = VectorMath.cross(n, u);
-		
-		float[] camRotation = new float[3];
-		camRotation[0] = (float) Math.toDegrees(Math.atan2(v[2], n[2]));
-		float sqrt = (float) Math.sqrt((u[0]*u[0])+(u[1]*u[1]));
-		camRotation[1] = (float) Math.toDegrees(Math.atan2(-u[2], sqrt));
-		float s1 = (float) Math.sin(Math.toRadians(camRotation[0]));
-		float c1 = (float) Math.cos(Math.toRadians(camRotation[0]));
-		camRotation[2] = (float) Math.toDegrees(Math.atan2(s1*n[0] - c1*v[0], c1*v[1]- s1* n[1]));
-
 		// camera position and rotation
 		if(!cameraControlEnabled){
 			setView_rotx(-camRotation[0]);
@@ -172,14 +179,14 @@ public class MainTemplate extends JoglTemplate {
 			setView_transz(getView_transz());
 		}
 		// press space to start animation
-		if(animationEnabled){
-			Blocks.heliPathActive = true; // heli animation starts
-		}
-		if(Blocks.camera_1_PathActive && Paths.CAMERA_1_U < 1.0f){ // if camera 1 path is active
-			Paths.CAMERA_1_U += Paths.getCamera1Speed();
-		}
-		if (Blocks.camera_2_PathActive && Paths.CAMERA_2_U<1.0f) {
-			Paths.CAMERA_2_U+= Paths.getCamera1Speed();
+		if(Blocks.animationActive){
+			Blocks.update();
+			if(Blocks.camera_1_PathActive && (Paths.CAMERA_1_U+Paths.getCamera1Speed()) < 1.0f){ // if camera 1 path is active
+				Paths.CAMERA_1_U += Paths.getCamera1Speed();
+			}
+			if (Blocks.camera_2_PathActive && Paths.CAMERA_2_U<1.0f) {
+				Paths.CAMERA_2_U += Paths.getCamera2Speed();
+			}
 		}
 			
 		gl.glEnable(GL.GL_LIGHTING);
@@ -216,7 +223,17 @@ public class MainTemplate extends JoglTemplate {
 			gl.glLightfv(GL.GL_LIGHT3, GL.GL_SPECULAR, MOVING_LIGHT_ADS, 8);
 			gl.glLightfv(GL.GL_LIGHT3, GL.GL_POSITION, lightPos3, 0);
 			
+			float[] lightPos4 = {Paths.CAMERA_1[0],Paths.CAMERA_1[1]+10f,Paths.CAMERA_1[2]};
+			gl.glEnable(GL.GL_LIGHT4);
+			// set light properties
+			gl.glLightfv(GL.GL_LIGHT4, GL.GL_AMBIENT, MOVING_LIGHT_ADS, 0);
+			gl.glLightfv(GL.GL_LIGHT4, GL.GL_DIFFUSE, MOVING_LIGHT_ADS, 4);
+			gl.glLightfv(GL.GL_LIGHT4, GL.GL_SPECULAR, MOVING_LIGHT_ADS, 8);
+			gl.glLightfv(GL.GL_LIGHT4, GL.GL_POSITION, lightPos4, 0);
+			
 		SceneRoot.getInstance(drawable).render(drawable);
+//		drawControlPoints(gl, Paths.CAMERA_1);
+//		drawControlPoints(gl, Paths.GLASS_ON_TABLE);
 		
 
 		gl.glPopMatrix();
@@ -229,8 +246,7 @@ public class MainTemplate extends JoglTemplate {
 	}
 	
 	
-public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu) {
-	float[] at = {17.96f, 2.45f, 23.346f};
+public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu, int[] cubemap, float[] reflectingObjectPosition, boolean glass) {
 
 		int viewport[] = new int[4];
 		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
@@ -278,10 +294,17 @@ public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu) {
 			gl.glRotatef(this.getView_rotx(), 1, 0, 0);
 			gl.glRotatef(this.getView_roty(), 0, 1, 0);
 			gl.glRotatef(this.getView_rotz(), 0, 0, 1);
-			gl.glTranslatef(-at[0],-at[1],-at[2]);
-			GlassModel.visible = false;
-			SceneRoot.getInstance(drawable).render(drawable);
-			GlassModel.visible = true;
+			gl.glTranslatef(-reflectingObjectPosition[0],-reflectingObjectPosition[1],-reflectingObjectPosition[2]);
+			
+			if(glass){
+				GlassModel.visible = false;
+				SceneRoot.getInstance(drawable).render(drawable);
+				GlassModel.visible = true;
+			}else{
+				HeliWindow.visible = false;
+				SceneRoot.getInstance(drawable).render(drawable);
+				HeliWindow.visible = true;
+			}
 			gl.glPopMatrix();
 		}
 		gl.glPopMatrix();
@@ -339,11 +362,18 @@ public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu) {
 		} else if (e.getKeyCode() == KeyEvent.VK_S) {
 			keyPressedS = true;
 		} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-			animationEnabled = !animationEnabled;
+			Blocks.animationActive = !Blocks.animationActive;
 		} else if (e.getKeyCode() == KeyEvent.VK_C) {
 			cameraControlEnabled = !cameraControlEnabled;
 		} else if (e.getKeyCode() == KeyEvent.VK_M) {
 			cubeMappingEnabled = !cubeMappingEnabled;
+		} else if (e.getKeyCode() == KeyEvent.VK_N) {
+			Paths.CAMERA_1_U = 0.0f;
+			Paths.CAMERA_2_U = 0.0f;
+			Paths.HELI_1_TARGET_U = 0.0f;
+			Paths.HELI_1_U = 0.0f;
+			fpsCounter.resetAccumulatedTime();
+			Blocks.animationActive = false;
 		}
 	}
 

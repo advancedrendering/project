@@ -38,7 +38,7 @@ public class FireEmitter extends ParticleEmitter {
 		rand_pos[1] = this.position_vector[1] + Utilities.createRandomf(0f, 1.2f*radius) * (float)Math.cos(rand_first_scalar)* (float)Math.sin(rand_second_scalar);
 		rand_pos[2] = this.position_vector[2] + Utilities.createRandomf(0f, radius) * (float)Math.sin(rand_second_scalar);
 		
-		float[][] orange = {{1.0f,0.5f,0.0f}};
+		float[][] orange = {{1.0f,0.3f,0.0f}};
 		float[][] blue = {{0.0f,0.0f,1.0f}};
 		float[][] white = {{1.0f,1.0f,1.0f}};
 		

@@ -12,6 +12,7 @@ import com.sun.opengl.cg.CGprogram;
 import com.sun.opengl.cg.CgGL;
 
 import shadermanager.ShaderManager;
+import templates.Blocks;
 import templates.JoglTemplate;
 import templates.MainTemplate;
 
@@ -25,6 +26,7 @@ public class SceneRoot extends SceneGraphNode{
 	private SkyBox skydome = null;
 	private Rain rain = null;
 	private Fire fire = null;
+	private CameraModel camera = null;
 	private float scale = 1f;
 	
 	private CGparameter cgFogDensity = null;
@@ -63,9 +65,11 @@ public class SceneRoot extends SceneGraphNode{
 		heli = new HeliModel(drawable, scale*0.2f);
 		this.addChild(heli);
 		
+		camera = new CameraModel(drawable, scale*0.8f);
+		this.addChild(camera);
+		
 		init(drawable);
 		bindParameters();
-		// TODO: add camera, lightsources?!	
 	}
 
 	public static SceneRoot getInstance(GLAutoDrawable drawable) {
@@ -106,7 +110,14 @@ public class SceneRoot extends SceneGraphNode{
 	}
 
 	@Override
-	public void animate(GLAutoDrawable drawable) {}
+	public void animate(GLAutoDrawable drawable) {
+		
+		if(Blocks.animationActive && Blocks.fogActive){
+			if(fogDensity >= 0.02f)
+				fogDensity-= 0.00001f;
+		}
+		
+	}
 
 	@Override
 	public void draw(GLAutoDrawable drawable) {

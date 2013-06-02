@@ -4,10 +4,13 @@ import java.io.File;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
+import javax.sound.midi.Patch;
 
 import templates.BezierCurve;
 import templates.Blocks;
+import templates.MainTemplate;
 import templates.Paths;
+import templates.VectorMath;
 
 
 import com.sun.opengl.cg.CgGL;
@@ -47,28 +50,30 @@ public class HeliModel extends SceneGraphNode {
 	public void animate(GLAutoDrawable drawable) {
 
 		float[] heliPosition = BezierCurve.getCoordsAt(Paths.HELI_1,Paths.HELI_1_U);
-		float[] heliRotation = {0.0f,0.0f,0.0f};
-		float[] heliTarget = {Paths.CAMERA_1[0]-heliPosition[0],
-							  (Paths.CAMERA_1[1]-0.5f)-heliPosition[1],
-							  Paths.CAMERA_1[2]-heliPosition[2]};
 
-		if(Blocks.heliPathActive){
-			if(Paths.HELI_1_U >=0.15f){
-				Blocks.rain = true;
-			}
-			if(Paths.HELI_1_U >=0.4f){
-					Blocks.heliPathActive = false;
-					Blocks.camera_1_PathActive = true;
-			}else{
-				heliRotation[0] = -(float)Math.toDegrees(Math.atan2((double) heliTarget[1],(double) heliTarget[2]));
-				double sqrt = Math.sqrt((Math.pow((double) heliTarget[1], 2))+(Math.pow((double) heliTarget[2], 2)));
-				heliRotation[1] =  (float)Math.toDegrees(Math.atan2((double) heliTarget[0],sqrt));
-				heliRotation[2] = 180f;
+//		float[] heliPosition = BezierCurve.getCoordsAt(Paths.HELI_1,Paths.HELI_1_U);
+		float[] heliTarget = BezierCurve.getCoordsAt(Paths.HELI_TARGET_1,Paths.HELI_1_TARGET_U);
+
+		if(Blocks.animationActive && (Blocks.heliPath1Active)){
+			heliPosition = BezierCurve.getCoordsAt(Paths.HELI_1,Paths.HELI_1_U);
+			heliTarget = BezierCurve.getCoordsAt(Paths.HELI_TARGET_1,Paths.HELI_1_TARGET_U);
+			if(Paths.HELI_1_U < 1.0f)
 				Paths.HELI_1_U += Paths.getHeliSpeed();
-			}
 		}
+		if(Blocks.animationActive && (Blocks.heliPath1TargetActive)){
+			if(Paths.HELI_1_TARGET_U < 1.0f)
+				Paths.HELI_1_TARGET_U += Paths.getHeliTargetSpeed();
+		}
+		
+		if(Blocks.animationActive && (Blocks.heliPath2Active)){
+			heliPosition = BezierCurve.getCoordsAt(Paths.CAMERA_1,Paths.CAMERA_1_U);
+			heliPosition[1] = heliPosition[1]+0.2f;
+			heliTarget = Paths.GLASS_ON_TABLE;
+		}
+		
 
-		this.setRotation(heliRotation);
+		float[] heliRotation = VectorMath.getEulerAngles(heliPosition, heliTarget);
+		this.setRotation(-heliRotation[0],heliRotation[1]+180,heliRotation[2]);
 		this.setTranslation(heliPosition);
 
 
@@ -174,16 +179,53 @@ public class HeliModel extends SceneGraphNode {
 		}
 	}
 	
-	public class HeliWindow extends SceneGraphNode{
+	public static class HeliWindow extends SceneGraphNode{
+		public static boolean visible = true;
 
 		public HeliWindow(GLAutoDrawable drawable, String modelPath, float scale) {
 			super(drawable, modelPath, scale);
-			// TODO Auto-generated constructor stub
+			this.setFragShaderEnabled(false);
+			this.setVertexShaderEnabled(false);
 		}
 
 		@Override
 		public void init(GLAutoDrawable drawable) {
-			// TODO Auto-generated method stub
+			GL gl = drawable.getGL();
+			gl.glEnable(GL.GL_TEXTURE_GEN_S);
+			gl.glEnable(GL.GL_TEXTURE_GEN_T);
+			gl.glEnable(GL.GL_TEXTURE_GEN_R);
+			gl.glEnable(GL.GL_TEXTURE_CUBE_MAP);
+			
+			// generate texture space
+			gl.glGenTextures(1, MainTemplate.cubemap2, 0);
+			
+			// create textures
+			gl.glBindTexture(GL.GL_TEXTURE_CUBE_MAP, MainTemplate.cubemap2[0]);
+			
+			for (int i = 0; i < 6; i++) {
+				gl.glTexImage2D(GL.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.GL_RGB, MainTemplate.CUBEMAP_SIZE , MainTemplate.CUBEMAP_SIZE, 0, GL.GL_RGB, GL.GL_UNSIGNED_BYTE, null);
+			}
+			
+			gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
+			gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
+			gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_WRAP_R, GL.GL_REPEAT);
+			gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+			gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+			
+			gl.glTexGeni(GL.GL_S, GL.GL_TEXTURE_GEN_MODE, GL.GL_REFLECTION_MAP);
+			gl.glTexGeni(GL.GL_T, GL.GL_TEXTURE_GEN_MODE, GL.GL_REFLECTION_MAP);
+			gl.glTexGeni(GL.GL_R, GL.GL_TEXTURE_GEN_MODE, GL.GL_REFLECTION_MAP);
+
+			gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_MODULATE);
+
+			//create new frame- and renderbuffer
+			gl.glGenFramebuffersEXT(1, MainTemplate.framebuffer, 0);
+			gl.glGenRenderbuffersEXT(1, MainTemplate.renderbuffer, 0);
+					
+			gl.glDisable(GL.GL_TEXTURE_GEN_S);
+			gl.glDisable(GL.GL_TEXTURE_GEN_T);
+			gl.glDisable(GL.GL_TEXTURE_GEN_R);
+			gl.glDisable(GL.GL_TEXTURE_CUBE_MAP);
 			
 		}
 
@@ -201,9 +243,40 @@ public class HeliModel extends SceneGraphNode {
 
 		@Override
 		public void draw(GLAutoDrawable drawable) {
-			CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "useTexture"), this.getShaderManager().FALSE);
-			drawable.getGL().glCallList(this.getObjectList());
-			CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "useTexture"), this.getShaderManager().TRUE);
+			GL gl=drawable.getGL();
+			gl.glEnable(GL.GL_TEXTURE_GEN_S);
+			gl.glEnable(GL.GL_TEXTURE_GEN_T);
+			gl.glEnable(GL.GL_TEXTURE_GEN_R);
+			
+			
+			gl.glTexGeni(GL.GL_S, GL.GL_TEXTURE_GEN_MODE, GL.GL_REFLECTION_MAP);
+			gl.glTexGeni(GL.GL_T, GL.GL_TEXTURE_GEN_MODE, GL.GL_REFLECTION_MAP);
+			gl.glTexGeni(GL.GL_R, GL.GL_TEXTURE_GEN_MODE, GL.GL_REFLECTION_MAP);
+			
+			gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
+			gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
+			gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_WRAP_R, GL.GL_REPEAT);
+			gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+			gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+			
+			gl.glEnable(GL.GL_TEXTURE_CUBE_MAP);
+			gl.glBindTexture(GL.GL_TEXTURE_CUBE_MAP, MainTemplate.cubemap2[0]);
+			
+			if(visible){
+//					gl.glPushMatrix();
+//					gl.glTranslatef(17.96f, 2.45f, 23.346f);
+//				MainTemplate.getGlut().glutSolidCube(0.5f);
+//					MainTemplate.getGlut().glutSolidSphere(0.2f,20,20);
+				gl.glDisable(GL.GL_CULL_FACE);
+				drawable.getGL().glCallList(this.getObjectList());
+				gl.glEnable(GL.GL_CULL_FACE);
+//					gl.glPopMatrix();
+			}
+			gl.glDisable(GL.GL_TEXTURE_GEN_S);
+			gl.glDisable(GL.GL_TEXTURE_GEN_T);
+			gl.glDisable(GL.GL_TEXTURE_GEN_R);
+			
+			gl.glDisable(GL.GL_TEXTURE_CUBE_MAP);
 		}
 		
 		@Override
