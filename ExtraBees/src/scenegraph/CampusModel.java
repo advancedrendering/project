@@ -3,6 +3,8 @@ package scenegraph;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 
+import particlesystem.Fireflies;
+
 import com.sun.opengl.cg.CgGL;
 
 import shadermanager.ShaderManager;
@@ -19,6 +21,8 @@ public class CampusModel extends SceneGraphNode {
 	private FloorModel floor = null;
 	private WallModel wall = null;
 
+
+	
 	public CampusModel(GLAutoDrawable drawable, String modelPath, float scale) {
 		super(drawable, modelPath, scale);
 
@@ -46,6 +50,7 @@ public class CampusModel extends SceneGraphNode {
 //		lamp3.setTranslation(-3f,0f,0f);
 		lamp3.setRotation(0, 0, 0);
 		this.addChild(lamp3);
+	
 		
 		this.init(drawable);
 		this.setVertexShaderEnabled(true);

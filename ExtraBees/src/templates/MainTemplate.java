@@ -232,7 +232,7 @@ public class MainTemplate extends JoglTemplate {
 			gl.glEnable(GL.GL_LIGHT0);
 			// set light properties
 			float[] SUN = { 0.2f, 0.2f, 0.2f, 1f,
-							0.95f, 0.95f, 0.95f, 1f,
+							0.5f, 0.5f, 0.5f, 1f,
 							0.95f, 0.95f, 0.95f, 1f
 							};
 			gl.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, SUN, 0);
@@ -240,10 +240,11 @@ public class MainTemplate extends JoglTemplate {
 			gl.glLightfv(GL.GL_LIGHT0, GL.GL_SPECULAR, SUN, 8);
 			gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, lightPos0, 0);
 			
-			float[] LAMPS = { 0.1f,  0.1f,  0.0f, 1f,
-							1f,	1f, 0f, 1f,
-							 0.95f, 0.95f, 0f, 1f };
+			float[] LAMPS = { 0.2f,  0.2f,  0.15f, 1f,
+							 1f, 1f, 1f, 1f,
+							 0.95f, 0.95f, 0.95f, 1f };
 		
+
 			float[] lightPos1 = new float[] {20.5072f,6.1059f, 35.7706f, 1f };
 			gl.glEnable(GL.GL_LIGHT1);
 			// set light properties
@@ -251,6 +252,9 @@ public class MainTemplate extends JoglTemplate {
 			gl.glLightfv(GL.GL_LIGHT1, GL.GL_DIFFUSE, LAMPS, 4);
 			gl.glLightfv(GL.GL_LIGHT1, GL.GL_SPECULAR, LAMPS, 8);
 			gl.glLightfv(GL.GL_LIGHT1, GL.GL_POSITION, lightPos1, 0);
+			gl.glLightf(GL.GL_LIGHT1, GL.GL_CONSTANT_ATTENUATION, 1.0f);
+			gl.glLightf(GL.GL_LIGHT1, GL.GL_LINEAR_ATTENUATION, 1.000001f);
+			gl.glLightf(GL.GL_LIGHT1, GL.GL_QUADRATIC_ATTENUATION, 1.000004f);
 			
 			float[] lightPos2 = new float[] {25.099f,4.89f, 21.971f, 1f };
 			gl.glEnable(GL.GL_LIGHT2);
