@@ -25,6 +25,7 @@ public abstract class SceneGraphNode {
 	private int objectList;
 	
 	protected ShaderManager shaderManager = null; 
+
 	
 	public ShaderManager getShaderManager() {
 		return shaderManager;

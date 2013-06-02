@@ -52,7 +52,7 @@ public class TimeFPSCounter {
 	        frames++;
 
 
-	        System.out.println(getAccumulatedTimePassedMillis());
+//	        System.out.println(getAccumulatedTimePassedMillis());
 	        //Calculate fps
 	        long dt = currentTime-firstFrameTime;
 	        if(dt >= fpsRefreshTimeNanos) {

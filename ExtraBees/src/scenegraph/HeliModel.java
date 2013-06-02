@@ -281,7 +281,6 @@ public class HeliModel extends SceneGraphNode {
 		
 		@Override
 		public void postDraw(GLAutoDrawable drawable) {
-			drawable.getGL().glCallList(this.getObjectList());
 		}
 	}
 }

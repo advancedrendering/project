@@ -44,9 +44,14 @@ public class SceneRoot extends SceneGraphNode{
 		this.getShaderManager().setVertexShaderEnabled(true);
 		this.getShaderManager().setFragShaderEnabled(true);
 		
+		this.getShaderManager().loadVertexShader("shader/vp_cube_mapping.cg", "cube");
+		this.getShaderManager().loadFragShader("shader/fp_cube_mapping.cg", "cube");
+//		this.getShaderManager().loadVertexShader("shader/vp_motion_blur.cg", "motion");
+//		this.getShaderManager().loadFragShader("shader/vp_motion_blur.cg", "motion");
+		this.getShaderManager().loadVertexShader("shader/vp_refraction.cg", "refraction");
+		this.getShaderManager().loadFragShader("shader/fp_refraction.cg", "refraction");
 		this.getShaderManager().loadFragShader("shader/fp_postProcessing.cg", "post");
-		
-		
+				
 		skydome = new SkyBox(drawable, "models/skydome", scale);
 		this.addChild(skydome);
 		
@@ -100,12 +105,27 @@ public class SceneRoot extends SceneGraphNode{
 		this.getShaderManager().addFragShaderParam("phong", "bump");
 		this.getShaderManager().addFragShaderParam("phong", "lightning");
 		
+		this.getShaderManager().addFragShaderParam("cube", "environmentMap");
+		this.getShaderManager().addVertexShaderParam("cube", "modelToWorld");
+		this.getShaderManager().addVertexShaderParam("cube", "worldEyePosition");
+		this.getShaderManager().addFragShaderParam("refraction", "environmentMap");
+		this.getShaderManager().addVertexShaderParam("refraction", "modelToWorld");
+		this.getShaderManager().addVertexShaderParam("refraction", "worldEyePosition");
+		
 		// vertex shader parameter
 		this.getShaderManager().addVertexShaderParam("phong", "fog");
 		this.getShaderManager().addVertexShaderParam("phong", "fogDensity");
 		
 		//post processing parameter
 		this.getShaderManager().addFragShaderParam("post", "sceneTex");
+//		this.getShaderManager().addFragShaderParam("motion", "sceneTex");
+//		this.getShaderManager().addFragShaderParam("motion", "blurScale");
+//		this.getShaderManager().addVertexShaderParam("motion", "blurScale");
+//		this.getShaderManager().addVertexShaderParam("motion", "modelView");
+//		this.getShaderManager().addVertexShaderParam("motion", "modelViewProj");
+//		this.getShaderManager().addVertexShaderParam("motion", "prevModelView");
+//		this.getShaderManager().addVertexShaderParam("motion", "prevModelViewProj");
+		
 	}
 
 	@Override
@@ -133,5 +153,8 @@ public class SceneRoot extends SceneGraphNode{
 	
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
+//		CgGL.cgGLSetParameter1f(this.getShaderManager().getFragShaderParam("motion", "blurScale"), 1.0f);
+//		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("motion", "blurScale"), 1.0f);
+//		CgGL.cgGLSetParameter3f(this.getShaderManager().getVertexShaderParam("motion", "halfWindowSize"), MainTemplate.xResolution, MainTemplate.yResolution, 0);
 	}
 }
