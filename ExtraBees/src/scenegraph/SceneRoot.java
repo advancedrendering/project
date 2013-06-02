@@ -13,6 +13,7 @@ import com.sun.opengl.cg.CgGL;
 
 import shadermanager.ShaderManager;
 import templates.JoglTemplate;
+import templates.MainTemplate;
 
 public class SceneRoot extends SceneGraphNode{
 
@@ -40,6 +41,8 @@ public class SceneRoot extends SceneGraphNode{
 						
 		this.getShaderManager().setVertexShaderEnabled(true);
 		this.getShaderManager().setFragShaderEnabled(true);
+		
+		this.getShaderManager().loadFragShader("shader/fp_postProcessing.cg", "post");
 		
 		
 		skydome = new SkyBox(drawable, "models/skydome", scale);
@@ -76,6 +79,9 @@ public class SceneRoot extends SceneGraphNode{
 	public void init(GLAutoDrawable drawable) {
 		// get the gl object
 		GL gl = drawable.getGL();
+		
+		//enable 
+		CgGL.cgGLSetManageTextureParameters(this.getShaderManager().getCgContext(), true);
 	}
 
 	@Override
@@ -92,6 +98,11 @@ public class SceneRoot extends SceneGraphNode{
 		// vertex shader parameter
 		this.getShaderManager().addVertexShaderParam("phong", "fog");
 		this.getShaderManager().addVertexShaderParam("phong", "fogDensity");
+		
+		//post processing parameter
+		this.getShaderManager().addFragShaderParam("post", "sceneTex");
+		
+		CgGL.cgGLSetupSampler(this.getShaderManager().getFragShaderParam("post", "sceneTex"), MainTemplate.frame_as_tex[0]);
 	}
 
 	@Override
@@ -99,6 +110,7 @@ public class SceneRoot extends SceneGraphNode{
 
 	@Override
 	public void draw(GLAutoDrawable drawable) {
+		this.getShaderManager().setDefaultFragmentProgName("phong");
 		GL gl = drawable.getGL();
 		//enable drawing of textures
 		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "useTexture"), this.getShaderManager().TRUE);
@@ -110,5 +122,6 @@ public class SceneRoot extends SceneGraphNode{
 	
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
+		this.getShaderManager().setDefaultFragmentProgName("post");
 	}
 }

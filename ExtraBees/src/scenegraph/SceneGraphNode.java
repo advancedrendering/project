@@ -154,12 +154,16 @@ public abstract class SceneGraphNode {
 		gl.glRotatef(rotation[0], 1, 0, 0);
 		gl.glRotatef(rotation[1], 0, 1, 0);
 		gl.glRotatef(rotation[2], 0, 0, 1);
+		this.getShaderManager().setVertexShaderEnabled(true);
+		this.getShaderManager().setFragShaderEnabled(true);
+		this.getShaderManager().bindVP();
+		this.getShaderManager().bindFP();
 		this.postDraw(drawable);// draw the current object
-		this.getShaderManager().setVertexShaderEnabled(false);
-		this.getShaderManager().setFragShaderEnabled(false);
 		for(SceneGraphNode child : children){ // render every child
 			child.postRender(drawable);
 		}
+		this.getShaderManager().setVertexShaderEnabled(false);
+		this.getShaderManager().setFragShaderEnabled(false);
 		gl.glPopMatrix(); // restore matrix
 	}
 	

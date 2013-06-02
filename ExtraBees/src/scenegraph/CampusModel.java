@@ -6,6 +6,7 @@ import javax.media.opengl.GLAutoDrawable;
 import com.sun.opengl.cg.CgGL;
 
 import shadermanager.ShaderManager;
+import templates.MainTemplate;
 
 public class CampusModel extends SceneGraphNode {
 

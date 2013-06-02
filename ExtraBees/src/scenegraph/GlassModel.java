@@ -49,10 +49,6 @@ public class GlassModel extends SceneGraphNode {
 		gl.glTexGeni(GL.GL_R, GL.GL_TEXTURE_GEN_MODE, GL.GL_REFLECTION_MAP);
 
 		gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_MODULATE);
-
-		//create new frame- and renderbuffer
-		gl.glGenFramebuffersEXT(1, MainTemplate.framebuffer, 0);
-		gl.glGenRenderbuffersEXT(1, MainTemplate.renderbuffer, 0);
 				
 		gl.glDisable(GL.GL_TEXTURE_GEN_S);
 		gl.glDisable(GL.GL_TEXTURE_GEN_T);

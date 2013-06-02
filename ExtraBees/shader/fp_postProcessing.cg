@@ -1,0 +1,13 @@
+// Motion blur fragment shader
+
+struct vertexIN {
+  float4 wpos     : WPOS; //position of pixel in 2D window coordinates
+    float2 texCoord : TEXCOORD0;
+};
+
+float4 main(vertexIN vIn, uniform sampler2D  sceneTex) : COLOR
+{
+  
+  float4 a = tex2D(sceneTex, vIn.wpos.xy);
+  return a;
+}
