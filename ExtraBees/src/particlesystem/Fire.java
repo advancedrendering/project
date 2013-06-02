@@ -113,7 +113,7 @@ public class Fire extends ParticleSystem {
 				float elapsed_time = current_time - lastTime;
 				lastTime = current_time;
 				//update the particle system
-				update(MainTemplate.getFPSCounter().getTimePassedMillis());
+				update(elapsed_time);
 				//draw particles
 				
 				//use point sprites

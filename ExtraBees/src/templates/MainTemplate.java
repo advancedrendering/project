@@ -14,6 +14,7 @@ import javax.media.opengl.glu.GLU;
 
 import scenegraph.GlassModel;
 import scenegraph.SceneRoot;
+import scenegraph.HeliModel.HeliWindow;
 
 import com.sun.opengl.util.GLUT;
 
@@ -22,6 +23,7 @@ public class MainTemplate extends JoglTemplate {
 	private static TimeFPSCounter fpsCounter;
 	
 	public static int[] cubemap = new int[1];
+	public static int[] cubemap2 = new int[1];
 	public static  int CUBEMAP_SIZE = 512;
 	public static  int[] framebuffer = new int[1];
 	public static  int[] renderbuffer = new int[1];
@@ -133,8 +135,13 @@ public class MainTemplate extends JoglTemplate {
 			gl.glColor3f(0, 1, 0);
 			drawFPS(drawable);
 		}
-		if (cubeMappingEnabled){
-			renderToBuffer(drawable,drawable.getGL(),MainTemplate.getGlu());
+		if (Blocks.cubemappingHeli){
+			float[] heliPosition = BezierCurve.getCoordsAt(Paths.HELI_1, Paths.HELI_1_U);
+			heliPosition[1] = heliPosition[1]+0.253f;
+			renderToBuffer(drawable,drawable.getGL(),MainTemplate.getGlu(),cubemap2,heliPosition,false);
+		}
+		if (Blocks.cubemappingGlass){
+			renderToBuffer(drawable,drawable.getGL(),MainTemplate.getGlu(),cubemap,Paths.GLASS_ON_TABLE,true);
 		}
 		applyMouseTranslation(gl);
 		applyMouseRotation(gl);
@@ -216,6 +223,14 @@ public class MainTemplate extends JoglTemplate {
 			gl.glLightfv(GL.GL_LIGHT3, GL.GL_SPECULAR, MOVING_LIGHT_ADS, 8);
 			gl.glLightfv(GL.GL_LIGHT3, GL.GL_POSITION, lightPos3, 0);
 			
+			float[] lightPos4 = {Paths.CAMERA_1[0],Paths.CAMERA_1[1]+10f,Paths.CAMERA_1[2]};
+			gl.glEnable(GL.GL_LIGHT4);
+			// set light properties
+			gl.glLightfv(GL.GL_LIGHT4, GL.GL_AMBIENT, MOVING_LIGHT_ADS, 0);
+			gl.glLightfv(GL.GL_LIGHT4, GL.GL_DIFFUSE, MOVING_LIGHT_ADS, 4);
+			gl.glLightfv(GL.GL_LIGHT4, GL.GL_SPECULAR, MOVING_LIGHT_ADS, 8);
+			gl.glLightfv(GL.GL_LIGHT4, GL.GL_POSITION, lightPos4, 0);
+			
 		SceneRoot.getInstance(drawable).render(drawable);
 //		drawControlPoints(gl, Paths.CAMERA_1);
 //		drawControlPoints(gl, Paths.GLASS_ON_TABLE);
@@ -231,8 +246,7 @@ public class MainTemplate extends JoglTemplate {
 	}
 	
 	
-public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu) {
-	float[] at = {17.96f, 2.45f, 23.346f};
+public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu, int[] cubemap, float[] reflectingObjectPosition, boolean glass) {
 
 		int viewport[] = new int[4];
 		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
@@ -280,10 +294,17 @@ public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu) {
 			gl.glRotatef(this.getView_rotx(), 1, 0, 0);
 			gl.glRotatef(this.getView_roty(), 0, 1, 0);
 			gl.glRotatef(this.getView_rotz(), 0, 0, 1);
-			gl.glTranslatef(-at[0],-at[1],-at[2]);
-			GlassModel.visible = false;
-			SceneRoot.getInstance(drawable).render(drawable);
-			GlassModel.visible = true;
+			gl.glTranslatef(-reflectingObjectPosition[0],-reflectingObjectPosition[1],-reflectingObjectPosition[2]);
+			
+			if(glass){
+				GlassModel.visible = false;
+				SceneRoot.getInstance(drawable).render(drawable);
+				GlassModel.visible = true;
+			}else{
+				HeliWindow.visible = false;
+				SceneRoot.getInstance(drawable).render(drawable);
+				HeliWindow.visible = true;
+			}
 			gl.glPopMatrix();
 		}
 		gl.glPopMatrix();

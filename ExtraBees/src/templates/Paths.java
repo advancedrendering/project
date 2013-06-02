@@ -4,7 +4,7 @@ package templates;
 public class Paths {
 
 	public static final float[] HELI_1 = {22.399f, 3.046f, 11.647f,
-										  22.844f, 12.472f, 8.524f,
+										  22.844f, 9.472f, 8.524f,
 										  
 										  28.338f, 6.921f, -2.016f,
 										  28.303f, 10.658f, -1.808f,

@@ -12,33 +12,43 @@ public class Blocks {
 	public static boolean dynamicCubeMappingActive = false;
 	public static boolean fogActive = true;
 	public static boolean heliPath1TargetActive= false;
+	public static boolean cubemappingGlass = false;
+	public static boolean cubemappingHeli = false;
 
 	
 	public static void update(){
-		if(timeIsBetween(0, 19000)){
+		
+		if(timeIsBetween(0, 100)){
+			cubemappingGlass = true;
+		}else{
+			cubemappingGlass = false;
+		}
+		if(timeIsBetween(0, 12000)){
 			heliPath1Active = true;
+			cubemappingHeli = true;
 		}else{
 			heliPath1Active = false;
+			cubemappingHeli = false;
 		}
 		
-		if(timeIsBetween(0, 19000)){
+		if(timeIsBetween(0, 14000)){
 			heliPath1TargetActive = true;
 		}else{
 			heliPath1TargetActive = false;
 		}
 		
-		if(timeIsBetween(20000, 45000)){
+		if(timeIsBetween(14000, 45000)){
 			camera_1_PathActive = true;
 		}else{
 			camera_1_PathActive = false;
 		}
 		
-		if(timeIsBetween(20000, 45000)){
+		if(timeIsBetween(19800, 45000)){
+			cubemappingGlass = true;
 			heliPath2Active = true;
 		}else{
-			heliPath2Active = false;
+			cubemappingGlass = false;
 		}
-			
 	}
 	
 	
