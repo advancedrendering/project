@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.text.DecimalFormat;
 
 import javax.imageio.ImageIO;
@@ -16,6 +17,7 @@ import scenegraph.GlassModel;
 import scenegraph.SceneRoot;
 import scenegraph.HeliModel.HeliWindow;
 
+import com.sun.opengl.cg.CgGL;
 import com.sun.opengl.util.GLUT;
 
 public class MainTemplate extends JoglTemplate {
@@ -53,6 +55,8 @@ public class MainTemplate extends JoglTemplate {
 	static boolean takeScreenshots = false;
 	static int xResolution = 1280, yResolution = 720;
 
+	public static int[] frame_as_tex = new int[1];
+
 
 	public static void main(String[] args) {
 		MainTemplate assignment = new MainTemplate();
@@ -86,6 +90,26 @@ public class MainTemplate extends JoglTemplate {
 		gl.glEnable(GL.GL_DEPTH_TEST);
 		// backface culling
 		gl.glEnable(GL.GL_CULL_FACE);
+		
+		//generate texture to hold frame
+		gl.glGenTextures(1, MainTemplate.frame_as_tex, 0);
+		
+		FloatBuffer currentBuffer = FloatBuffer.allocate(MainTemplate.xResolution * MainTemplate.yResolution * 4);
+		for (int y = 0; y < MainTemplate.yResolution; y++) {
+			for (int x = 0; x < MainTemplate.xResolution; x++) {
+				currentBuffer.put(0.0f); //R
+				currentBuffer.put(1.0f); //G
+				currentBuffer.put(0.0f); //B
+				currentBuffer.put(1.0f); //A
+			}
+		}
+		currentBuffer.rewind();
+		
+		// create textures
+		gl.glBindTexture(GL.GL_TEXTURE_2D, MainTemplate.frame_as_tex[0]);
+		gl.glTexParameteri(GL.GL_TEXTURE_2D,GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+		gl.glTexParameteri(GL.GL_TEXTURE_2D,GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+		gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA,  MainTemplate.xResolution, MainTemplate.yResolution, 0, GL.GL_RGBA, GL. GL_FLOAT, null);// currentBuffer);
 		// load mesh
 //		lastTime = System.nanoTime();
 	}
@@ -231,11 +255,36 @@ public class MainTemplate extends JoglTemplate {
 			gl.glLightfv(GL.GL_LIGHT4, GL.GL_SPECULAR, MOVING_LIGHT_ADS, 8);
 			gl.glLightfv(GL.GL_LIGHT4, GL.GL_POSITION, lightPos4, 0);
 			
+			
+		//bind framebuffer
+		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, framebuffer[0]);	
+		gl.glBindTexture(GL.GL_TEXTURE_2D, MainTemplate.frame_as_tex[0]);	
+
+		//Set up depthbuffer
+		gl.glBindRenderbufferEXT(GL.GL_RENDERBUFFER_EXT, renderbuffer[0]);
+		gl.glRenderbufferStorageEXT(GL.GL_RENDERBUFFER_EXT, GL.GL_DEPTH_COMPONENT, MainTemplate.xResolution, MainTemplate.yResolution);
+		gl.glFramebufferRenderbufferEXT(GL.GL_FRAMEBUFFER_EXT, GL.GL_DEPTH_ATTACHMENT_EXT, GL.GL_RENDERBUFFER_EXT, renderbuffer[0]);
+	
+		int drawBuffers[] = new int[1];
+		drawBuffers[0] = GL.GL_COLOR_ATTACHMENT0_EXT;
+		gl.glDrawBuffers(1, drawBuffers, 0);
+		
+		gl.glFramebufferTexture2DEXT(GL.GL_FRAMEBUFFER_EXT, GL.GL_COLOR_ATTACHMENT0_EXT, GL.GL_TEXTURE_2D, MainTemplate.frame_as_tex[0], 0);
+			
 		SceneRoot.getInstance(drawable).render(drawable);
 //		drawControlPoints(gl, Paths.CAMERA_1);
 //		drawControlPoints(gl, Paths.GLASS_ON_TABLE);
 		
-
+		gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
+				
+		//finally unbind buffers to return to the normal buffers
+		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, 0); 
+		gl.glBindRenderbufferEXT(GL.GL_RENDERBUFFER_EXT, 0);
+		gl.glEnable(GL.GL_TEXTURE_2D);
+		SceneRoot.getInstance(drawable).getShaderManager().setDefaultFragmentProgName("post");
+		CgGL.cgGLSetTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"), MainTemplate.frame_as_tex[0]); 
+		SceneRoot.getInstance(drawable).postRender(drawable);
+		gl.glDisable(GL.GL_TEXTURE_2D);
 		gl.glPopMatrix();
 		
 		if(takeScreenshots) {

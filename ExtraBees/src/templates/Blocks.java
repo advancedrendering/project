@@ -18,7 +18,7 @@ public class Blocks {
 	
 	public static void update(){
 		
-		if(timeIsBetween(0, 100)){
+		if(timeIsBetween(0, 1000)){
 			cubemappingGlass = true;
 		}else{
 			cubemappingGlass = false;

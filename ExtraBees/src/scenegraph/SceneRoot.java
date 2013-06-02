@@ -121,7 +121,6 @@ public class SceneRoot extends SceneGraphNode{
 
 	@Override
 	public void draw(GLAutoDrawable drawable) {
-		this.getShaderManager().setDefaultFragmentProgName("phong");
 		GL gl = drawable.getGL();
 		//enable drawing of textures
 		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "useTexture"), this.getShaderManager().TRUE);
@@ -133,6 +132,5 @@ public class SceneRoot extends SceneGraphNode{
 	
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
-		this.getShaderManager().setDefaultFragmentProgName("post");
 	}
 }
