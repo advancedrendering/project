@@ -105,11 +105,12 @@ public class HeliModel extends SceneGraphNode {
 //					Paths.HELI_BACK_TO_CAMERA_TARGET_U = 0.0f;
 			}
 			
-			if(Blocks.animationActive && Blocks.heliPathWithCamera2Active){
+			if(Blocks.animationActive && Blocks.camera_2_PathActive){
 				heliPosition = BezierCurve.getCoordsAt(Paths.CAMERA_2,Paths.CAMERA_2_U);
 				heliPosition[1] = heliPosition[1]+0.2f;
 				heliTarget = Paths.GLASS_ON_TABLE;
 			}
+
 		
 		
 		float[] heliRotation = VectorMath.getEulerAngles(heliPosition, heliTarget);

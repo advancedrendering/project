@@ -25,13 +25,13 @@ public class Blocks {
 	
 	public static void update(){
 		
-		if(frameIsBetween(0, 2) || frameIsBetween(400, 20000)){
+		if(frameIsBetween(0, 2) || frameIsBetween(350, 20000)){
 			cubemappingGlass = true;
 		}else{
 			cubemappingGlass = false;
 		}
 		
-		if(frameIsBetween(0, 350) || frameIsBetween(1000, 20000)){
+		if(frameIsBetween(0, 350) || frameIsBetween(850, 950)){
 			cubemappingHeli = true;
 		}else{
 			cubemappingHeli = false;
@@ -80,12 +80,18 @@ public class Blocks {
 			candleFlameActive = false;
 		}
 		
-		if(frameIsBetween(930, 20000)){
+		if(frameIsBetween(930, 1000)){
 			heliBackToCameraPathActive = true;
 			heliBackToCameraTargetActive = true;
 		}else{
 			heliBackToCameraPathActive = false;
 			heliBackToCameraTargetActive = false;
+		}
+		
+		if(frameIsBetween(1060, 20000)){
+			camera_2_PathActive = true;
+		}else{
+			camera_2_PathActive = false;
 		}
 		
 		// rain
@@ -101,10 +107,12 @@ public class Blocks {
 		if(frameIsBetween(600, 800)){
 			Rain.emitRate = 0.3f;
 		}
-		if(frameIsBetween(800, 20000)){
+		if(frameIsBetween(800, 1500)){
 			Rain.emitRate = 0.1f;
 		}
-			
+		if(frameIsBetween(1500, 20000)){
+			Rain.emitRate = 0.0f;
+		}
 	}
 	
 	private static boolean frameIsBetween(int begin, int end){

@@ -36,7 +36,7 @@ public class MainTemplate extends JoglTemplate {
 	public static int frameCounter = 0;
 	public static int animationFrame = -30;
 
-	private boolean cameraControlEnabled = false, cubeMappingEnabled = false, keyPressedW = false, keyPressedS = false,
+	private boolean cameraControlEnabled = false, keyPressedW = false, keyPressedS = false,
 			keyPressedA = false, keyPressedD = false, keyPressedQ = false,
 			keyPressedE = false,keyPressedK = false,keyPressedJ = false;
 	private float movementSpeed = 0.2f;
@@ -63,6 +63,10 @@ public class MainTemplate extends JoglTemplate {
 	public static float view_transy;
 
 	public static float view_transz;
+
+	public boolean cubeMapping = true;
+
+	private boolean postProcessingEnabled = true;
 
 
 	public static void main(String[] args) {
@@ -174,12 +178,12 @@ public class MainTemplate extends JoglTemplate {
 			drawFPS(drawable);
 		}
 
-		if (Blocks.cubemappingHeli){
+		if (cubeMapping && Blocks.cubemappingHeli){
 			float[] heliPosition = BezierCurve.getCoordsAt(Paths.HELI_TO_CAMERA_1, Paths.HELI_TO_CAMERA_1_U);
 			heliPosition[1] = heliPosition[1]+0.27f;
 			renderToBuffer(drawable,drawable.getGL(),MainTemplate.getGlu(),cubemapHeli,heliPosition,false);
 		}
-		if (Blocks.cubemappingGlass){
+		if (cubeMapping && Blocks.cubemappingGlass){
 			renderToBuffer(drawable,drawable.getGL(),MainTemplate.getGlu(),cubemapGlass,Paths.GLASS_ON_TABLE,true);
 		}
 		applyMouseTranslation(gl);
@@ -189,17 +193,18 @@ public class MainTemplate extends JoglTemplate {
 		/** see eulerangle.pdf in /doc **/
 		
 		float[] camPosition = BezierCurve.getCoordsAt(Paths.CAMERA_TO_TABLE,Paths.CAMERA_TO_TABLE_1_U);
+		float[] camRotation = VectorMath.getEulerAngles(camPosition, Paths.GLASS_ON_TABLE);
 		
 		if(Blocks.camera_2_PathActive){
 			camPosition = BezierCurve.getCoordsAt(Paths.CAMERA_2, Paths.CAMERA_2_U);
+			camRotation = VectorMath.getEulerAngles(camPosition, Paths.GLASS_ON_TABLE);
 		}
 		//active camera path 2
-		if(Paths.CAMERA_TO_TABLE_1_U>=1f){
-			Blocks.camera_2_PathActive= true;
-			Blocks.camera_1_PathActive=false;
-		
-		}			
-		float[] camRotation = VectorMath.getEulerAngles(camPosition, Paths.GLASS_ON_TABLE);
+//		if(Paths.CAMERA_TO_TABLE_1_U>=1f){
+//			Blocks.camera_2_PathActive= true;
+//			Blocks.camera_1_PathActive=false;
+//		
+//		}			
 		
 		// camera position and rotation
 		if(!cameraControlEnabled){
@@ -282,29 +287,39 @@ public class MainTemplate extends JoglTemplate {
 			gl.glLightfv(GL.GL_LIGHT4, GL.GL_SPECULAR, LAMPS, 8);
 			gl.glLightfv(GL.GL_LIGHT4, GL.GL_POSITION, lightPos4, 0);
 			
+			
+			float[] lightPos5 = {Paths.GLASS_ON_TABLE[0]-2f,Paths.GLASS_ON_TABLE[1],Paths.GLASS_ON_TABLE[2]+10f};
+			gl.glEnable(GL.GL_LIGHT5);
+			// set light properties
+			gl.glLightfv(GL.GL_LIGHT5, GL.GL_AMBIENT, LAMPS, 0);
+			gl.glLightfv(GL.GL_LIGHT5, GL.GL_DIFFUSE, LAMPS, 4);
+			gl.glLightfv(GL.GL_LIGHT5, GL.GL_SPECULAR, LAMPS, 8);
+			gl.glLightfv(GL.GL_LIGHT5, GL.GL_POSITION, lightPos5, 0);
+			
 		
 		SceneRoot.getInstance(drawable).getShaderManager().bindFP();
 		SceneRoot.getInstance(drawable).render(drawable);
 		
-		this.copyWindowToTexture(drawable, GL.GL_TEXTURE_RECTANGLE_NV);
-		
-		SceneRoot.getInstance(drawable).getShaderManager().setDefaultVertexProgName("post");
-		SceneRoot.getInstance(drawable).getShaderManager().setDefaultFragmentProgName("post");
-		SceneRoot.getInstance(drawable).getShaderManager().bindFP();
-		SceneRoot.getInstance(drawable).getShaderManager().bindVP();
-		
-		CgGL.cgGLSetTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("motion", "sceneTex"), MainTemplate.frame_as_tex[0]);
-		CgGL.cgGLEnableTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("motion", "sceneTex"));
-		CgGL.cgGLSetTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"), MainTemplate.frame_as_tex[0]); 
-		CgGL.cgGLEnableTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"));
-		CgGL.cgGLSetTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("motion", "sceneTex"), MainTemplate.frame_as_tex[0]);
-		CgGL.cgGLEnableTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("motion", "sceneTex"));
-		CgGL.cgGLSetParameter1f(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "gaussian_blur"), SceneRoot.getInstance(drawable).getShaderManager().FALSE);
-		
-		gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-		SceneRoot.getInstance(drawable).postRender(drawable);
-		
+		if(postProcessingEnabled){
+			this.copyWindowToTexture(drawable, GL.GL_TEXTURE_RECTANGLE_NV);
+			
+			SceneRoot.getInstance(drawable).getShaderManager().setDefaultVertexProgName("post");
+			SceneRoot.getInstance(drawable).getShaderManager().setDefaultFragmentProgName("post");
+			SceneRoot.getInstance(drawable).getShaderManager().bindFP();
+			SceneRoot.getInstance(drawable).getShaderManager().bindVP();
+			
+			CgGL.cgGLSetTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("motion", "sceneTex"), MainTemplate.frame_as_tex[0]);
+			CgGL.cgGLEnableTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("motion", "sceneTex"));
+			CgGL.cgGLSetTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"), MainTemplate.frame_as_tex[0]); 
+			CgGL.cgGLEnableTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"));
+			CgGL.cgGLSetTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("motion", "sceneTex"), MainTemplate.frame_as_tex[0]);
+			CgGL.cgGLEnableTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("motion", "sceneTex"));
+			CgGL.cgGLSetParameter1f(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "gaussian_blur"), SceneRoot.getInstance(drawable).getShaderManager().FALSE);
+			
+			gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+			SceneRoot.getInstance(drawable).postRender(drawable);
+		}
 //		this.copyWindowToTexture(drawable, GL.GL_TEXTURE_RECTANGLE_EXT);
 //		CgGL.cgGLSetTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"), MainTemplate.frame_as_tex[0]);
 //		CgGL.cgGLEnableTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"));
@@ -451,10 +466,12 @@ public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu, int[] cubema
 		} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 			Blocks.animationActive = !Blocks.animationActive;
 //			takeScreenshots = !takeScreenshots;
+		} else if (e.getKeyCode() == KeyEvent.VK_P) {
+			postProcessingEnabled  = !postProcessingEnabled;
 		} else if (e.getKeyCode() == KeyEvent.VK_C) {
 			cameraControlEnabled = !cameraControlEnabled;
 		} else if (e.getKeyCode() == KeyEvent.VK_M) {
-			cubeMappingEnabled = !cubeMappingEnabled;
+			cubeMapping = !cubeMapping;
 		} else if (e.getKeyCode() == KeyEvent.VK_N) {
 			Paths.CAMERA_TO_TABLE_1_U = 0.0f;
 			Paths.CAMERA_2_U = 0.0f;

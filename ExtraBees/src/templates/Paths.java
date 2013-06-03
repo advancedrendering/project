@@ -78,8 +78,18 @@ public class Paths {
 									  18.965f,3.891f,23.145f,
 									  19.469f,5.008f,25.188f,
 									  
-									  -14.659f,37.818f,35.366f,
-									  -14.435f,37.294f,36.424f};
+									  -70.659f,80.818f,35.366f,
+									  -160.435f,100.294f,36.424f};
+	
+	public static float[] CAMERA_2_TARGET  ={ 17.939f,2.4f,23.318f,
+											  16.132f,2.521f,23.22f,
+											  
+											  18.458f,4.964f,22.408f,
+											  13.913f,6.534f,25.486f,
+											  8.318f,8.468f,29.275f,
+											  
+											  -0.453f,24.915f,29.304f,
+											  -14.008f,35.406f,38.46f};
 	
 	
 	public static float HELI_TO_CAMERA_1_U = 0.0f;
@@ -90,9 +100,11 @@ public class Paths {
 	public static float HELI_2_TARGET_U = 0.0f;
 	public static float CAMERA_TO_TABLE_1_U = 0.0f;
 	public static float CAMERA_2_U = 0.0f;
+	public static float CAMERA_2_TARGET_U = 0.0f;
 	
 	public static final float[] GLASS_ON_TABLE = {17.972f, 2.45f, 23.340f};
 	public static final float[] CANDLE = {17.831f, 2.472f, 23.023f};
+	public static final float[] TOWER = {16.938f, 2.472f, 23.160f};
 
 
 	public static float getCamera1Speed() {
@@ -101,7 +113,13 @@ public class Paths {
 	}	
 	public static float getCamera2Speed() {
 		//return (float) (Math.pow(MainTemplate.getFPSCounter().getTimePassedMillis()*0.0001,4));
-		return (float) (MainTemplate.getFPSCounter().getFPS()*0.00005);
+		return (float) (MainTemplate.getFPSCounter().getFPS()*0.00001);
+		
+	}
+	
+	public static float getCameraTarget2Speed() {
+		//return (float) (Math.pow(MainTemplate.getFPSCounter().getTimePassedMillis()*0.0001,4));
+		return (float) (MainTemplate.getFPSCounter().getFPS()*0.0000055);
 		
 	}
 
