@@ -4,6 +4,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 
 import particlesystem.Fire;
+import particlesystem.FireCannon;
 import particlesystem.Fireflies;
 import particlesystem.Rain;
 
@@ -26,6 +27,7 @@ public class SceneRoot extends SceneGraphNode{
 	private SkyBox skydome = null;
 	private Rain rain = null;
 	private Fire fire = null;
+	private FireCannon fireCannon = null;
 	private CameraModel camera = null;
 	private float scale = 1f;
 	
@@ -59,6 +61,9 @@ public class SceneRoot extends SceneGraphNode{
 		
 		fireflies = new Fireflies(drawable);
 		this.addChild(fireflies);
+		
+		fireCannon = new FireCannon(drawable);
+		this.addChild(fireCannon);
 		
 		heli = new HeliModel(drawable, scale*0.2f);
 		this.addChild(heli);
@@ -133,5 +138,9 @@ public class SceneRoot extends SceneGraphNode{
 	
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
+	}
+
+	public HeliModel getHeli() {
+		return this.heli;
 	}
 }

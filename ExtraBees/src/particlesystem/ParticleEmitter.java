@@ -107,4 +107,6 @@ public abstract class ParticleEmitter {
 	public void setEmitRate(float emitRate) {
 		this.emitRate = emitRate;
 	}
+	
+	public abstract void setEmitterPosition(float[] pos);
 }

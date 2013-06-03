@@ -169,7 +169,7 @@ public class JoglTemplate extends Frame implements GLEventListener,
 		// and load it with the identity matrix
 		gl.glLoadIdentity();
 		// perspective projection
-		glu.gluPerspective(30, (float) width / height, 1, 1000);
+		glu.gluPerspective(30, (float) width / height, 0.5, 1000);
 		// make sure to use the modelview matrix-mode
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		// load the identity matrix as the modelview (resets all previous

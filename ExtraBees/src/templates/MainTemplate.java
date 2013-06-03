@@ -14,6 +14,7 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.glu.GLU;
 
 import scenegraph.GlassModel;
+import scenegraph.SceneGraphNode;
 import scenegraph.SceneRoot;
 import scenegraph.HeliModel.HeliWindow;
 
@@ -24,26 +25,23 @@ public class MainTemplate extends JoglTemplate {
 	
 	private static TimeFPSCounter fpsCounter;
 	
-	public static int[] cubemap = new int[1];
-	public static int[] cubemap2 = new int[1];
+	public static int[] cubemapGlass = new int[1];
+	public static int[] cubemapHeli = new int[1];
 	public static  int CUBEMAP_SIZE = 512;
 	public static  int[] framebuffer = new int[1];
 	public static  int[] renderbuffer = new int[1];
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	private int frameCounter = 0;
+	public static int frameCounter = 0;
+	public static int animationFrame = -30;
 
 	private boolean cameraControlEnabled = false, cubeMappingEnabled = false, keyPressedW = false, keyPressedS = false,
 			keyPressedA = false, keyPressedD = false, keyPressedQ = false,
-			keyPressedE = false;
+			keyPressedE = false,keyPressedK = false,keyPressedJ = false;
 	private float movementSpeed = 0.2f;
 	
 	private boolean showFPS = false;
-	float u = 0.0f;
 	
 	/* necessary for time dependent rendering */
 	private long timeOfFirstFrame = 0;
@@ -133,6 +131,10 @@ public class MainTemplate extends JoglTemplate {
 	public void display(GLAutoDrawable drawable) {
 		
 		fpsCounter.update();
+		Blocks.update();
+		updateCamCoords();
+		if(Blocks.animationActive)
+			System.out.println(animationFrame++);
 
 		if(!takeScreenshots){ // normal time measurement
 			if(timeOfFirstFrame == 0){
@@ -146,7 +148,6 @@ public class MainTemplate extends JoglTemplate {
 			frameCounter++;
 		}
 
-		updateCamCoords();
 		
 		// get the gl object
 		GL gl = drawable.getGL();
@@ -160,12 +161,12 @@ public class MainTemplate extends JoglTemplate {
 			drawFPS(drawable);
 		}
 		if (Blocks.cubemappingHeli){
-			float[] heliPosition = BezierCurve.getCoordsAt(Paths.HELI_1, Paths.HELI_1_U);
+			float[] heliPosition = BezierCurve.getCoordsAt(Paths.HELI_TO_CAMERA_1, Paths.HELI_TO_CAMERA_1_U);
 			heliPosition[1] = heliPosition[1]+0.27f;
-			renderToBuffer(drawable,drawable.getGL(),MainTemplate.getGlu(),cubemap2,heliPosition,false);
+			renderToBuffer(drawable,drawable.getGL(),MainTemplate.getGlu(),cubemapHeli,heliPosition,false);
 		}
 		if (Blocks.cubemappingGlass){
-			renderToBuffer(drawable,drawable.getGL(),MainTemplate.getGlu(),cubemap,Paths.GLASS_ON_TABLE,true);
+			renderToBuffer(drawable,drawable.getGL(),MainTemplate.getGlu(),cubemapGlass,Paths.GLASS_ON_TABLE,true);
 		}
 		applyMouseTranslation(gl);
 		applyMouseRotation(gl);
@@ -173,13 +174,13 @@ public class MainTemplate extends JoglTemplate {
 		
 		/** see eulerangle.pdf in /doc **/
 		
-		float[] camPosition = BezierCurve.getCoordsAt(Paths.CAMERA_1,Paths.CAMERA_1_U);
+		float[] camPosition = BezierCurve.getCoordsAt(Paths.CAMERA_TO_TABLE,Paths.CAMERA_TO_TABLE_1_U);
 		
 		if(Blocks.camera_2_PathActive){
 			camPosition = BezierCurve.getCoordsAt(Paths.CAMERA_2, Paths.CAMERA_2_U);
 		}
 		//active camera path 2
-		if(Paths.CAMERA_1_U>=1f){
+		if(Paths.CAMERA_TO_TABLE_1_U>=1f){
 			Blocks.camera_2_PathActive= true;
 			Blocks.camera_1_PathActive=false;
 		
@@ -204,9 +205,8 @@ public class MainTemplate extends JoglTemplate {
 		}
 		// press space to start animation
 		if(Blocks.animationActive){
-			Blocks.update();
-			if(Blocks.camera_1_PathActive && (Paths.CAMERA_1_U+Paths.getCamera1Speed()) < 1.0f){ // if camera 1 path is active
-				Paths.CAMERA_1_U += Paths.getCamera1Speed();
+			if(Blocks.camera_1_PathActive && (Paths.CAMERA_TO_TABLE_1_U+Paths.getCamera1Speed()) < 1.0f){ // if camera 1 path is active
+				Paths.CAMERA_TO_TABLE_1_U += Paths.getCamera1Speed();
 			}
 			if (Blocks.camera_2_PathActive && Paths.CAMERA_2_U<1.0f) {
 				Paths.CAMERA_2_U += Paths.getCamera2Speed();
@@ -259,7 +259,7 @@ public class MainTemplate extends JoglTemplate {
 			gl.glLightfv(GL.GL_LIGHT3, GL.GL_SPECULAR, LAMPS, 8);
 			gl.glLightfv(GL.GL_LIGHT3, GL.GL_POSITION, lightPos3, 0);
 			
-			float[] lightPos4 = {Paths.CAMERA_1[0],Paths.CAMERA_1[1]+10f,Paths.CAMERA_1[2]};
+			float[] lightPos4 = {Paths.CAMERA_TO_TABLE[0],Paths.CAMERA_TO_TABLE[1]+10f,Paths.CAMERA_TO_TABLE[2]};
 			gl.glEnable(GL.GL_LIGHT4);
 			// set light properties
 			gl.glLightfv(GL.GL_LIGHT4, GL.GL_AMBIENT, LAMPS, 0);
@@ -272,6 +272,8 @@ public class MainTemplate extends JoglTemplate {
 		SceneRoot.getInstance(drawable).getShaderManager().bindFP();
 		SceneRoot.getInstance(drawable).render(drawable);
 		
+//		drawControlPoints(gl, Paths.HELI_1);
+		
 		this.copyWindowToTexture(drawable, GL.GL_TEXTURE_RECTANGLE_NV);
 		
 //		SceneRoot.getInstance(drawable).getShaderManager().setDefaultFragmentProgName("post");
@@ -282,7 +284,6 @@ public class MainTemplate extends JoglTemplate {
 //		gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 //		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 //		SceneRoot.getInstance(drawable).postRender(drawable);
-		
 //		drawable.swapBuffers();
 		
 		gl.glPopMatrix();
@@ -389,7 +390,6 @@ public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu, int[] cubema
 			setView_transz(getView_transz() - movementSpeed);
 		if (keyPressedS)
 			setView_transz(getView_transz() + movementSpeed);
-
 	}
 
 
@@ -410,6 +410,10 @@ public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu, int[] cubema
 			keyPressedW = true;
 		} else if (e.getKeyCode() == KeyEvent.VK_S) {
 			keyPressedS = true;
+		} else if (e.getKeyCode() == KeyEvent.VK_J) {
+			keyPressedJ = true;
+		} else if (e.getKeyCode() == KeyEvent.VK_K) {
+			keyPressedK = true;
 		} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 			Blocks.animationActive = !Blocks.animationActive;
 		} else if (e.getKeyCode() == KeyEvent.VK_C) {
@@ -417,12 +421,12 @@ public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu, int[] cubema
 		} else if (e.getKeyCode() == KeyEvent.VK_M) {
 			cubeMappingEnabled = !cubeMappingEnabled;
 		} else if (e.getKeyCode() == KeyEvent.VK_N) {
-			Paths.CAMERA_1_U = 0.0f;
+			Paths.CAMERA_TO_TABLE_1_U = 0.0f;
 			Paths.CAMERA_2_U = 0.0f;
-			Paths.HELI_1_TARGET_U = 0.0f;
-			Paths.HELI_1_U = 0.0f;
-			fpsCounter.resetAccumulatedTime();
+			Paths.HELI_TO_CAMERA_1_TARGET_U = 0.0f;
+			Paths.HELI_TO_CAMERA_1_U = 0.0f;
 			Blocks.animationActive = false;
+			animationFrame = 0;
 		}
 	}
 
@@ -440,6 +444,10 @@ public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu, int[] cubema
 			keyPressedW = false;
 		} else if (e.getKeyCode() == KeyEvent.VK_S) {
 			keyPressedS = false;
+		}else if (e.getKeyCode() == KeyEvent.VK_J) {
+			keyPressedJ = false;
+		} else if (e.getKeyCode() == KeyEvent.VK_K) {
+			keyPressedK = false;
 		}
 	}
 

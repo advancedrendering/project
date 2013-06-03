@@ -115,4 +115,10 @@ public class FireflyEmitter extends ParticleEmitter {
 		}
 	}
 
+	@Override
+	public void setEmitterPosition(float[] pos) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -12,6 +12,8 @@ import templates.MainTemplate;
 import templates.Paths;
 import templates.VectorMath;
 
+import particlesystem.FireCannon;
+
 
 import com.sun.opengl.cg.CgGL;
 import com.sun.opengl.util.texture.TextureData;
@@ -22,6 +24,8 @@ public class HeliModel extends SceneGraphNode {
 	HeliRotorTop heli_rotor_top = null;
 	HeliRotorTail heli_rotor_back = null;
 	HeliWindow heli_window = null;
+	public float[] heliPosition = new float[3];
+	public float[] heliTarget = new float[3];
 	int rot = 0;
 	
 	private final float[] REDPLASTIC_MATERIAL = { 0.3f, 0.0f, 0.0f, 1.0f, 0.6f, 0.0f, 0.0f, 1.0f, 0.8f, 0.4f, 0.4f, 1.0f, 10.0f };
@@ -33,6 +37,7 @@ public class HeliModel extends SceneGraphNode {
 		heli_window = new HeliWindow(drawable, "models/heli_window", scale);
 		heli_rotor_top.setPivot(0f*scale, 1.4023f*scale, -0.2793f*scale);
 		heli_rotor_back.setPivot(0.1168f*scale, 1.2813f*scale, -2.5441f*scale);
+
 		this.addChild(heli_rotor_top);
 		this.addChild(heli_rotor_back);
 		this.addChild(heli_window);
@@ -49,35 +54,57 @@ public class HeliModel extends SceneGraphNode {
 	@Override
 	public void animate(GLAutoDrawable drawable) {
 
-		float[] heliPosition = BezierCurve.getCoordsAt(Paths.HELI_1,Paths.HELI_1_U);
+		heliPosition = BezierCurve.getCoordsAt(Paths.HELI_TO_CAMERA_1,Paths.HELI_TO_CAMERA_1_U);
 
 //		float[] heliPosition = BezierCurve.getCoordsAt(Paths.HELI_1,Paths.HELI_1_U);
-		float[] heliTarget = BezierCurve.getCoordsAt(Paths.HELI_TARGET_1,Paths.HELI_1_TARGET_U);
+		heliTarget = BezierCurve.getCoordsAt(Paths.HELI_TO_CAMERA_TARGET_1,Paths.HELI_TO_CAMERA_1_TARGET_U);
 
-		if(Blocks.animationActive && (Blocks.heliPath1Active)){
-			heliPosition = BezierCurve.getCoordsAt(Paths.HELI_1,Paths.HELI_1_U);
-			heliTarget = BezierCurve.getCoordsAt(Paths.HELI_TARGET_1,Paths.HELI_1_TARGET_U);
-			if(Paths.HELI_1_U < 1.0f)
-				Paths.HELI_1_U += Paths.getHeliSpeed();
-		}
-		if(Blocks.animationActive && (Blocks.heliPath1TargetActive)){
-			if(Paths.HELI_1_TARGET_U < 1.0f)
-				Paths.HELI_1_TARGET_U += Paths.getHeliTargetSpeed();
+			if(Blocks.animationActive && Blocks.heliToCameraPath1Active){
+				heliPosition = BezierCurve.getCoordsAt(Paths.HELI_TO_CAMERA_1,Paths.HELI_TO_CAMERA_1_U);
+				if(Paths.HELI_TO_CAMERA_1_U <= 1.0f)
+					Paths.HELI_TO_CAMERA_1_U += Paths.getHeliSpeed();
+			}
+			if(Blocks.animationActive && Blocks.heliToCameraPath1TargetActive){
+				heliTarget = BezierCurve.getCoordsAt(Paths.HELI_TO_CAMERA_TARGET_1,Paths.HELI_TO_CAMERA_1_TARGET_U);
+				if(Paths.HELI_TO_CAMERA_1_TARGET_U < 1.0f)
+					Paths.HELI_TO_CAMERA_1_TARGET_U += Paths.getHeliTargetSpeed();
+			}
+			
+			if(Blocks.animationActive && Blocks.heliPathWithCameraActive){
+				heliPosition = BezierCurve.getCoordsAt(Paths.CAMERA_TO_TABLE,Paths.CAMERA_TO_TABLE_1_U);
+				heliPosition[1] = heliPosition[1]+0.2f;
+				heliTarget = Paths.GLASS_ON_TABLE;
+			}
+			
+			if(Blocks.animationActive && Blocks.heliToCandlePathActive){
+				heliPosition = BezierCurve.getCoordsAt(Paths.HELI_TO_CANDLE_AND_BACK_TO_CAMERA,Paths.HELI_TO_CANDLE_U);
+				if(Paths.HELI_TO_CANDLE_U <= 1.0f)
+					Paths.HELI_TO_CANDLE_U += Paths.getHeli2Speed();
+				heliTarget = BezierCurve.getCoordsAt(Paths.HELI_BACK_TO_CAMERA_TARGET,Paths.HELI_BACK_TO_CAMERA_TARGET_U);
+			}
+		
+			
+//			if(Blocks.animationActive && Blocks.heliBackToCameraPathActive){
+//				heliPosition = BezierCurve.getCoordsAt(Paths.HELI_BACK_TO_CAMERA,Paths.HELI_BACK_TO_CAMERA_U);
+//				if(Paths.HELI_BACK_TO_CAMERA_U <= 1.0f)
+//					Paths.HELI_BACK_TO_CAMERA_U += Paths.getHeli2Speed();
+////				else
+////					Paths.HELI_BACK_TO_CAMERA_U = 0.0f;
+//			}
+//			
+			if(Blocks.animationActive && Blocks.heliBackToCameraTargetActive){
+				if(Paths.HELI_BACK_TO_CAMERA_TARGET_U < 0.6f)
+					Paths.HELI_BACK_TO_CAMERA_TARGET_U += Paths.getHeli2TargetSpeed();
+//				else
+//					Paths.HELI_BACK_TO_CAMERA_TARGET_U = 0.0f;
 		}
 		
-		if(Blocks.animationActive && (Blocks.heliPath2Active)){
-			heliPosition = BezierCurve.getCoordsAt(Paths.CAMERA_1,Paths.CAMERA_1_U);
-			heliPosition[1] = heliPosition[1]+0.2f;
-			heliTarget = Paths.GLASS_ON_TABLE;
-		}
 		
-
 		float[] heliRotation = VectorMath.getEulerAngles(heliPosition, heliTarget);
 		this.setRotation(-heliRotation[0],heliRotation[1]+180,heliRotation[2]);
 		this.setTranslation(heliPosition);
 
-
-		rot = rot > Integer.MAX_VALUE ? 0 : rot+30;
+		rot = rot > Integer.MAX_VALUE ? 0 : rot+5;
 	}
 	
 	@Override
@@ -139,7 +166,8 @@ public class HeliModel extends SceneGraphNode {
 		public HeliRotorTail(GLAutoDrawable drawable, String modelPath,
 				float scale) {
 			super(drawable, modelPath, scale);
-			// TODO Auto-generated constructor stub
+			this.setFragShaderEnabled(false);
+			this.setVertexShaderEnabled(false);
 		}
 
 		@Override
@@ -197,10 +225,10 @@ public class HeliModel extends SceneGraphNode {
 			gl.glEnable(GL.GL_TEXTURE_CUBE_MAP);
 			
 			// generate texture space
-			gl.glGenTextures(1, MainTemplate.cubemap2, 0);
+			gl.glGenTextures(1, MainTemplate.cubemapHeli, 0);
 			
 			// create textures
-			gl.glBindTexture(GL.GL_TEXTURE_CUBE_MAP, MainTemplate.cubemap2[0]);
+			gl.glBindTexture(GL.GL_TEXTURE_CUBE_MAP, MainTemplate.cubemapHeli[0]);
 			
 			for (int i = 0; i < 6; i++) {
 				gl.glTexImage2D(GL.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.GL_RGB, MainTemplate.CUBEMAP_SIZE , MainTemplate.CUBEMAP_SIZE, 0, GL.GL_RGB, GL.GL_UNSIGNED_BYTE, null);
@@ -260,7 +288,7 @@ public class HeliModel extends SceneGraphNode {
 			gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
 			
 			gl.glEnable(GL.GL_TEXTURE_CUBE_MAP);
-			gl.glBindTexture(GL.GL_TEXTURE_CUBE_MAP, MainTemplate.cubemap2[0]);
+			gl.glBindTexture(GL.GL_TEXTURE_CUBE_MAP, MainTemplate.cubemapHeli[0]);
 			
 			if(visible){
 //					gl.glPushMatrix();
