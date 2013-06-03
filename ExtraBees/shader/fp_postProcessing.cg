@@ -14,7 +14,7 @@ uniform float3 weight_hor = float3( 0.2270270270, 0.3162162162, 0.0702702703 );
 uniform float width = 1280.0f;
 uniform float height = 720.0f;
 
-float4 main(vertexIN vIn, uniform samplerRECT sceneTex, uniform float gaussian_blur = 0.0f, uniform float gaussian_horizontal = 1.0f) : COLOR
+float4 main(vertexIN vIn, uniform samplerRECT sceneTex, uniform float gaussian_blur = 1.0f, uniform float gaussian_horizontal = 1.0f) : COLOR
 {
   //return texRECT(sceneTex, vIn.wpos.xy);
   if (gaussian_blur == 1.0f){

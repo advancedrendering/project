@@ -21,6 +21,7 @@ half4 main(vertexvIn vIn,
     half t = i / (samples-1);
     a = a + texRECT(sceneTex, wpos + velocity*t) * w;
   }
-  a.w = 1 - texRECT(sceneTex,wpos).w;
+  a.w = 1 - a.w;
+
   return a;
 }
