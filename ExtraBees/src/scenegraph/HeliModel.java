@@ -116,7 +116,7 @@ public class HeliModel extends SceneGraphNode {
 		this.setRotation(-heliRotation[0],heliRotation[1]+180,heliRotation[2]);
 		this.setTranslation(heliPosition);
 
-		rot = rot > Integer.MAX_VALUE ? 0 : rot+20;
+		rot = rot > Integer.MAX_VALUE ? 0 : rot+30;
 	}
 	
 	@Override
@@ -192,6 +192,8 @@ public class HeliModel extends SceneGraphNode {
 		
 		@Override
 		public void postDraw(GLAutoDrawable drawable) {
+			CgGL.cgGLSetParameter1f(this.getShaderManager().getFragShaderParam("motion", "blurScale"), 10.0f);
+			CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("motion", "blurScale"), 10.0f);
 			GL gl = drawable.getGL();
 			gl.glPushMatrix();
 			gl.glTranslatef(this.getPivot()[0], this.getPivot()[1], this.getPivot()[2]);
@@ -221,6 +223,8 @@ public class HeliModel extends SceneGraphNode {
 			this.prev_mv = current_mv;
 			this.prev_projection = current_projection;
 			gl.glPopMatrix();
+			CgGL.cgGLSetParameter1f(this.getShaderManager().getFragShaderParam("motion", "blurScale"), 1.0f);
+			CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("motion", "blurScale"), 1.0f);
 		}
 		
 	}
@@ -287,6 +291,9 @@ public class HeliModel extends SceneGraphNode {
 		
 		@Override
 		public void postDraw(GLAutoDrawable drawable) {
+			
+			CgGL.cgGLSetParameter1f(this.getShaderManager().getFragShaderParam("motion", "blurScale"), 1.0f);
+			CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("motion", "blurScale"), 1.0f);
 			GL gl = drawable.getGL();	
 			gl.glPushMatrix();
 			gl.glTranslatef(this.getPivot()[0], this.getPivot()[1], this.getPivot()[2]);
@@ -298,7 +305,8 @@ public class HeliModel extends SceneGraphNode {
 			gl.glGetFloatv(GL.GL_PROJECTION_MATRIX, this.current_projection);
 			CgGL.cgGLSetStateMatrixParameter(this.getShaderManager().getVertexShaderParam("motion", "modelView"), CgGL.CG_GL_MODELVIEW_MATRIX, CgGL.CG_GL_MATRIX_IDENTITY);
 			CgGL.cgGLSetStateMatrixParameter(this.getShaderManager().getVertexShaderParam("motion", "modelProj"), CgGL.CG_GL_PROJECTION_MATRIX, CgGL.CG_GL_MATRIX_IDENTITY);
-			
+			CgGL.cgGLSetMatrixParameterfc(this.getShaderManager().getVertexShaderParam("motion", "prevModelView"), this.prev_mv);
+			CgGL.cgGLSetMatrixParameterfc(this.getShaderManager().getVertexShaderParam("motion", "prevModelProj"), this.prev_projection);
 			
 			if ((this.prev_mv != null) && (this.prev_projection != null)){
 				this.getShaderManager().bindVP("motion");
@@ -306,15 +314,17 @@ public class HeliModel extends SceneGraphNode {
 				gl.glCallList(this.getObjectList());
 			}
 			
+			
 			if (this.prev_mv == null){
 				this.prev_mv = FloatBuffer.allocate(4 * 4);
 			}
 			if (this.prev_projection == null){
 				this.prev_projection = FloatBuffer.allocate(4 * 4);
 			}
-			gl.glGetFloatv(GL.GL_MODELVIEW_MATRIX, this.prev_mv);
-			gl.glGetFloatv(GL.GL_PROJECTION_MATRIX, this.prev_projection);
-			gl.glPopMatrix(); // restore matrix
+			
+			this.prev_mv = current_mv;
+			this.prev_projection = current_projection;
+			gl.glPopMatrix();
 		}
 	}
 	

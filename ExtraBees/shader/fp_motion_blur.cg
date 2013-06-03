@@ -8,7 +8,7 @@ half4 main(vertexvIn vIn,
            uniform half blurScale
            ) : COLOR
 {
-  const float samples = 16;
+  const float samples = 32;
 
   half2 wpos = vIn.wpos.xy;
   half2 velocity = vIn.velocity.xy * blurScale;           // read velocity from texture coordvInate
