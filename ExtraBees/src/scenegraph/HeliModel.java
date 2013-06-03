@@ -23,6 +23,7 @@ import com.sun.opengl.util.texture.TextureIO;
 public class HeliModel extends SceneGraphNode {
 
 	HeliRotorTop heli_rotor_top = null;
+	HeliRotorTop heli_rotor_top2 = null;
 	HeliRotorTail heli_rotor_back = null;
 	HeliWindow heli_window = null;
 	public float[] heliPosition = new float[3];
@@ -34,12 +35,16 @@ public class HeliModel extends SceneGraphNode {
 	public HeliModel(GLAutoDrawable drawable, float scale) {
 		super(drawable, "models/heli_chassis", scale);
 		heli_rotor_top = new HeliRotorTop(drawable, "models/heli_rotor_top", scale);
+		heli_rotor_top2 = new HeliRotorTop(drawable, "models/heli_rotor_top", scale);
 		heli_rotor_back = new HeliRotorTail(drawable, "models/heli_rotor_back", scale);
 		heli_window = new HeliWindow(drawable, "models/heli_window", scale);
 		heli_rotor_top.setPivot(0f*scale, 1.4023f*scale, -0.2793f*scale);
+		heli_rotor_top2.setPivot(0f*scale, 1.4023f*scale, -0.2793f*scale);
+		heli_rotor_top2.setRotation(0, 90, 0);
 		heli_rotor_back.setPivot(0.1168f*scale, 1.2813f*scale, -2.5441f*scale);
 
 		this.addChild(heli_rotor_top);
+//		this.addChild(heli_rotor_top2);
 		this.addChild(heli_rotor_back);
 		this.addChild(heli_window);
 		this.setFragShaderEnabled(true);
@@ -98,14 +103,20 @@ public class HeliModel extends SceneGraphNode {
 					Paths.HELI_BACK_TO_CAMERA_TARGET_U += Paths.getHeli2TargetSpeed();
 //				else
 //					Paths.HELI_BACK_TO_CAMERA_TARGET_U = 0.0f;
-		}
+			}
+			
+			if(Blocks.animationActive && Blocks.heliPathWithCamera2Active){
+				heliPosition = BezierCurve.getCoordsAt(Paths.CAMERA_2,Paths.CAMERA_2_U);
+				heliPosition[1] = heliPosition[1]+0.2f;
+				heliTarget = Paths.GLASS_ON_TABLE;
+			}
 		
 		
 		float[] heliRotation = VectorMath.getEulerAngles(heliPosition, heliTarget);
 		this.setRotation(-heliRotation[0],heliRotation[1]+180,heliRotation[2]);
 		this.setTranslation(heliPosition);
 
-		rot = rot > Integer.MAX_VALUE ? 0 : rot+5;
+		rot = rot > Integer.MAX_VALUE ? 0 : rot+20;
 	}
 	
 	@Override
@@ -186,11 +197,13 @@ public class HeliModel extends SceneGraphNode {
 			gl.glTranslatef(this.getPivot()[0], this.getPivot()[1], this.getPivot()[2]);
 			gl.glRotatef(rot, 0, 1, 0);
 			gl.glTranslatef(-this.getPivot()[0], -this.getPivot()[1], -this.getPivot()[2]);
-			
+
 			gl.glGetFloatv(GL.GL_MODELVIEW_MATRIX, this.current_mv);
 			gl.glGetFloatv(GL.GL_PROJECTION_MATRIX, this.current_projection);
 			CgGL.cgGLSetStateMatrixParameter(this.getShaderManager().getVertexShaderParam("motion", "modelView"), CgGL.CG_GL_MODELVIEW_MATRIX, CgGL.CG_GL_MATRIX_IDENTITY);
 			CgGL.cgGLSetStateMatrixParameter(this.getShaderManager().getVertexShaderParam("motion", "modelProj"), CgGL.CG_GL_PROJECTION_MATRIX, CgGL.CG_GL_MATRIX_IDENTITY);
+			CgGL.cgGLSetMatrixParameterfc(this.getShaderManager().getVertexShaderParam("motion", "prevModelView"), this.prev_mv);
+			CgGL.cgGLSetMatrixParameterfc(this.getShaderManager().getVertexShaderParam("motion", "prevModelProj"), this.prev_projection);
 			
 			if ((this.prev_mv != null) && (this.prev_projection != null)){
 				this.getShaderManager().bindVP("motion");
@@ -204,9 +217,9 @@ public class HeliModel extends SceneGraphNode {
 			if (this.prev_projection == null){
 				this.prev_projection = FloatBuffer.allocate(4 * 4);
 			}
-			gl.glGetFloatv(GL.GL_MODELVIEW_MATRIX, this.prev_mv);
-			gl.glGetFloatv(GL.GL_PROJECTION_MATRIX, this.prev_projection);
 			
+			this.prev_mv = current_mv;
+			this.prev_projection = current_projection;
 			gl.glPopMatrix();
 		}
 		
