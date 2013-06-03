@@ -64,7 +64,7 @@ public class TimeFPSCounter {
 
 	/** @return the time passed, in milliseconds, to render last frame */
 	public final long getTimePassedMillis() {
-	    return timePassedNanos / 1000000;
+	    return 45;
 	}
 
 	/** @return the time passed, in microseconds, to render last frame */

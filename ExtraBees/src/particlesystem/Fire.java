@@ -10,7 +10,6 @@ import javax.media.opengl.GLException;
 
 import templates.Blocks;
 import templates.Paths;
-import templates.MainTemplate;
 
 import com.sun.opengl.util.texture.Texture;
 import com.sun.opengl.util.texture.TextureIO;
@@ -19,7 +18,7 @@ public class Fire extends ParticleSystem {
 
 	//texture
 	private Texture raindrop = null;
-	private boolean update; 
+	private boolean update = true; 
 	
 	public Fire(GLAutoDrawable drawable) {
 		super(drawable);

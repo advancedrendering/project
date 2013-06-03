@@ -168,10 +168,10 @@ public class SceneRoot extends SceneGraphNode{
 	@Override
 	public void animate(GLAutoDrawable drawable) {
 		
-		if(Blocks.animationActive && Blocks.fogActive){
-			if(fogDensity >= 0.02f)
-				fogDensity-= 0.00001f;
-		}
+//		if(Blocks.animationActive && Blocks.fogActive){
+//			if(fogDensity >= 0.02f)
+//				fogDensity-= 0.00001f;
+//		}
 		
 	}
 
@@ -190,8 +190,8 @@ public class SceneRoot extends SceneGraphNode{
 	
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
-		CgGL.cgGLSetParameter1f(this.getShaderManager().getFragShaderParam("motion", "blurScale"), 1.0f);
-		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("motion", "blurScale"), 1.0f);
+		CgGL.cgGLSetParameter1f(this.getShaderManager().getFragShaderParam("motion", "blurScale"), 200.0f);
+		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("motion", "blurScale"), 100.0f);
 		CgGL.cgGLSetParameter3f(this.getShaderManager().getVertexShaderParam("motion", "halfWindowSize"), MainTemplate.xResolution / 2.0f, MainTemplate.yResolution / 2.0f, 0);
 	}
 

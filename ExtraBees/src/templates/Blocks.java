@@ -6,6 +6,7 @@ public class Blocks {
 	public static boolean animationActive = false;
 	public static boolean heliToCameraPath1Active = false;
 	public static boolean heliPathWithCameraActive = false;
+	public static boolean heliPathWithCamera2Active = false;
 	public static boolean heliToCandlePathActive = false;
 	public static boolean heliBackToCameraPathActive = false;
 	public static boolean camera_1_PathActive = false;

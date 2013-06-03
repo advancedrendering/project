@@ -67,7 +67,19 @@ public class Paths {
 										  19.306f,2.45f,23.739f};
 	
 	
-	public static float[] CAMERA_2  ={19.4f,2.243f,23.779f,19.701f,2.197f,24.958f,17.04f,4.477f,26.789f,16.078f,3.699f,25.683f,14.181f,2.166f,23.503f,14.272f,3.494f,25.292f,14.175f,4.231f,24.531f,13.228f,11.429f,17.113f,-1.623f,26.818f,16.366f,-1.435f,27.294f,15.424f};
+	public static float[] CAMERA_2  ={19.306f,2.45f,23.739f,
+									  19.472f,2.266f,24.805f,
+									  
+									  15.074f,2.355f,26.73f,
+									  14.946f,2.877f,23.141f,
+									  14.856f,3.239f,20.603f,
+									  
+									  18.372f,2.572f,20.735f,
+									  18.965f,3.891f,23.145f,
+									  19.469f,5.008f,25.188f,
+									  
+									  -14.659f,37.818f,35.366f,
+									  -14.435f,37.294f,36.424f};
 	
 	
 	public static float HELI_TO_CAMERA_1_U = 0.0f;
@@ -84,7 +96,7 @@ public class Paths {
 
 
 	public static float getCamera1Speed() {
-		return (float) (MainTemplate.getFPSCounter().getTimePassedMillis()*0.0001);
+		return (float) (MainTemplate.getFPSCounter().getTimePassedMillis()*0.00005);
 //		return (float) (MainTemplate.getFPSCounter().getFPS()*0.0001);
 	}	
 	public static float getCamera2Speed() {
@@ -103,11 +115,11 @@ public class Paths {
 	}
 	
 	public static float getHeli2TargetSpeed() {
-		return   (float)(MainTemplate.getFPSCounter().getTimePassedMillis()*0.00004+0.000001);
+		return   (float)(MainTemplate.getFPSCounter().getTimePassedMillis()*0.00004+0.000008);
 	}
 	
 	public static float getHeli2Speed() {
 //		return  (float)(MainTemplate.getFPSCounter().getTimePassedMillis()*0.0007*Math.pow(HELI_1_U, 2)+0.000001f);
-		return  (float)(MainTemplate.getFPSCounter().getTimePassedMillis()*0.00002+0.0000008);
+		return  (float)(MainTemplate.getFPSCounter().getTimePassedMillis()*0.00001+0.00000001);
 	}
 }
