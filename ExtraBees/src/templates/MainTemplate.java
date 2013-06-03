@@ -88,6 +88,7 @@ public class MainTemplate extends JoglTemplate {
 	public void init(GLAutoDrawable drawable) {
 		super.init(drawable);
 		GL gl = drawable.getGL();
+		takeScreenshots = false;
 		// init Cg
 		// load and compile shader
 		fpsCounter = new TimeFPSCounter();
@@ -291,6 +292,9 @@ public class MainTemplate extends JoglTemplate {
 		SceneRoot.getInstance(drawable).getShaderManager().setDefaultFragmentProgName("post");
 		SceneRoot.getInstance(drawable).getShaderManager().bindFP();
 		SceneRoot.getInstance(drawable).getShaderManager().bindVP();
+		
+		CgGL.cgGLSetTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("motion", "sceneTex"), MainTemplate.frame_as_tex[0]);
+		CgGL.cgGLEnableTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("motion", "sceneTex"));
 		CgGL.cgGLSetTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"), MainTemplate.frame_as_tex[0]); 
 		CgGL.cgGLEnableTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"));
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -433,6 +437,7 @@ public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu, int[] cubema
 			keyPressedK = true;
 		} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 			Blocks.animationActive = !Blocks.animationActive;
+//			takeScreenshots = !takeScreenshots;
 		} else if (e.getKeyCode() == KeyEvent.VK_C) {
 			cameraControlEnabled = !cameraControlEnabled;
 		} else if (e.getKeyCode() == KeyEvent.VK_M) {

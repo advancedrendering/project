@@ -20,7 +20,7 @@ public class Rain extends ParticleSystem {
 	//texture
 
 	private Texture raindrop = null;
-	private boolean update; 
+	private boolean update = true; 
 	
 	public Rain(GLAutoDrawable drawable) {
 		super(drawable);
@@ -114,7 +114,7 @@ public class Rain extends ParticleSystem {
 					float elapsed_time = current_time - lastTime;
 					lastTime = current_time;
 					//update the particle system
-					update(elapsed_time);
+					update(15f);
 				}
 				//draw particles
 				this.settings.emitter.setEmitRate(emitRate);
