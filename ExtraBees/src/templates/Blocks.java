@@ -1,5 +1,6 @@
 package templates;
 import particlesystem.Rain;
+import scenegraph.SceneRoot;
 
 //** animations are coordinated by blocking variables **//
 public class Blocks {
@@ -25,7 +26,7 @@ public class Blocks {
 	
 	public static void update(){
 		
-		if(frameIsBetween(0, 2) || frameIsBetween(350, 20000)){
+		if(frameIsBetween(0, 2) || frameIsBetween(350, 1300)){
 			cubemappingGlass = true;
 		}else{
 			cubemappingGlass = false;
@@ -112,6 +113,15 @@ public class Blocks {
 		}
 		if(frameIsBetween(1500, 20000)){
 			Rain.emitRate = 0.0f;
+		}
+		if(frameIsBetween(1400, 20000)){
+			MainTemplate.postProcessingEnabled = false;
+		}
+		if(frameIsBetween(1400, 20000)){
+			SceneRoot.fogDensity+=0.005f;
+			SceneRoot.fogColor[0] -= 0.002f;
+			SceneRoot.fogColor[1] -= 0.002f;
+			SceneRoot.fogColor[2] -= 0.002f;
 		}
 	}
 	

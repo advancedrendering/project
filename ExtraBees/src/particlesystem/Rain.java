@@ -41,9 +41,6 @@ public class Rain extends ParticleSystem {
 		if (settings.point_size > point_size_arg.get(0)){
 			settings.point_size = point_size_arg.get(0);
 		}
-		
-		this.setVertexShaderEnabled(false);
-		this.setFragShaderEnabled(false);
 	}
 
 	@Override
@@ -176,17 +173,16 @@ public class Rain extends ParticleSystem {
 
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
-		if ((this.prev_mv != null) && (this.prev_projection != null)){
-			CgGL.cgGLSetParameter1f(this.getShaderManager().getFragShaderParam("motion", "blurScale"), 150.0f);
-			CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("motion", "blurScale"), 100.0f);
-			this.getShaderManager().bindVP("motion");
-			this.getShaderManager().bindFP("motion");
-			this.update = false;
-			this.draw(drawable);
-			this.update = true;
-			CgGL.cgGLSetParameter1f(this.getShaderManager().getFragShaderParam("motion", "blurScale"), 2.0f);
-			CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("motion", "blurScale"), 2.0f);
-		}
-		
+//		if ((this.prev_mv != null) && (this.prev_projection != null)){
+//			CgGL.cgGLSetParameter1f(this.getShaderManager().getFragShaderParam("motion", "blurScale"), 150.0f);
+////			CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("motion", "blurScale"), 100.0f);
+////			this.getShaderManager().bindVP("motion");
+////			this.getShaderManager().bindFP("motion");
+//			this.update = false;
+////			this.draw(drawable);
+//			this.update = true;
+//			CgGL.cgGLSetParameter1f(this.getShaderManager().getFragShaderParam("motion", "blurScale"), 1.0f);
+//			CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("motion", "blurScale"), 1.0f);
+//		}
 	}
 }

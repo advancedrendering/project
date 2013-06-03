@@ -18,6 +18,7 @@ public class Fireflies extends ParticleSystem {
 
 	private Texture firefly;
 	private float[] midPoint;
+	private boolean update = true;
 
 	public Fireflies(GLAutoDrawable drawable) {
 		super(drawable);
@@ -120,12 +121,14 @@ public class Fireflies extends ParticleSystem {
 		if (lastTime  == -1){
 			lastTime = (float)System.nanoTime() / 1000000.0f ;
 		}
-		else{			
-			float current_time = (float)System.nanoTime() / 1000000.0f;
-			float elapsed_time = current_time - lastTime;
-			lastTime = current_time;
-			//update the particle system
-			update(elapsed_time);
+		else{
+			if (this.update  == true){
+				float current_time = (float)System.nanoTime() / 1000000.0f;
+				float elapsed_time = current_time - lastTime;
+				lastTime = current_time;
+				//update the particle system
+				update(elapsed_time);
+			}
 			//draw particles
 			
 			//use point sprites
@@ -189,7 +192,11 @@ public class Fireflies extends ParticleSystem {
 
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
-		// TODO Auto-generated method stub
+//		this.update = false;
+//		this.getShaderManager().bindVP("post");
+//		this.getShaderManager().bindFP("post");
+//		this.draw(drawable);
+//		this.update = true;
 		
 	}
 }

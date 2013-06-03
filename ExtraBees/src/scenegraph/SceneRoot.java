@@ -22,7 +22,7 @@ import templates.MainTemplate;
 public class SceneRoot extends SceneGraphNode{
 
 	// singleton pattern
-	private static SceneRoot scene = null;
+	public static SceneRoot scene = null;
 
 	private CampusModel campus = null;
 	private HeliModel heli = null;
@@ -45,8 +45,8 @@ public class SceneRoot extends SceneGraphNode{
 	 float[] acceleration= {0.0f,0.0f,0.0f};
 	
 	private CGparameter cgFogDensity = null;
-	private float fogDensity = 0.05f;
-	private float[] fogColor = {0.35f, 0.35f, 0.35f};
+	public static float fogDensity = 0.05f;
+	public static float[] fogColor = {0.35f, 0.35f, 0.35f};
 	
 	private CGparameter cgFogColor = null;
 	private CGparameter cgFogTex2DSampler = null;
@@ -192,8 +192,8 @@ public class SceneRoot extends SceneGraphNode{
 	
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
-		CgGL.cgGLSetParameter1f(this.getShaderManager().getFragShaderParam("motion", "blurScale"),2.08f);
-		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("motion", "blurScale"), 2.0f);
+		CgGL.cgGLSetParameter1f(this.getShaderManager().getFragShaderParam("motion", "blurScale"),1.0f);
+		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("motion", "blurScale"), 1.0f);
 		CgGL.cgGLSetParameter3f(this.getShaderManager().getVertexShaderParam("motion", "halfWindowSize"), MainTemplate.xResolution / 2.0f, MainTemplate.yResolution / 2.0f, 0);
 	}
 

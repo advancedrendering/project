@@ -113,13 +113,13 @@ public class Paths {
 	}	
 	public static float getCamera2Speed() {
 		//return (float) (Math.pow(MainTemplate.getFPSCounter().getTimePassedMillis()*0.0001,4));
-		return (float) (MainTemplate.getFPSCounter().getFPS()*0.00001);
+		return (float) (MainTemplate.getFPSCounter().getTimePassedMillis()*0.000007);
 		
 	}
 	
 	public static float getCameraTarget2Speed() {
 		//return (float) (Math.pow(MainTemplate.getFPSCounter().getTimePassedMillis()*0.0001,4));
-		return (float) (MainTemplate.getFPSCounter().getFPS()*0.0000055);
+		return (float) (MainTemplate.getFPSCounter().getTimePassedMillis()*0.0000055);
 		
 	}
 

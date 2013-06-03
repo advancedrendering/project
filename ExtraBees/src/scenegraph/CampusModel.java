@@ -95,6 +95,6 @@ public class CampusModel extends SceneGraphNode {
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
 		
-		drawable.getGL().glCallList(this.getObjectList());
+//		drawable.getGL().glCallList(this.getObjectList());
 	}
 }

@@ -84,7 +84,7 @@ public class HeliModel extends SceneGraphNode {
 			
 			if(Blocks.animationActive && Blocks.heliToCandlePathActive){
 				heliPosition = BezierCurve.getCoordsAt(Paths.HELI_TO_CANDLE_AND_BACK_TO_CAMERA,Paths.HELI_TO_CANDLE_U);
-				if(Paths.HELI_TO_CANDLE_U <= 1.0f)
+				if(Paths.HELI_TO_CANDLE_U < 1.0f)
 					Paths.HELI_TO_CANDLE_U += Paths.getHeli2Speed();
 				heliTarget = BezierCurve.getCoordsAt(Paths.HELI_BACK_TO_CAMERA_TARGET,Paths.HELI_BACK_TO_CAMERA_TARGET_U);
 			}
@@ -326,6 +326,8 @@ public class HeliModel extends SceneGraphNode {
 			this.prev_mv = current_mv;
 			this.prev_projection = current_projection;
 			gl.glPopMatrix();
+			CgGL.cgGLSetParameter1f(this.getShaderManager().getFragShaderParam("motion", "blurScale"), 1.0f);
+			CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("motion", "blurScale"), 1.0f);
 		}
 	}
 	

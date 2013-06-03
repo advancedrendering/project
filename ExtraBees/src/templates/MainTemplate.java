@@ -33,7 +33,7 @@ public class MainTemplate extends JoglTemplate {
 	
 	private static final long serialVersionUID = 1L;
 
-	public static int frameCounter = 0;
+	public static int frameCounter = -30;
 	public static int animationFrame = -30;
 
 	private boolean cameraControlEnabled = false, keyPressedW = false, keyPressedS = false,
@@ -47,7 +47,7 @@ public class MainTemplate extends JoglTemplate {
 	private long timeOfFirstFrame = 0;
 	private int timeSinceFirstFrame = 0;
 	/* take screenshots? */
-	static boolean takeScreenshots = false;
+	static boolean takeScreenshots = true;
 	public static int xResolution = 1280, yResolution = 720;
 
 	public static int[] frame_as_tex = null;
@@ -66,7 +66,7 @@ public class MainTemplate extends JoglTemplate {
 
 	public boolean cubeMapping = true;
 
-	private boolean postProcessingEnabled = true;
+	public static boolean postProcessingEnabled = true;
 
 
 	public static void main(String[] args) {
@@ -465,7 +465,7 @@ public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu, int[] cubema
 			keyPressedK = true;
 		} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 			Blocks.animationActive = !Blocks.animationActive;
-//			takeScreenshots = !takeScreenshots;
+			takeScreenshots = !takeScreenshots;
 		} else if (e.getKeyCode() == KeyEvent.VK_P) {
 			postProcessingEnabled  = !postProcessingEnabled;
 		} else if (e.getKeyCode() == KeyEvent.VK_C) {
