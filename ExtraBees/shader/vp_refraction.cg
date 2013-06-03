@@ -1,0 +1,50 @@
+// OpenGL input
+struct vertexIN
+{
+  float4 position	: POSITION;
+  float3 normal		: NORMAL;
+  float2 decalCoords : TEXCOORD0;
+};
+
+// vertex program output
+struct vertexOUT
+{
+  float4 cameraSpacePos : POSITION;
+  float2 decalCoords : TEXCOORD0;
+  float3 objectSpacePos : TEXCOORD1;
+  float3 normal   : TEXCOORD2;
+  float3 refraction : TEXCOORD3;
+};
+
+// OpenGL state
+uniform float4x4 ModelViewProjection : state.matrix.mvp;
+uniform float4 MaterialAmbient : state.material.ambient;
+uniform float4 MaterialDiffuse : state.material.diffuse;
+uniform float4 MaterialSpecular : state.material.specular;
+uniform float MaterialShininess : state.material.shininess;
+
+vertexOUT main(vertexIN vIn, uniform float4x4 modelToWorld, uniform float3 worldEyePosition)
+{
+  vertexOUT vOut;
+  // copy position
+  vOut.objectSpacePos = vIn.position.xyz;
+  vOut.decalCoords = vIn.decalCoords;
+  
+  // copy Normal
+  vOut.normal = vIn.normal;
+  
+  // project point onto screen
+  vOut.cameraSpacePos = mul(ModelViewProjection, vIn.position);
+  
+   // Compute position and normal in world space
+  float3 worldPosition = mul(modelToWorld, vIn.position).xyz;
+  float3 N = mul((float3x3)modelToWorld, vIn.normal);
+  N = normalize(N);
+   
+  // Compute the incident and reflected vectors
+  float3 viewDir = worldPosition - worldEyePosition; //perhaps we have to normalize that
+  vOut.refraction = refract(viewDir, N, 1.519);
+  
+  return vOut;
+}
+

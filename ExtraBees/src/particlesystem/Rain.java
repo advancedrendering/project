@@ -17,7 +17,8 @@ import com.sun.opengl.util.texture.TextureIO;
 public class Rain extends ParticleSystem {
 
 	//texture
-	private Texture raindrop = null; 
+	private Texture raindrop = null;
+	private boolean update; 
 	
 	public Rain(GLAutoDrawable drawable) {
 		super(drawable);
@@ -104,12 +105,14 @@ public class Rain extends ParticleSystem {
 			if (lastTime  == -1){
 				lastTime = (float)System.nanoTime() / 1000000.0f ;
 			}
-			else{			
-				float current_time = (float)System.nanoTime() / 1000000.0f;
-				float elapsed_time = current_time - lastTime;
-				lastTime = current_time;
-				//update the particle system
-				update(elapsed_time);
+			else{		
+				if (this.update == true){
+					float current_time = (float)System.nanoTime() / 1000000.0f;
+					float elapsed_time = current_time - lastTime;
+					lastTime = current_time;
+					//update the particle system
+					update(elapsed_time);
+				}
 				//draw particles
 				
 				//use point sprites
@@ -167,7 +170,13 @@ public class Rain extends ParticleSystem {
 
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
-		// TODO Auto-generated method stub
+		if ((this.prev_mv != null) && (this.prev_projection != null)){
+			this.getShaderManager().bindVP("motion");
+			this.getShaderManager().bindFP("motion");
+			this.update = false;
+			this.draw(drawable);
+			this.update = true;
+		}
 		
 	}
 }

@@ -1,5 +1,6 @@
 package scenegraph;
 
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import javax.media.opengl.GL;
@@ -26,6 +27,10 @@ public abstract class SceneGraphNode {
 	
 	protected ShaderManager shaderManager = null; 
 
+	protected FloatBuffer current_projection = FloatBuffer.allocate(4 * 4);
+	protected FloatBuffer current_mv = FloatBuffer.allocate(4 * 4);
+	protected FloatBuffer prev_projection = null;
+	protected FloatBuffer prev_mv = null;
 	
 	public ShaderManager getShaderManager() {
 		return shaderManager;
@@ -157,6 +162,16 @@ public abstract class SceneGraphNode {
 		gl.glRotatef(rotation[2], 0, 0, 1);
 		this.getShaderManager().setVertexShaderEnabled(true);
 		this.getShaderManager().setFragShaderEnabled(true);
+		gl.glGetFloatv(GL.GL_MODELVIEW_MATRIX, this.current_mv);
+		gl.glGetFloatv(GL.GL_PROJECTION_MATRIX, this.current_projection);
+		CgGL.cgGLSetStateMatrixParameter(this.getShaderManager().getVertexShaderParam("motion", "modelView"), CgGL.CG_GL_MODELVIEW_MATRIX, CgGL.CG_GL_MATRIX_IDENTITY);
+		CgGL.cgGLSetStateMatrixParameter(this.getShaderManager().getVertexShaderParam("motion", "modelProj"), CgGL.CG_GL_PROJECTION_MATRIX, CgGL.CG_GL_MATRIX_IDENTITY);
+		if (this.prev_mv != null){
+			CgGL.cgGLSetStateMatrixParameter(this.getShaderManager().getVertexShaderParam("motion", "prevModelView"), CgGL.CG_GL_MODELVIEW_MATRIX, CgGL.CG_GL_MATRIX_IDENTITY);
+		}
+		if (this.prev_projection != null){
+			CgGL.cgGLSetStateMatrixParameter(this.getShaderManager().getVertexShaderParam("motion", "prevModelProj"), CgGL.CG_GL_PROJECTION_MATRIX, CgGL.CG_GL_MATRIX_IDENTITY);			
+		}
 		this.getShaderManager().bindVP();
 		this.getShaderManager().bindFP();
 		this.postDraw(drawable);// draw the current object
@@ -165,6 +180,14 @@ public abstract class SceneGraphNode {
 		}
 		this.getShaderManager().setVertexShaderEnabled(false);
 		this.getShaderManager().setFragShaderEnabled(false);
+		if (this.prev_mv == null){
+			this.prev_mv = FloatBuffer.allocate(4 * 4);
+		}
+		if (this.prev_projection == null){
+			this.prev_projection = FloatBuffer.allocate(4 * 4);
+		}
+		gl.glGetFloatv(GL.GL_MODELVIEW_MATRIX, this.prev_mv);
+		gl.glGetFloatv(GL.GL_PROJECTION_MATRIX, this.prev_projection);
 		gl.glPopMatrix(); // restore matrix
 	}
 	

@@ -171,6 +171,7 @@ public class MainTemplate extends JoglTemplate {
 			gl.glColor3f(0, 1, 0);
 			drawFPS(drawable);
 		}
+
 		if (Blocks.cubemappingHeli){
 			float[] heliPosition = BezierCurve.getCoordsAt(Paths.HELI_1, Paths.HELI_1_U);
 			heliPosition[1] = heliPosition[1]+0.27f;
@@ -280,24 +281,28 @@ public class MainTemplate extends JoglTemplate {
 			gl.glLightfv(GL.GL_LIGHT4, GL.GL_SPECULAR, LAMPS, 8);
 			gl.glLightfv(GL.GL_LIGHT4, GL.GL_POSITION, lightPos4, 0);
 			
-			
-		SceneRoot.getInstance(drawable).getShaderManager().setDefaultFragmentProgName("phong");
+		
 		SceneRoot.getInstance(drawable).getShaderManager().bindFP();
 		SceneRoot.getInstance(drawable).render(drawable);
 		
-//		this.copyWindowToTexture(drawable, GL.GL_TEXTURE_RECTANGLE_EXT);
-//		
-//		SceneRoot.getInstance(drawable).getShaderManager().setDefaultFragmentProgName("post");
-//		SceneRoot.getInstance(drawable).getShaderManager().bindFP();
-//		CgGL.cgGLSetTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"), MainTemplate.frame_as_tex[0]); 
-//		CgGL.cgGLEnableTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"));
-//		
-//		gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-//		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-//		SceneRoot.getInstance(drawable).postRender(drawable);
-//
-//		
-//		drawable.swapBuffers();
+		this.copyWindowToTexture(drawable, GL.GL_TEXTURE_RECTANGLE_EXT);
+		
+		SceneRoot.getInstance(drawable).getShaderManager().setDefaultVertexProgName("post");
+		SceneRoot.getInstance(drawable).getShaderManager().setDefaultFragmentProgName("post");
+		SceneRoot.getInstance(drawable).getShaderManager().bindFP();
+		SceneRoot.getInstance(drawable).getShaderManager().bindVP();
+		CgGL.cgGLSetTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"), MainTemplate.frame_as_tex[0]); 
+		CgGL.cgGLEnableTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"));
+		gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+		SceneRoot.getInstance(drawable).postRender(drawable);
+		SceneRoot.getInstance(drawable).getShaderManager().setDefaultVertexProgName("phong");	
+		SceneRoot.getInstance(drawable).getShaderManager().setDefaultFragmentProgName("phong");
+		SceneRoot.getInstance(drawable).getShaderManager().bindFP();
+		SceneRoot.getInstance(drawable).getShaderManager().bindVP();
+
+		
+		drawable.swapBuffers();
 		
 		gl.glPopMatrix();
 		
