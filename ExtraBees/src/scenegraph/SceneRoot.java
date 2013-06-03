@@ -46,6 +46,7 @@ public class SceneRoot extends SceneGraphNode{
 	
 	private CGparameter cgFogDensity = null;
 	private float fogDensity = 0.05f;
+	private float[] fogColor = {0.35f, 0.35f, 0.35f};
 	
 	private CGparameter cgFogColor = null;
 	private CGparameter cgFogTex2DSampler = null;
@@ -183,6 +184,7 @@ public class SceneRoot extends SceneGraphNode{
 		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "fog"), this.getShaderManager().TRUE);
 		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("phong", "fog"), this.getShaderManager().TRUE);
 		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("phong", "fogDensity"), this.fogDensity);
+		CgGL.cgGLSetParameter3fv(this.getShaderManager().getFragShaderParam("phong", "fogColor"),this.fogColor, 0);
 
 		//enable lightning
 		CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("phong", "lightning"), this.getShaderManager().TRUE);
@@ -190,8 +192,8 @@ public class SceneRoot extends SceneGraphNode{
 	
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
-		CgGL.cgGLSetParameter1f(this.getShaderManager().getFragShaderParam("motion", "blurScale"), 0.8f);
-		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("motion", "blurScale"), 0.8f);
+		CgGL.cgGLSetParameter1f(this.getShaderManager().getFragShaderParam("motion", "blurScale"),2.08f);
+		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("motion", "blurScale"), 2.0f);
 		CgGL.cgGLSetParameter3f(this.getShaderManager().getVertexShaderParam("motion", "halfWindowSize"), MainTemplate.xResolution / 2.0f, MainTemplate.yResolution / 2.0f, 0);
 	}
 

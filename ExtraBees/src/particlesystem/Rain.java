@@ -181,8 +181,8 @@ public class Rain extends ParticleSystem {
 			this.update = false;
 			this.draw(drawable);
 			this.update = true;
-			CgGL.cgGLSetParameter1f(this.getShaderManager().getFragShaderParam("motion", "blurScale"), 1.0f);
-			CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("motion", "blurScale"), 1.0f);
+			CgGL.cgGLSetParameter1f(this.getShaderManager().getFragShaderParam("motion", "blurScale"), 2.0f);
+			CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("motion", "blurScale"), 2.0f);
 		}
 		
 	}
