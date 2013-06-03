@@ -252,13 +252,50 @@ public class HeliModel extends SceneGraphNode {
 			
 		}
 		
+		public void postRender(GLAutoDrawable drawable){
+			GL gl = drawable.getGL();
+			gl.glPushMatrix(); // save matrix
+			gl.glTranslatef(translation[0], translation[1], translation[2]);
+			gl.glRotatef(rotation[0], 1, 0, 0);
+			gl.glRotatef(rotation[1], 0, 1, 0);
+			gl.glRotatef(rotation[2], 0, 0, 1);
+			this.getShaderManager().setVertexShaderEnabled(true);
+			this.getShaderManager().setFragShaderEnabled(true);
+			this.getShaderManager().bindVP();
+			this.getShaderManager().bindFP();
+			this.postDraw(drawable);// draw the current object
+			for(SceneGraphNode child : children){ // render every child
+				child.postRender(drawable);
+			}
+			this.getShaderManager().setVertexShaderEnabled(false);
+			this.getShaderManager().setFragShaderEnabled(false);
+			gl.glPopMatrix(); // restore matrix
+		}
+		
 		@Override
 		public void postDraw(GLAutoDrawable drawable) {
+			GL gl = drawable.getGL();	
+			gl.glGetFloatv(GL.GL_MODELVIEW_MATRIX, this.current_mv);
+			gl.glGetFloatv(GL.GL_PROJECTION_MATRIX, this.current_projection);
+			CgGL.cgGLSetStateMatrixParameter(this.getShaderManager().getVertexShaderParam("motion", "modelView"), CgGL.CG_GL_MODELVIEW_MATRIX, CgGL.CG_GL_MATRIX_IDENTITY);
+			CgGL.cgGLSetStateMatrixParameter(this.getShaderManager().getVertexShaderParam("motion", "modelProj"), CgGL.CG_GL_PROJECTION_MATRIX, CgGL.CG_GL_MATRIX_IDENTITY);
+			
 			if ((this.prev_mv != null) && (this.prev_projection != null)){
 				this.getShaderManager().bindVP("motion");
 				this.getShaderManager().bindFP("motion");
+				gl.glCallList(this.getObjectList());
 			}
-//			drawable.getGL().glCallList(this.getObjectList());
+			
+			if (this.prev_mv == null){
+				this.prev_mv = FloatBuffer.allocate(4 * 4);
+			}
+			if (this.prev_projection == null){
+				this.prev_projection = FloatBuffer.allocate(4 * 4);
+			}
+			gl.glGetFloatv(GL.GL_MODELVIEW_MATRIX, this.prev_mv);
+			gl.glGetFloatv(GL.GL_PROJECTION_MATRIX, this.prev_projection);
+			drawable.getGL().glCallList(this.getObjectList());
+			gl.glPopMatrix(); // restore matrix
 		}
 	}
 	
