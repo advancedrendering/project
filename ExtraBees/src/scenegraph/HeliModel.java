@@ -1,6 +1,7 @@
 package scenegraph;
 
 import java.io.File;
+import java.nio.FloatBuffer;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
@@ -114,6 +115,10 @@ public class HeliModel extends SceneGraphNode {
 	
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
+		if ((this.prev_mv != null) && (this.prev_projection != null)){
+			this.getShaderManager().bindVP("motion");
+			this.getShaderManager().bindFP("motion");
+		}
 		drawable.getGL().glCallList(this.getObjectList());
 	}
 	
@@ -156,6 +161,10 @@ public class HeliModel extends SceneGraphNode {
 		
 		@Override
 		public void postDraw(GLAutoDrawable drawable) {
+			if ((this.prev_mv != null) && (this.prev_projection != null)){
+				this.getShaderManager().bindVP("motion");
+				this.getShaderManager().bindFP("motion");
+			}
 			drawable.getGL().glCallList(this.getObjectList());
 		}
 		
@@ -203,6 +212,10 @@ public class HeliModel extends SceneGraphNode {
 		
 		@Override
 		public void postDraw(GLAutoDrawable drawable) {
+			if ((this.prev_mv != null) && (this.prev_projection != null)){
+				this.getShaderManager().bindVP("motion");
+				this.getShaderManager().bindFP("motion");
+			}
 			drawable.getGL().glCallList(this.getObjectList());
 		}
 	}
@@ -309,7 +322,11 @@ public class HeliModel extends SceneGraphNode {
 		
 		@Override
 		public void postDraw(GLAutoDrawable drawable) {
-			drawable.getGL().glCallList(this.getObjectList());
+			if ((this.prev_mv != null) && (this.prev_projection != null)){
+				this.getShaderManager().bindVP("motion");
+				this.getShaderManager().bindFP("motion");
+			}
+			drawable.getGL().glCallList(this.getObjectList());	
 		}
 	}
 }

@@ -69,5 +69,5 @@ public class VectorMath {
 		float c1 = (float) Math.cos(Math.toRadians(camRotation[0]));
 		camRotation[2] = (float) Math.toDegrees(Math.atan2(s1*n[0] - c1*v[0], c1*v[1]- s1* n[1]));
 		return camRotation;
-	}
+	}	
 }

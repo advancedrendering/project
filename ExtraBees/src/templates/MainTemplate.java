@@ -48,9 +48,21 @@ public class MainTemplate extends JoglTemplate {
 	private int timeSinceFirstFrame = 0;
 	/* take screenshots? */
 	static boolean takeScreenshots = false;
-	static int xResolution = 1280, yResolution = 720;
+	public static int xResolution = 1280, yResolution = 720;
 
 	public static int[] frame_as_tex = null;
+
+	public static float view_rotx;
+
+	public static float view_roty;
+
+	public static float view_rotz;
+
+	public static float view_transx;
+
+	public static float view_transy;
+
+	public static float view_transz;
 
 
 	public static void main(String[] args) {
@@ -160,6 +172,7 @@ public class MainTemplate extends JoglTemplate {
 			gl.glColor3f(0, 1, 0);
 			drawFPS(drawable);
 		}
+
 		if (Blocks.cubemappingHeli){
 			float[] heliPosition = BezierCurve.getCoordsAt(Paths.HELI_TO_CAMERA_1, Paths.HELI_TO_CAMERA_1_U);
 			heliPosition[1] = heliPosition[1]+0.27f;
@@ -203,6 +216,7 @@ public class MainTemplate extends JoglTemplate {
 			setView_transy(getView_transy());
 			setView_transz(getView_transz());
 		}
+		
 		// press space to start animation
 		if(Blocks.animationActive){
 			if(Blocks.camera_1_PathActive && (Paths.CAMERA_TO_TABLE_1_U+Paths.getCamera1Speed()) < 1.0f){ // if camera 1 path is active
@@ -267,24 +281,27 @@ public class MainTemplate extends JoglTemplate {
 			gl.glLightfv(GL.GL_LIGHT4, GL.GL_SPECULAR, LAMPS, 8);
 			gl.glLightfv(GL.GL_LIGHT4, GL.GL_POSITION, lightPos4, 0);
 			
-			
-		SceneRoot.getInstance(drawable).getShaderManager().setDefaultFragmentProgName("phong");
+		
 		SceneRoot.getInstance(drawable).getShaderManager().bindFP();
 		SceneRoot.getInstance(drawable).render(drawable);
 		
-//		drawControlPoints(gl, Paths.HELI_1);
+		this.copyWindowToTexture(drawable, GL.GL_TEXTURE_RECTANGLE_EXT);
 		
-		this.copyWindowToTexture(drawable, GL.GL_TEXTURE_RECTANGLE_NV);
-		
-//		SceneRoot.getInstance(drawable).getShaderManager().setDefaultFragmentProgName("post");
-//		SceneRoot.getInstance(drawable).getShaderManager().bindFP();
-//		CgGL.cgGLSetTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"), MainTemplate.frame_as_tex[0]); 
-//		CgGL.cgGLEnableTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"));
-//		
-//		gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-//		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-//		SceneRoot.getInstance(drawable).postRender(drawable);
-//		drawable.swapBuffers();
+		SceneRoot.getInstance(drawable).getShaderManager().setDefaultVertexProgName("post");
+		SceneRoot.getInstance(drawable).getShaderManager().setDefaultFragmentProgName("post");
+		SceneRoot.getInstance(drawable).getShaderManager().bindFP();
+		SceneRoot.getInstance(drawable).getShaderManager().bindVP();
+		CgGL.cgGLSetTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"), MainTemplate.frame_as_tex[0]); 
+		CgGL.cgGLEnableTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"));
+		gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+		SceneRoot.getInstance(drawable).postRender(drawable);
+		SceneRoot.getInstance(drawable).getShaderManager().setDefaultVertexProgName("phong");	
+		SceneRoot.getInstance(drawable).getShaderManager().setDefaultFragmentProgName("phong");
+		SceneRoot.getInstance(drawable).getShaderManager().bindFP();
+		SceneRoot.getInstance(drawable).getShaderManager().bindVP();
+
+		drawable.swapBuffers();
 		
 		gl.glPopMatrix();
 		
@@ -482,6 +499,46 @@ public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu, int[] cubema
 		    //copy image to texture
 		    gl.glCopyTexImage2D(target, 0, GL.GL_RGB, 0, 0, MainTemplate.xResolution, MainTemplate.yResolution, 0);
 		}
+	}
+	
+
+	public void setView_rotx(float view_rotx)
+	{
+		super.setView_rotx(view_rotx);
+		MainTemplate.view_rotx = view_rotx;
+	}
+
+
+	public void setView_roty(float view_roty)
+	{
+		super.setView_roty(view_roty);
+		MainTemplate.view_roty = view_roty;
+	}
+
+
+	public void setView_rotz(float view_rotz)
+	{
+		super.setView_rotz(view_rotz);
+		MainTemplate.view_rotz = view_rotz;
+	}
+
+	public void setView_transx(float view_transx)
+	{
+		super.setView_transx(view_transx);
+		MainTemplate.view_transx = view_transx;
+	}
+
+
+	public void setView_transy(float view_transy)
+	{
+		super.setView_transy(view_transy);
+		MainTemplate.view_transy = view_transy;
+	}
+
+	public void setView_transz(float view_transz)
+	{
+		super.setView_transz(view_transz);
+		MainTemplate.view_transz = view_transz;
 	}
 
 

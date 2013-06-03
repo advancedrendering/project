@@ -18,7 +18,9 @@ public class Rain extends ParticleSystem {
 
 	public static float emitRate = 5f;
 	//texture
-	private Texture raindrop = null; 
+
+	private Texture raindrop = null;
+	private boolean update; 
 	
 	public Rain(GLAutoDrawable drawable) {
 		super(drawable);
@@ -64,7 +66,7 @@ public class Rain extends ParticleSystem {
 		float[] max_init_velocity = {0.0f, -5000.0f, 0.0f};
 		loc_emi_settings.max_init_velocity = max_init_velocity;
 		loc_emi_settings.min_init_lifetime = 0.0f; //0 milliseconds
-		loc_emi_settings.max_init_lifetime = 0.0f; //200 milliseconds
+
 		
 		//create colors for particle system.
 		float[] cornflowerblue = {0.39f, 0.58f, 0.92f};
@@ -105,15 +107,17 @@ public class Rain extends ParticleSystem {
 			if (lastTime  == -1){
 				lastTime = (float)System.nanoTime() / 1000000.0f ;
 			}
-			else{			
-				float current_time = (float)System.nanoTime() / 1000000.0f;
-				float elapsed_time = current_time - lastTime;
-				lastTime = current_time;
-				//update the particle system
-				update(15f);
+
+			else{		
+				if (this.update == true){
+					float current_time = (float)System.nanoTime() / 1000000.0f;
+					float elapsed_time = current_time - lastTime;
+					lastTime = current_time;
+					//update the particle system
+					update(elapsed_time);
+				}
 				//draw particles
 				this.settings.emitter.setEmitRate(emitRate);
-//				this.settings.capacity-=1000;
 				//use point sprites
 				
 				FloatBuffer buffer_sizes = FloatBuffer.allocate(2);
@@ -169,7 +173,13 @@ public class Rain extends ParticleSystem {
 
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
-		// TODO Auto-generated method stub
+		if ((this.prev_mv != null) && (this.prev_projection != null)){
+			this.getShaderManager().bindVP("motion");
+			this.getShaderManager().bindFP("motion");
+			this.update = false;
+			this.draw(drawable);
+			this.update = true;
+		}
 		
 	}
 }

@@ -5,9 +5,37 @@ struct vertexIN {
     float2 texCoord : TEXCOORD0;
 };
 
-float4 main(vertexIN vIn, uniform samplerRECT sceneTex) : COLOR
+uniform float3 offset_vert = float3( 0.0, 1.3846153846, 3.2307692308 );
+uniform float3 weight_vert = float3( 0.2270270270, 0.3162162162, 0.0702702703 );
+
+uniform float3 offset_hor = float3( 0.0, 1.3846153846, 3.2307692308 );
+uniform float3 weight_hor = float3( 0.2270270270, 0.3162162162, 0.0702702703 );
+
+uniform float width = 1280.0f;
+uniform float height = 720.0f;
+
+float4 main(vertexIN vIn, uniform samplerRECT sceneTex, uniform float gaussian_blur = 0.0f, uniform float gaussian_horizontal = 1.0f) : COLOR
 {
-  
-  float4 a = texRECT(sceneTex, vIn.wpos.xy);
-  return a;
+  //return texRECT(sceneTex, vIn.wpos.xy);
+  if (gaussian_blur == 1.0f){
+  		if (gaussian_horizontal ==1.0){
+  			float4 loc_color = texRECT(sceneTex, vIn.wpos.xy) * weight_hor[0];
+  			for (int i = 0; i < 3; i++){
+		  		loc_color.rgb += texRECT(sceneTex, ( vec2(vIn.wpos.xy) + vec2(offset_hor[i], 0.0) )/width).rgb * weight_hor[i]; 
+		  		loc_color.rgb += texRECT(sceneTex, ( vec2(vIn.wpos.xy) - vec2(offset_vert[i], 0.0) )/width).rgb * weight_hor[i];
+		  	}
+		  	return loc_color;
+  		}
+  		else{
+		  float4 loc_color = texRECT(sceneTex, vIn.wpos.xy) * weight_vert[0];
+		  for (int i = 0; i < 3; i++){
+		  	loc_color += texRECT(sceneTex, ( vec2(vIn.wpos.xy) + vec2(0.0, offset_vert[i]) )/height) * weight_vert[i]; 
+		  	loc_color += texRECT(sceneTex, ( vec2(vIn.wpos.xy) - vec2(0.0, offset_vert[i]) )/height) * weight_vert[i];
+		  }
+		  return loc_color;
+	  	}
+  }
+  else{
+  	return  texRECT(sceneTex, vIn.wpos.xy);
+  	}
 }

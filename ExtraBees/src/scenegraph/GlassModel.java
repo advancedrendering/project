@@ -4,6 +4,8 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.glu.GLU;
 
+import com.sun.opengl.cg.CgGL;
+
 import templates.MainTemplate;
 
 public class GlassModel extends SceneGraphNode {
@@ -91,32 +93,46 @@ public class GlassModel extends SceneGraphNode {
 		gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
 		gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
 		
-		gl.glEnable(GL.GL_TEXTURE_CUBE_MAP);
+		gl.glEnable	(GL.GL_TEXTURE_CUBE_MAP);
 		gl.glBindTexture(GL.GL_TEXTURE_CUBE_MAP, MainTemplate.cubemapGlass[0]);
-		
+
 		if(visible){
 //				gl.glPushMatrix();
 //				gl.glTranslatef(17.96f, 2.45f, 23.346f);
-//			MainTemplate.getGlut().glutSolidCube(0.5f);
-//				MainTemplate.getGlut().glutSolidSphere(0.2f,20,20);
+////			this.getShaderManager().bindVP("cube");
+////			this.getShaderManager().bindFP("cube");
+////			CgGL.cgGLSetStateMatrixParameter(this.getShaderManager().getVertexShaderParam("cube", "modelToWorld"), CgGL.CG_GL_MODELVIEW_PROJECTION_MATRIX,CgGL.CG_GL_MATRIX_INVERSE_TRANSPOSE);
+//			this.getShaderManager().setFragShaderEnabled(true);
+//			this.getShaderManager().setVertexShaderEnabled(true);
+//			this.getShaderManager().bindVP("cube");
+//			this.getShaderManager().bindFP("cube");
+//			//update camera position
+//			CgGL.cgGLSetParameter3f(SceneRoot.getInstance(drawable).getShaderManager().getVertexShaderParam("cube", "worldEyePosition"), MainTemplate.view_transx,  MainTemplate.view_transy, MainTemplate.view_transz);
+//			CgGL.cgGLSetStateMatrixParameter(this.getShaderManager().getVertexShaderParam("cube", "modelToWorld"), CgGL.CG_GL_MODELVIEW_MATRIX,CgGL.CG_GL_MATRIX_INVERSE);
+//			CgGL.cgGLSetTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("cube", "environmentMap"), MainTemplate.cubemap[0]); 
+//			CgGL.cgGLEnableTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("cube", "environmentMap"));
 			gl.glDisable(GL.GL_CULL_FACE);
 			drawable.getGL().glCallList(this.getObjectList());
+//				MainTemplate.getGlut().glutSolidSphere(0.2f,20,20);
 			gl.glEnable(GL.GL_CULL_FACE);
+			
+//			CgGL.cgGLDisableTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("cube", "environmentMap"));
+//			CgGL.cgGLSetParameter1d(this.getShaderManager().getFragShaderParam("cube", "useTexture"), this.getShaderManager().FALSE);
 //				gl.glPopMatrix();
 		}
 		gl.glDisable(GL.GL_TEXTURE_GEN_S);
 		gl.glDisable(GL.GL_TEXTURE_GEN_T);
 		gl.glDisable(GL.GL_TEXTURE_GEN_R);
-		
+//		
 		gl.glDisable(GL.GL_TEXTURE_CUBE_MAP);
 	}
 	
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
-//		GL gl=drawable.getGL();
-//		gl.glDisable(GL.GL_CULL_FACE);
-//		drawable.getGL().glCallList(this.getObjectList());
-//		gl.glEnable(GL.GL_CULL_FACE);
+		GL gl=drawable.getGL();
+		gl.glDisable(GL.GL_CULL_FACE);
+		drawable.getGL().glCallList(this.getObjectList());
+		gl.glEnable(GL.GL_CULL_FACE);
 	}
 
 }
