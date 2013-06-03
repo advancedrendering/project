@@ -11,6 +11,7 @@ import javax.media.opengl.GLException;
 import templates.Blocks;
 import templates.Paths;
 
+import com.sun.opengl.cg.CgGL;
 import com.sun.opengl.util.texture.Texture;
 import com.sun.opengl.util.texture.TextureIO;
 
@@ -175,11 +176,15 @@ public class Fire extends ParticleSystem {
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
 		if ((this.prev_mv != null) && (this.prev_projection != null)){
+			CgGL.cgGLSetParameter1f(this.getShaderManager().getFragShaderParam("motion", "blurScale"), 70.0f);
+			CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("motion", "blurScale"), 70.0f);
 			this.getShaderManager().bindVP("motion");
 			this.getShaderManager().bindFP("motion");
 			this.update = false;
 			this.draw(drawable);
 			this.update = true;
+			CgGL.cgGLSetParameter1f(this.getShaderManager().getFragShaderParam("motion", "blurScale"), 2.0f);
+			CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("motion", "blurScale"), 2.0f);
 		}
 	}
 }

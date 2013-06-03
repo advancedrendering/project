@@ -13,6 +13,7 @@ import templates.Blocks;
 import templates.VectorMath;
 import scenegraph.SceneRoot;
 
+import com.sun.opengl.cg.CgGL;
 import com.sun.opengl.util.texture.Texture;
 import com.sun.opengl.util.texture.TextureIO;
 
@@ -20,7 +21,8 @@ public class FireCannon extends ParticleSystem {
 
 
 	//texture
-	private Texture raindrop = null; 
+	private Texture raindrop = null;
+	private boolean update = true; 
 	
 	public FireCannon(GLAutoDrawable drawable) {
 		super(drawable);
@@ -112,11 +114,13 @@ public class FireCannon extends ParticleSystem {
 				lastTime = (float)System.nanoTime() / 1000000.0f ;
 			}
 			else{			
-				float current_time = (float)System.nanoTime() / 1000000.0f;
-				float elapsed_time = current_time - lastTime;
-				lastTime = current_time;
-				//update the particle system
-				update(15f);
+				if (this.update == true){
+					float current_time = (float)System.nanoTime() / 1000000.0f;
+					float elapsed_time = current_time - lastTime;
+					lastTime = current_time;
+					//update the particle system
+					update(15f);
+				}
 				//draw particles
 				float[] position = SceneRoot.getInstance(drawable).getHeli().getTranslation();
 				position[0] = position[0];
@@ -184,7 +188,17 @@ public class FireCannon extends ParticleSystem {
 
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
-		// TODO Auto-generated method stub
+		if ((this.prev_mv != null) && (this.prev_projection != null)){
+			CgGL.cgGLSetParameter1f(this.getShaderManager().getFragShaderParam("motion", "blurScale"), 70.0f);
+			CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("motion", "blurScale"), 70.0f);
+			this.getShaderManager().bindVP("motion");
+			this.getShaderManager().bindFP("motion");
+			this.update  = false;
+			this.draw(drawable);
+			this.update = true;
+			CgGL.cgGLSetParameter1f(this.getShaderManager().getFragShaderParam("motion", "blurScale"), 2.0f);
+			CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("motion", "blurScale"), 2.0f);
+		}
 		
 	}
 }
