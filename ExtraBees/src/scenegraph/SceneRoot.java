@@ -4,6 +4,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 
 import particlesystem.Fire;
+import particlesystem.FireCannon;
 import particlesystem.Fireflies;
 import particlesystem.FireflyParticle;
 import particlesystem.ParticleSystemSettings;
@@ -28,6 +29,7 @@ public class SceneRoot extends SceneGraphNode{
 	private SkyBox skydome = null;
 	private Rain rain = null;
 	private Fire fire = null;
+	private FireCannon fireCannon = null;
 	private CameraModel camera = null;
 	private Fireflies fireflies1=null;
 	private Fireflies fireflies2=null;
@@ -93,6 +95,9 @@ public class SceneRoot extends SceneGraphNode{
 		fireflies3.setTranslation(firefliesPos3);
 		fireflies3.setRotation(0, 0, 0);
 		this.addChild(fireflies3);
+		
+		fireCannon = new FireCannon(drawable);
+		this.addChild(fireCannon);
 		
 		heli = new HeliModel(drawable, scale*0.2f);
 		this.addChild(heli);
@@ -188,5 +193,9 @@ public class SceneRoot extends SceneGraphNode{
 		CgGL.cgGLSetParameter1f(this.getShaderManager().getFragShaderParam("motion", "blurScale"), 1.0f);
 		CgGL.cgGLSetParameter1f(this.getShaderManager().getVertexShaderParam("motion", "blurScale"), 1.0f);
 		CgGL.cgGLSetParameter3f(this.getShaderManager().getVertexShaderParam("motion", "halfWindowSize"), MainTemplate.xResolution / 2.0f, MainTemplate.yResolution / 2.0f, 0);
+	}
+
+	public HeliModel getHeli() {
+		return this.heli;
 	}
 }

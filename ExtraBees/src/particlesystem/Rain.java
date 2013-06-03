@@ -16,7 +16,9 @@ import com.sun.opengl.util.texture.TextureIO;
 
 public class Rain extends ParticleSystem {
 
+	public static float emitRate = 5f;
 	//texture
+
 	private Texture raindrop = null;
 	private boolean update; 
 	
@@ -46,7 +48,7 @@ public class Rain extends ParticleSystem {
 		ParticleSystemSettings loc_settings = new ParticleSystemSettings();
 		
 		loc_settings.capacity = 30000;
-		loc_settings.emitRate = 5f; //particles per millisecond
+		loc_settings.emitRate = emitRate; //particles per millisecond
 		//create external force
 		float[] loc_external_force = {0.0f, -1000.0f, 0.0f};
 		loc_settings.general_external_force = loc_external_force;
@@ -64,7 +66,7 @@ public class Rain extends ParticleSystem {
 		float[] max_init_velocity = {0.0f, -5000.0f, 0.0f};
 		loc_emi_settings.max_init_velocity = max_init_velocity;
 		loc_emi_settings.min_init_lifetime = 0.0f; //0 milliseconds
-		loc_emi_settings.max_init_lifetime = 200.0f; //200 milliseconds
+
 		
 		//create colors for particle system.
 		float[] cornflowerblue = {0.39f, 0.58f, 0.92f};
@@ -105,6 +107,7 @@ public class Rain extends ParticleSystem {
 			if (lastTime  == -1){
 				lastTime = (float)System.nanoTime() / 1000000.0f ;
 			}
+
 			else{		
 				if (this.update == true){
 					float current_time = (float)System.nanoTime() / 1000000.0f;
@@ -114,7 +117,7 @@ public class Rain extends ParticleSystem {
 					update(elapsed_time);
 				}
 				//draw particles
-				
+				this.settings.emitter.setEmitRate(emitRate);
 				//use point sprites
 				
 				FloatBuffer buffer_sizes = FloatBuffer.allocate(2);

@@ -31,10 +31,10 @@ public class GlassModel extends SceneGraphNode {
 		gl.glEnable(GL.GL_TEXTURE_CUBE_MAP);
 		
 		// generate texture space
-		gl.glGenTextures(1, MainTemplate.cubemap, 0);
+		gl.glGenTextures(1, MainTemplate.cubemapGlass, 0);
 		
 		// create textures
-		gl.glBindTexture(GL.GL_TEXTURE_CUBE_MAP, MainTemplate.cubemap[0]);
+		gl.glBindTexture(GL.GL_TEXTURE_CUBE_MAP, MainTemplate.cubemapGlass[0]);
 		
 		for (int i = 0; i < 6; i++) {
 			gl.glTexImage2D(GL.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL.GL_RGB, MainTemplate.CUBEMAP_SIZE , MainTemplate.CUBEMAP_SIZE, 0, GL.GL_RGB, GL.GL_UNSIGNED_BYTE, null);
@@ -94,7 +94,7 @@ public class GlassModel extends SceneGraphNode {
 		gl.glTexParameteri(GL.GL_TEXTURE_CUBE_MAP, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
 		
 		gl.glEnable	(GL.GL_TEXTURE_CUBE_MAP);
-		gl.glBindTexture(GL.GL_TEXTURE_CUBE_MAP, MainTemplate.cubemap[0]);
+		gl.glBindTexture(GL.GL_TEXTURE_CUBE_MAP, MainTemplate.cubemapGlass[0]);
 
 		if(visible){
 //				gl.glPushMatrix();

@@ -30,7 +30,7 @@ public class CameraModel extends SceneGraphNode {
 
 	@Override
 	public void animate(GLAutoDrawable drawable) {
-		float[] camPosition = BezierCurve.getCoordsAt(Paths.CAMERA_1,Paths.CAMERA_1_U);
+		float[] camPosition = BezierCurve.getCoordsAt(Paths.CAMERA_TO_TABLE,Paths.CAMERA_TO_TABLE_1_U);
 		float[] camRotation = VectorMath.getEulerAngles(camPosition,Paths.GLASS_ON_TABLE);
 		this.setRotation(-camRotation[0],camRotation[1]+180,camRotation[2]);
 		this.setTranslation(camPosition);

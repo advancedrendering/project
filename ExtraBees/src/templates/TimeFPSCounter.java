@@ -51,8 +51,6 @@ public class TimeFPSCounter {
 	        //FPS
 	        frames++;
 
-
-//	        System.out.println(getAccumulatedTimePassedMillis());
 	        //Calculate fps
 	        long dt = currentTime-firstFrameTime;
 	        if(dt >= fpsRefreshTimeNanos) {
@@ -78,28 +76,9 @@ public class TimeFPSCounter {
 	public final long getTimePassedNanos() {
 	    return timePassedNanos;
 	}
-	
-	/** @return the time passed, in milliseconds */
-	public final long getAccumulatedTimePassedMillis() {
-	    return accumulatedTimeNanos / 1000000;
-	}
-
-	/** @return the time passed, in microseconds */
-	public final long getAccumulatedTimePassedMicros() {
-	    return accumulatedTimeNanos / 1000;
-	}
-
-	/** @return the time passed, in nanoseconds */
-	public final long getAccumulatedTimePassedNanos() {
-	    return accumulatedTimeNanos;
-	}
 
 	/** @return the number of frames per seconds */
 	public final float getFPS() {
 	    return fps;
-	}
-
-	public void resetAccumulatedTime() {
-		this.accumulatedTimeNanos = 0;		
 	}
 }

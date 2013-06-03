@@ -3,25 +3,26 @@ package particlesystem;
 import java.io.File;
 import java.io.IOException;
 import java.nio.FloatBuffer;
+import java.util.Vector;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLException;
 
 import templates.Blocks;
-import templates.Paths;
-import templates.MainTemplate;
+import templates.VectorMath;
+import scenegraph.SceneRoot;
 
 import com.sun.opengl.util.texture.Texture;
 import com.sun.opengl.util.texture.TextureIO;
 
-public class Fire extends ParticleSystem {
+public class FireCannon extends ParticleSystem {
+
 
 	//texture
-	private Texture raindrop = null;
-	private boolean update; 
+	private Texture raindrop = null; 
 	
-	public Fire(GLAutoDrawable drawable) {
+	public FireCannon(GLAutoDrawable drawable) {
 		super(drawable);
 		//load texture
 		try {
@@ -52,7 +53,7 @@ public class Fire extends ParticleSystem {
 		loc_settings.capacity = 100;
 		loc_settings.emitRate = 10f; //particles per millisecond
 		//create external force
-		float[] loc_external_force = {0.0f,50.0f, 0.0f};
+		float[] loc_external_force = {0.0f,0.0f, 50.0f};
 		loc_settings.general_external_force = loc_external_force;
 		//lifetime
 		loc_settings.lifetime = 250.0f; //1.3 seconds
@@ -63,9 +64,9 @@ public class Fire extends ParticleSystem {
 		loc_emi_settings.min_init_acceleration = min_init_acc;
 		float[] max_init_acc = {0.0f, 0.0f, 0.0f};
 		loc_emi_settings.max_init_acceleration = max_init_acc;
-		float[] min_init_velocity = {0.0f, -500.0f,0.0f};
+		float[] min_init_velocity = {0.0f, 0.0f,-500.0f};
 		loc_emi_settings.min_init_velocity = min_init_velocity;
-		float[] max_init_velocity = {0.0f, -500.0f, 0.0f};
+		float[] max_init_velocity = {0.0f, 0.0f, -500.0f};
 		loc_emi_settings.max_init_velocity = max_init_velocity;
 		loc_emi_settings.min_init_lifetime = 0.0f; //0 milliseconds
 		loc_emi_settings.max_init_lifetime = 200.0f; //200 milliseconds
@@ -87,7 +88,7 @@ public class Fire extends ParticleSystem {
 		
 		loc_settings.emitter_settings = loc_emi_settings;
 		//create Planar Emitter
-		float[] position_vector = Paths.CANDLE;
+		float[] position_vector = {0f, 0f, 0f};
 		float radius = 0.01f;
 		float[] first_dir_vector = {1.0f, 0.0f, 0.0f};
 		float[] second_dir_vector = {0.0f, 0.0f, 1.0f};
@@ -95,7 +96,7 @@ public class Fire extends ParticleSystem {
 		float max_first_scalar = 0.5f* (float)Math.PI;
 		float min_second_scalar = -(float)Math.PI;
 		float max_second_scalar = +(float)Math.PI;
-		loc_settings.emitter = new FireEmitter(loc_settings.emitRate, loc_settings.emitter_settings
+		loc_settings.emitter = new FireCannonEmitter(loc_settings.emitRate, loc_settings.emitter_settings
 				, position_vector, first_dir_vector, second_dir_vector,radius, min_first_scalar, max_first_scalar, min_second_scalar, max_second_scalar);
 		
 		return loc_settings;
@@ -103,7 +104,7 @@ public class Fire extends ParticleSystem {
 	
 	@Override
 	public void draw(GLAutoDrawable drawable){
-		if(Blocks.candleFlameActive){
+		if(Blocks.fireCannonActive){
 			// get the gl object
 			GL gl = drawable.getGL();
 			
@@ -111,15 +112,23 @@ public class Fire extends ParticleSystem {
 				lastTime = (float)System.nanoTime() / 1000000.0f ;
 			}
 			else{			
-				if (this.update == true){
-					float current_time = (float)System.nanoTime() / 1000000.0f;
-					float elapsed_time = current_time - lastTime;
-					lastTime = current_time;
-					//update the particle system
-					update(15f);
-				}
+				float current_time = (float)System.nanoTime() / 1000000.0f;
+				float elapsed_time = current_time - lastTime;
+				lastTime = current_time;
+				//update the particle system
+				update(15f);
 				//draw particles
+				float[] position = SceneRoot.getInstance(drawable).getHeli().getTranslation();
+				position[0] = position[0];
+				position[1] = position[1]+0.04f;
+				position[2] = position[2]+0.12f;
+				((FireCannonEmitter)settings.emitter).position_vector = position;
+				float[] target = VectorMath.normalize(VectorMath.minus(position, SceneRoot.getInstance(drawable).getHeli().heliTarget));
 				
+				this.settings.general_external_force[0] = target[0]*-100f;
+				this.settings.general_external_force[1] = target[1]*-150f;
+				this.settings.general_external_force[2] = target[2]*-110f;
+
 				//use point sprites
 				
 				FloatBuffer buffer_sizes = FloatBuffer.allocate(2);
@@ -175,12 +184,7 @@ public class Fire extends ParticleSystem {
 
 	@Override
 	public void postDraw(GLAutoDrawable drawable) {
-		if ((this.prev_mv != null) && (this.prev_projection != null)){
-			this.getShaderManager().bindVP("motion");
-			this.getShaderManager().bindFP("motion");
-			this.update = false;
-			this.draw(drawable);
-			this.update = true;
-		}
+		// TODO Auto-generated method stub
+		
 	}
 }

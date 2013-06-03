@@ -39,4 +39,10 @@ public class PlanarEmitter extends ParticleEmitter {
 		rand_pos[2] = this.position_vector[2] + rand_first_scalar * this.first_dir_vector[2] + rand_second_scalar * this.second_dir_vector[2];
 		return rand_pos;
 	}
+
+	@Override
+	public void setEmitterPosition(float[] pos) {
+		// TODO Auto-generated method stub
+		
+	}
 }

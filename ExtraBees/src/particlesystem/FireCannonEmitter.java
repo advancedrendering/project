@@ -1,10 +1,8 @@
 package particlesystem;
 
-import java.util.Random;
+public class FireCannonEmitter extends ParticleEmitter  {
 
-public class FireEmitter extends ParticleEmitter {
-
-	private float[] position_vector;
+	public float[] position_vector;
 	private float[] first_dir_vector;
 	private float[] second_dir_vector;
 	private float min_first_scalar;
@@ -13,7 +11,7 @@ public class FireEmitter extends ParticleEmitter {
 	private float max_second_scalar;
 	private float radius;
 	
-	public FireEmitter(float emitRate, ParticleEmitterSettings settings, float[] position_vector,float[] first_dir_vector,float[] second_dir_vector, float radius,
+	public FireCannonEmitter(float emitRate, ParticleEmitterSettings settings, float[] position_vector,float[] first_dir_vector,float[] second_dir_vector, float radius,
 			float min_first_scalar, float max_first_scalar, float min_second_scalar, float max_second_scalar)  {
 		super(emitRate, settings);
 		
@@ -58,8 +56,7 @@ public class FireEmitter extends ParticleEmitter {
 
 	@Override
 	public void setEmitterPosition(float[] pos) {
-		// TODO Auto-generated method stub
+		this.position_vector = pos;
 		
 	}
-
 }
