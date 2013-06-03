@@ -275,10 +275,17 @@ public class HeliModel extends SceneGraphNode {
 		@Override
 		public void postDraw(GLAutoDrawable drawable) {
 			GL gl = drawable.getGL();	
+			gl.glPushMatrix();
+			gl.glTranslatef(this.getPivot()[0], this.getPivot()[1], this.getPivot()[2]);
+			gl.glRotatef(10, 0, 0, 1);
+			gl.glRotatef(rot, 1, 0, 0);
+			gl.glRotatef(-10, 0, 0, 1);
+			gl.glTranslatef(-this.getPivot()[0], -this.getPivot()[1], -this.getPivot()[2]);
 			gl.glGetFloatv(GL.GL_MODELVIEW_MATRIX, this.current_mv);
 			gl.glGetFloatv(GL.GL_PROJECTION_MATRIX, this.current_projection);
 			CgGL.cgGLSetStateMatrixParameter(this.getShaderManager().getVertexShaderParam("motion", "modelView"), CgGL.CG_GL_MODELVIEW_MATRIX, CgGL.CG_GL_MATRIX_IDENTITY);
 			CgGL.cgGLSetStateMatrixParameter(this.getShaderManager().getVertexShaderParam("motion", "modelProj"), CgGL.CG_GL_PROJECTION_MATRIX, CgGL.CG_GL_MATRIX_IDENTITY);
+			
 			
 			if ((this.prev_mv != null) && (this.prev_projection != null)){
 				this.getShaderManager().bindVP("motion");
@@ -294,7 +301,6 @@ public class HeliModel extends SceneGraphNode {
 			}
 			gl.glGetFloatv(GL.GL_MODELVIEW_MATRIX, this.prev_mv);
 			gl.glGetFloatv(GL.GL_PROJECTION_MATRIX, this.prev_projection);
-			drawable.getGL().glCallList(this.getObjectList());
 			gl.glPopMatrix(); // restore matrix
 		}
 	}
