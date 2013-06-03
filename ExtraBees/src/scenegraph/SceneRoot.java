@@ -147,6 +147,8 @@ public class SceneRoot extends SceneGraphNode{
 		
 		//post processing parameter
 		this.getShaderManager().addFragShaderParam("post", "sceneTex");
+		this.getShaderManager().addFragShaderParam("post", "gaussian_horizontal");
+		this.getShaderManager().addFragShaderParam("post", "gaussian_blur");
 		this.getShaderManager().addFragShaderParam("motion", "sceneTex");
 		this.getShaderManager().addFragShaderParam("motion", "blurScale");
 		this.getShaderManager().addVertexShaderParam("motion", "blurScale");

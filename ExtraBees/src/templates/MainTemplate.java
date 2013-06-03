@@ -285,7 +285,7 @@ public class MainTemplate extends JoglTemplate {
 		SceneRoot.getInstance(drawable).getShaderManager().bindFP();
 		SceneRoot.getInstance(drawable).render(drawable);
 		
-		this.copyWindowToTexture(drawable, GL.GL_TEXTURE_RECTANGLE_EXT);
+		this.copyWindowToTexture(drawable, GL.GL_TEXTURE_RECTANGLE_NV);
 		
 		SceneRoot.getInstance(drawable).getShaderManager().setDefaultVertexProgName("post");
 		SceneRoot.getInstance(drawable).getShaderManager().setDefaultFragmentProgName("post");
@@ -293,9 +293,22 @@ public class MainTemplate extends JoglTemplate {
 		SceneRoot.getInstance(drawable).getShaderManager().bindVP();
 		CgGL.cgGLSetTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"), MainTemplate.frame_as_tex[0]); 
 		CgGL.cgGLEnableTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"));
+		CgGL.cgGLSetTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("motion", "sceneTex"), MainTemplate.frame_as_tex[0]);
+		CgGL.cgGLEnableTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("motion", "sceneTex"));
+		CgGL.cgGLSetParameter1f(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "gaussian_blur"), SceneRoot.getInstance(drawable).getShaderManager().FALSE);
+		
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		SceneRoot.getInstance(drawable).postRender(drawable);
+		
+//		this.copyWindowToTexture(drawable, GL.GL_TEXTURE_RECTANGLE_EXT);
+//		CgGL.cgGLSetTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"), MainTemplate.frame_as_tex[0]);
+//		CgGL.cgGLEnableTextureParameter(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "sceneTex"));
+//		CgGL.cgGLSetParameter1f(SceneRoot.getInstance(drawable).getShaderManager().getFragShaderParam("post", "gaussian_horizontal"), SceneRoot.getInstance(drawable).getShaderManager().FALSE);
+//		gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+//		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+//		SceneRoot.getInstance(drawable).postRender(drawable);
+		
 		SceneRoot.getInstance(drawable).getShaderManager().setDefaultVertexProgName("phong");	
 		SceneRoot.getInstance(drawable).getShaderManager().setDefaultFragmentProgName("phong");
 		SceneRoot.getInstance(drawable).getShaderManager().bindFP();
@@ -491,7 +504,7 @@ public void renderToBuffer(GLAutoDrawable drawable, GL gl, GLU glu, int[] cubema
 		    gl.glTexParameteri(target, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP_TO_EDGE);
 		    
 		    //copy image to texture
-		    gl.glCopyTexImage2D(target, 0, GL.GL_RGB, 0, 0, MainTemplate.xResolution, MainTemplate.yResolution, 0);
+		    gl.glCopyTexImage2D(target, 0, GL.GL_RGBA, 0, 0, MainTemplate.xResolution, MainTemplate.yResolution, 0);
 		}
 	}
 	
