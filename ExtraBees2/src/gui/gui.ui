@@ -28,7 +28,7 @@
       </property>
       <widget class="QWidget" name="overviewTab">
        <attribute name="title">
-        <string>Overwiew</string>
+        <string>Overview</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
@@ -36,7 +36,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="sit1Tab">
+      <widget class="QWidget" name="site1Tab">
        <attribute name="title">
         <string>Site 1</string>
        </attribute>
@@ -69,24 +69,21 @@
      </widget>
     </item>
     <item>
-     <widget class="QWidget" name="widget" native="true">
+     <widget class="QWidget" name="buttonContainer" native="true">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="playButton">
          <property name="text">
           <string>Play</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="pauseButton">
          <property name="text">
           <string>Pause</string>
          </property>
         </widget>
-       </item>
-       <item>
-        <widget class="Phonon::SeekSlider" name="seekSlider" native="true"/>
        </item>
       </layout>
      </widget>
@@ -99,19 +96,12 @@
      <x>0</x>
      <y>0</y>
      <width>826</width>
-     <height>29</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>Phonon::SeekSlider</class>
-   <extends>QWidget</extends>
-   <header location="global">phonon/seekslider.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>
