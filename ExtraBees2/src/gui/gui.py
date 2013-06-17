@@ -3,7 +3,7 @@ from PyQt4 import QtGui, uic, QtCore
 
 
 class MyWindow(QtGui.QMainWindow):
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         super(MyWindow, self).__init__(parent)
         self.ui = uic.loadUi('gui.ui', self)
         self.connect(self.ui.pushButton, QtCore.SIGNAL("clicked()"), self.clicked)
