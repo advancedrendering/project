@@ -32,7 +32,7 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="QGraphicsView" name="graphicsView"/>
+         <widget class="NetworkFlow" name="widget" native="true"/>
         </item>
        </layout>
       </widget>
@@ -96,12 +96,20 @@
      <x>0</x>
      <y>0</y>
      <width>826</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>NetworkFlow</class>
+   <extends>QWidget</extends>
+   <header>NetworkFlow</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
