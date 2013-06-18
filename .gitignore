@@ -1,2 +1,3 @@
 bin
 /ExtraBees/screenshots
+*.pyc
