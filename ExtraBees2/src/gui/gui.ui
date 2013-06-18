@@ -24,7 +24,7 @@
        <enum>Qt::LeftToRight</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="overviewTab">
        <attribute name="title">
@@ -42,7 +42,7 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
-         <widget class="QGraphicsView" name="graphicsView_2"/>
+         <widget class="QGraphicsView" name="site1GraphicsView"/>
         </item>
        </layout>
       </widget>
@@ -52,7 +52,7 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
-         <widget class="QGraphicsView" name="graphicsView_3"/>
+         <widget class="QGraphicsView" name="site2GraphicsView"/>
         </item>
        </layout>
       </widget>
@@ -62,7 +62,7 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
-         <widget class="QGraphicsView" name="graphicsView_4"/>
+         <widget class="QGraphicsView" name="site3GraphicsView"/>
         </item>
        </layout>
       </widget>
@@ -96,7 +96,7 @@
      <x>0</x>
      <y>0</y>
      <width>826</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
