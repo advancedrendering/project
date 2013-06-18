@@ -1,6 +1,9 @@
-import sys, random
-from PyQt4 import QtGui, QtCore
+'''
+Created on 2013-6-18
 
+@author: Richard
+'''
+from PyQt4 import QtGui, QtCore
 
 class NetworkFlow(QtGui.QWidget):
     def __init__(self, parent=None):
