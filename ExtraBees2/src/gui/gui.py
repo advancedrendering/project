@@ -1,6 +1,7 @@
 import sys
 from PyQt4 import QtGui, uic, QtCore 
 from cloudBubble.cloudBubbleScene import cloudBubbleScene
+import networkflow.NetworkFlow
 
 
 
@@ -19,17 +20,17 @@ class MyWindow(QtGui.QMainWindow):
 #         site1Scene.addPath(site1Path, QtGui.QPen(QtCore.Qt.black), QtGui.QBrush(QtCore.Qt.green));
 #         site1Scene.addText("Hello, world!", QtGui.QFont("Times", 15, QtGui.QFont.Bold)); 
 #           
-        site1Scene = cloudBubbleScene()
+        self.site1Scene = cloudBubbleScene()
 #         site1Path = QtGui.QPainterPath()
 #         site1Path.moveTo(30,120)
 #         site1Path.cubicTo(80, 0, 50, 50, 80, 80)
 #         site1Scene.addPath(site1Path, QtGui.QPen(QtCore.Qt.black), QtGui.QBrush(QtCore.Qt.green));
 #         site1Scene.addText("Hello, world!", QtGui.QFont("Times", 15, QtGui.QFont.Bold));     
-        self.ui.site1GraphicsView.setScene(site1Scene)
+        self.ui.site1GraphicsView.setScene(self.site1Scene)
         self.ui.site1GraphicsView.show()
-        self.ui.site2GraphicsView.setScene(site1Scene)
+        self.ui.site2GraphicsView.setScene(self.site1Scene)
         self.ui.site2GraphicsView.show()
-        self.ui.site3GraphicsView.setScene(site1Scene)
+        self.ui.site3GraphicsView.setScene(self.site1Scene)
         self.ui.site3GraphicsView.show()
 
 #         self.onebubble=atomicBubble(3,1,255);
@@ -39,9 +40,11 @@ class MyWindow(QtGui.QMainWindow):
 #         self.setCentralWidget(self.site1GraphicView)
         self.show()
     def clickedPlay(self):
+        self.site1Scene.animation.start()
         print "Play"
     
     def clickedPause(self):
+
         print "pause"
 
 
