@@ -1,7 +1,6 @@
 import sys
 from PyQt4 import QtGui, uic, QtCore 
 from cloudBubble.cloudBubbleScene import cloudBubbleScene
-import networkflow.NetworkFlow
 
 
 
