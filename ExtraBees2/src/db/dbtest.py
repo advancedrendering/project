@@ -47,18 +47,23 @@ def processNetworkflowRawData(db, step_size = 1000):
 
 ''' Iterates over a query.'''
 def iterateQuery(query):
+    #create a new QTable or list here and fill it by the data given in the query
+    #Then iterate over filled QTable and bulk insert/ update them in db.
     while (query.next()):
-        pass
-#        starttime = 
-#        srcIP = 
-#        destIP = 
-#        ipLayerProtocol = 
-#        totalBytesSrc = 
-#        totalBytesDest =
-#        duration =
+        starttime = query.value(0).toInt()[0] #exact starttime in seconds (unix-systemtime)
+        srcIP = query.value(5).toString()[0]
+        destIP = query.value(6).toString()[0]
+        ipLayerProtocol = query.value(3).toInt()[0]
+        totalBytesSrc = query.value(14).toInt()[0]
+        totalBytesDest = query.value(15).toInt()[0]
+        totalPacketCountSrc = query.value(16).toInt()[0]
+        totalPacketCountDest = query.value(17).toInt()[0]
+        duration = query.value(11).toInt()[0]
+        
         #TODO: Write method which determines the enterprise site from the ip address.
         #TODO: Work with the data i.e. put it in a new datatable
         #Need a check-, insert- and update Method for it.
+        #TODO: Write method which determines the exact starttime interval
          
         
         
