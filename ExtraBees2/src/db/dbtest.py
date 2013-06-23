@@ -43,15 +43,12 @@ def processNetworkflowRawData(db, step_size = 1000):
         query.exec_(sel_query)
         iterateQuery(query)
         row_counter += step_size + 1
-
-        
-        
-        
         print row_counter, "of", num_rows
 
-
+''' Iterates over a query.'''
 def iterateQuery(query):
     while (query.next()):
+        pass
 #        starttime = 
 #        srcIP = 
 #        destIP = 
