@@ -1,4 +1,4 @@
-import sys, time
+import sys, copy
 from PyQt4 import QtCore, QtGui, QtSql
 
 
@@ -34,23 +34,24 @@ def processNetworkflowRawData(db, step_size = 1000):
     #create new query object
     query = QtSql.QSqlQuery()
     row_counter = 0
-    query.exec_("SELECT COUNT(ID) FROM networkflow;")
-    query.next()
-    num_rows = query.value(0).toInt()[0]
+#    query.exec_("SELECT COUNT(ID) FROM networkflow;")
+#    query.next()
+#    num_rows = query.value(0).toInt()[0]
         
     while (row_counter < 2000):#< num_rows):
         sel_query = "SELECT * FROM datavis.networkflow LIMIT "  +  str(row_counter) + " , " + str(row_counter + step_size) + " ;"
         query.exec_(sel_query)
         iterateQuery(query)
         row_counter += step_size + 1
-        print row_counter, "of", num_rows
+#        print row_counter, "of", num_rows
 
 ''' Iterates over a query.'''
 def iterateQuery(query):
     #create a new QTable or list here and fill it by the data given in the query
     #Then iterate over filled QTable and bulk insert/ update them in db.
     while (query.next()):
-        starttime = query.value(1).toInt()[0] #exact starttime in seconds (unix-systemtime)
+        startdt = query.value(2).toDateTime()
+        interval_start = determineIntervalStart(startdt) #note startdt is changed because passes only reference
         srcIP = query.value(6).toString()
         destIP = query.value(7).toString()
         ipLayerProtocol = query.value(4).toInt()[0]
@@ -63,7 +64,9 @@ def iterateQuery(query):
         srcES = determineNetworkEntity(srcIP)
         destES = determineNetworkEntity(destIP)
         
+        print "Interval Start", interval_start
         print "SRC:", srcIP,  srcES, "DEST:", destIP, destES
+        print "ipLayerProtocol", ipLayerProtocol
         
         #TODO: Write method which determines the enterprise site from the ip address.
         #TODO: Work with the data i.e. put it in a new datatable
@@ -83,6 +86,18 @@ def determineNetworkEntity(ip):
     else:
         return 'Other'
 
+# @note: startdt is an in/out variable i.e. startdt is changed during execution of the method.
+def determineIntervalStart(startdt):
+    old_time = startdt.time()
+    #do an integer division and multiply to remove rest i.e. round to five minute intervals
+    loc_times_5_min = old_time.minute() / 5
+    #multiply again by five to get rounded minutes
+    loc_minute = loc_times_5_min * 5
+    #create new time
+    new_time = QtCore.QTime(old_time.hour(), loc_minute, 0,0)
+    startdt.setTime(new_time)
+    return startdt
+    
 if __name__ == "__main__":
 
     app = QtGui.QApplication(sys.argv)
