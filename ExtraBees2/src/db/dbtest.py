@@ -38,7 +38,7 @@ def processNetworkflowRawData(db, step_size = 1000):
     query.next()
     num_rows = query.value(0).toInt()[0]
         
-    while (row_counter < num_rows):
+    while (row_counter < 2000):#< num_rows):
         sel_query = "SELECT * FROM datavis.networkflow LIMIT "  +  str(row_counter) + " , " + str(row_counter + step_size) + " ;"
         query.exec_(sel_query)
         iterateQuery(query)
@@ -50,15 +50,20 @@ def iterateQuery(query):
     #create a new QTable or list here and fill it by the data given in the query
     #Then iterate over filled QTable and bulk insert/ update them in db.
     while (query.next()):
-        starttime = query.value(0).toInt()[0] #exact starttime in seconds (unix-systemtime)
-        srcIP = query.value(5).toString()[0]
-        destIP = query.value(6).toString()[0]
-        ipLayerProtocol = query.value(3).toInt()[0]
-        totalBytesSrc = query.value(14).toInt()[0]
-        totalBytesDest = query.value(15).toInt()[0]
-        totalPacketCountSrc = query.value(16).toInt()[0]
-        totalPacketCountDest = query.value(17).toInt()[0]
-        duration = query.value(11).toInt()[0]
+        starttime = query.value(1).toInt()[0] #exact starttime in seconds (unix-systemtime)
+        srcIP = query.value(6).toString()
+        destIP = query.value(7).toString()
+        ipLayerProtocol = query.value(4).toInt()[0]
+        totalBytesSrc = query.value(15).toInt()[0]
+        totalBytesDest = query.value(16).toInt()[0]
+        totalPacketCountSrc = query.value(17).toInt()[0]
+        totalPacketCountDest = query.value(18).toInt()[0]
+        duration = query.value(12).toInt()[0]
+        
+        srcES = determineNetworkEntity(srcIP)
+        destES = determineNetworkEntity(destIP)
+        
+        print "SRC:", srcIP,  srcES, "DEST:", destIP, destES
         
         #TODO: Write method which determines the enterprise site from the ip address.
         #TODO: Work with the data i.e. put it in a new datatable
@@ -66,8 +71,17 @@ def iterateQuery(query):
         #TODO: Write method which determines the exact starttime interval
          
         
-        
-
+def determineNetworkEntity(ip):
+    if ip[0:6] == '172.10':
+        return 'Enterprise Site 1'
+    elif ip[0:6] == '172.20':
+        return 'Enterprise Site 2'
+    elif ip[0:6] == '172.30':
+        return 'Enterprise Site 3'
+    elif ip[0:3] == '10.':
+        return 'Internet'
+    else:
+        return 'Other'
 
 if __name__ == "__main__":
 
