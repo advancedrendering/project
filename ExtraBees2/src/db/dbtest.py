@@ -1,6 +1,16 @@
 import sys, copy
 from PyQt4 import QtCore, QtGui, QtSql
 
+INTERVAL_START_TIME = 0
+SRC_ES = 1
+DEST_ES = 2
+PROTOCOL = 3
+SUM_BYTES_SRC = 4
+SUM_BYTES_DEST = 5
+SUM_PACKET_SRC = 6
+SUM_PACKET_DEST = 7
+SUM_DURATION = 8
+CONNECTION_COUNT = 9 
 
 def createTestConnection():
     db = QtSql.QSqlDatabase.addDatabase("QMYSQL")
@@ -37,16 +47,18 @@ def processNetworkflowRawData(db, step_size = 1000):
 #    query.exec_("SELECT COUNT(ID) FROM networkflow;")
 #    query.next()
 #    num_rows = query.value(0).toInt()[0]
+
+    loc_dict = {}
         
     while (row_counter < 2000):#< num_rows):
         sel_query = "SELECT * FROM datavis.networkflow LIMIT "  +  str(row_counter) + " , " + str(row_counter + step_size) + " ;"
         query.exec_(sel_query)
-        iterateQuery(query)
+        iterateQuery(query, loc_dict)
         row_counter += step_size + 1
 #        print row_counter, "of", num_rows
 
 ''' Iterates over a query.'''
-def iterateQuery(query):
+def iterateQuery(query, dict):
     #create a new QTable or list here and fill it by the data given in the query
     #Then iterate over filled QTable and bulk insert/ update them in db.
     while (query.next()):
@@ -64,6 +76,26 @@ def iterateQuery(query):
         srcES = determineNetworkEntity(srcIP)
         destES = determineNetworkEntity(destIP)
         
+        #TODO: WHAT to do if have connection with duration longer than 5 minutes
+        
+        
+        #check with primary key whether entry already exists in dict
+        key = (interval_start, srcES, destES, ipLayerProtocol)
+        if not (key in dict):
+            #create entry
+            #use list instead of tuple because can change list and tuple cannot be changed
+            entry = [interval_start, srcES, destES, ipLayerProtocol, totalBytesSrc, totalBytesDest, totalPacketCountSrc, totalPacketCountDest, duration, 1]
+            #put entry in dict
+            dict[key] = entry
+        else:
+            #have to update the already existing entry i.e. increment counters
+            dict[key][SUM_BYTES_SRC] += totalBytesSrc
+            dict[key][SUM_BYTES_DEST] += totalBytesDest
+            dict[key][SUM_PACKET_SRC] += totalPacketCountSrc
+            dict[key][SUM_PACKET_DEST] += totalPacketCountDest
+            dict[key][SUM_DURATION] += duration
+            dict[key][CONNECTION_COUNT] += 1 #increment number of connecton
+            
         print "Interval Start", interval_start
         print "SRC:", srcIP,  srcES, "DEST:", destIP, destES
         print "ipLayerProtocol", ipLayerProtocol
@@ -72,6 +104,7 @@ def iterateQuery(query):
         #TODO: Work with the data i.e. put it in a new datatable
         #Need a check-, insert- and update Method for it.
         #TODO: Write method which determines the exact starttime interval
+    print dict
          
         
 def determineNetworkEntity(ip):
