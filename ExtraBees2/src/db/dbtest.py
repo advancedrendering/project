@@ -12,6 +12,9 @@ SUM_PACKET_DEST = 7
 SUM_DURATION = 8
 CONNECTION_COUNT = 9 
 
+
+FIVE_MINUTES_IN_SECONDS = 300
+
 def createTestConnection():
     db = QtSql.QSqlDatabase.addDatabase("QMYSQL")
     db.setDatabaseName("datavis")
@@ -76,29 +79,68 @@ def iterateQuery(query, dict):
         srcES = determineNetworkEntity(srcIP)
         destES = determineNetworkEntity(destIP)
         
-        #TODO: WHAT to do if have connection with duration longer than 5 minutes
-        
-        
-        #check with primary key whether entry already exists in dict
-        key = (interval_start, srcES, destES, ipLayerProtocol)
-        if not (key in dict):
-            #create entry
-            #use list instead of tuple because can change list and tuple cannot be changed
-            entry = [interval_start, srcES, destES, ipLayerProtocol, totalBytesSrc, totalBytesDest, totalPacketCountSrc, totalPacketCountDest, duration, 1]
-            #put entry in dict
-            dict[key] = entry
-        else:
-            #have to update the already existing entry i.e. increment counters
-            dict[key][SUM_BYTES_SRC] += totalBytesSrc
-            dict[key][SUM_BYTES_DEST] += totalBytesDest
-            dict[key][SUM_PACKET_SRC] += totalPacketCountSrc
-            dict[key][SUM_PACKET_DEST] += totalPacketCountDest
-            dict[key][SUM_DURATION] += duration
-            dict[key][CONNECTION_COUNT] += 1 #increment number of connecton
+        #check whether connection is longer than five minutes.        
+        if duration > FIVE_MINUTES_IN_SECONDS:
+            #NOT YET TESTED
+            num_five_min = round(duration / 5.0)
+            loc_totalBytesSrc = round(totalBytesSrc / num_five_min)
+            loc_totalBytesDest = round(totalBytesDest / num_five_min)
+            loc_totalPacketCountSrc = round(totalPacketCountSrc / num_five_min)
+            loc_totalPacketCountDest = round(totalPacketCountDest / num_five_min)
             
-        print "Interval Start", interval_start
-        print "SRC:", srcIP,  srcES, "DEST:", destIP, destES
-        print "ipLayerProtocol", ipLayerProtocol
+            #create new interval_start 
+            loc_interval_start = interval_start 
+            
+            loc_duration = FIVE_MINUTES_IN_SECONDS
+            
+            #now divide traffic equally.
+            for i in xrange(num_five_min):
+                #determine duration (if is last iteration than calculate rest duration
+                if i == (num_five_min - 1):
+                    loc_duration = duration % 5
+                
+                #check with primary key whether entry already exists in dict
+                key = (loc_interval_start, srcES, destES, ipLayerProtocol)
+                if not (key in dict):
+                    #create entry
+                    #use list instead of tuple because can change list and tuple cannot be changed
+                    entry = [loc_interval_start, srcES, destES, ipLayerProtocol, loc_totalBytesSrc, loc_totalBytesDest, loc_totalPacketCountSrc, loc_totalPacketCountDest, loc_duration, 1]
+                    #put entry in dict
+                    dict[key] = entry
+                else:
+                    #have to update the already existing entry i.e. increment counters
+                    dict[key][SUM_BYTES_SRC] += loc_totalBytesSrc
+                    dict[key][SUM_BYTES_DEST] += loc_totalBytesDest
+                    dict[key][SUM_PACKET_SRC] += loc_totalPacketCountSrc
+                    dict[key][SUM_PACKET_DEST] += loc_totalPacketCountDest
+                    dict[key][SUM_DURATION] += loc_duration
+                    dict[key][CONNECTION_COUNT] += 1 #increment number of connection
+                    
+                #(create whole new object just to be sure nothing is changed by unexpected references)
+                loc_interval_start = QtCore.QDateTime(loc_interval_start)
+                #increment new interval by five minutes
+                loc_interval_start.addSecs(FIVE_MINUTES_IN_SECONDS)
+        else:
+            #check with primary key whether entry already exists in dict
+            key = (interval_start, srcES, destES, ipLayerProtocol)
+            if not (key in dict):
+                #create entry
+                #use list instead of tuple because can change list and tuple cannot be changed
+                entry = [interval_start, srcES, destES, ipLayerProtocol, totalBytesSrc, totalBytesDest, totalPacketCountSrc, totalPacketCountDest, duration, 1]
+                #put entry in dict
+                dict[key] = entry
+            else:
+                #have to update the already existing entry i.e. increment counters
+                dict[key][SUM_BYTES_SRC] += totalBytesSrc
+                dict[key][SUM_BYTES_DEST] += totalBytesDest
+                dict[key][SUM_PACKET_SRC] += totalPacketCountSrc
+                dict[key][SUM_PACKET_DEST] += totalPacketCountDest
+                dict[key][SUM_DURATION] += duration
+                dict[key][CONNECTION_COUNT] += 1 #increment number of connecton
+                
+#            print "Interval Start", interval_start
+#            print "SRC:", srcIP,  srcES, "DEST:", destIP, destES
+#            print "ipLayerProtocol", ipLayerProtocol
         
         #TODO: Write method which determines the enterprise site from the ip address.
         #TODO: Work with the data i.e. put it in a new datatable
