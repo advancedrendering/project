@@ -9,13 +9,13 @@ from PyQt4 import QtCore,QtGui
 
 class bubbleAnimation():
     '''
-    classdocs
+    This class is used to implement animation of bubble
     '''
  
  
     def __init__(self,bubble):
         '''
-        Constructor
+        @param bubble:The bubble which needs to display animation 
         '''      
         self.tl4loc = QtCore.QTimeLine()
         self.tl4size = QtCore.QTimeLine()
@@ -44,6 +44,9 @@ class bubbleAnimation():
         self.changeSize.setItem(self.bubble)
         self.changeSize.setTimeLine(self.tl4loc)
         self.changeSize.setScaleAt(0.00000000001,scale,scale)
+        if self.bubble.radius==0:
+            self.bubble.__del__()
+        
         '''
         Smoothly change the bubble color
         @param duration:unsigned int
@@ -63,11 +66,15 @@ class bubbleAnimation():
                 green = abs(green +(greenchange/abs(greenchange)))
                 self.bubble.color = QtGui.QColor(red,green,0)
          '''
+        
+        
+        '''start all timelines'''
     def start(self): 
         self.tl4loc.start()
         self.tl4size.start()
- #       self.setbubblecolor( 100, -100)
         
+        
+        '''stop all timelines'''
     def stop(self):
         self.tl4loc.stop()
         self.tl4size.stop()

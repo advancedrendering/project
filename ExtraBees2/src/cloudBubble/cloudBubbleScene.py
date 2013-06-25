@@ -25,7 +25,7 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
 #assign some animation to the first bubble
         self.animation = bubbleAnimation(self.bubble)
         self.animation.setbubbleloc(1000000000, QtCore.QPoint(100,-100))
-        self.animation.setbubblesize(1000000000, 1.5)
+        self.animation.setbubblesize(1000000000, 0)
         '''
         Add new bubbles to the scene
         '''
