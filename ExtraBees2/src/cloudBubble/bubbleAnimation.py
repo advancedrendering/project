@@ -7,6 +7,7 @@ from PyQt4 import QtCore,QtGui
 
 
 
+
 class bubbleAnimation():
     '''
     This class is used to implement animation of bubble
@@ -33,6 +34,7 @@ class bubbleAnimation():
         self.changeLoc.setItem(self.bubble)
         self.changeLoc.setTimeLine(self.tl4loc)
         self.changeLoc.setPosAt(0.00000000001,location)
+#        self.bubble.loc = location
     
         '''
         Resize the bubble to visual the traffic load of each workstation
@@ -44,8 +46,8 @@ class bubbleAnimation():
         self.changeSize.setItem(self.bubble)
         self.changeSize.setTimeLine(self.tl4loc)
         self.changeSize.setScaleAt(0.00000000001,scale,scale)
-        if self.bubble.radius==0:
-            self.bubble.__del__()
+#        self.bubble.radius=self.bubble.radius*scale
+
         
         '''
         Smoothly change the bubble color
@@ -72,6 +74,7 @@ class bubbleAnimation():
     def start(self): 
         self.tl4loc.start()
         self.tl4size.start()
+
         
         
         '''stop all timelines'''

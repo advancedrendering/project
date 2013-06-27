@@ -17,7 +17,7 @@ class atomicBubble(QtGui.QGraphicsEllipseItem):
     def __init__(self,x,y,radius,bubblename='empty'):
         QtGui.QGraphicsEllipseItem.__init__(self,x,y,radius,radius)
         self.radius=radius
-        self.loc = QtCore.QPoint(x,y)
+        self.loc = QtCore.QPointF(x,y)
 #        self.painter=QtGui.QPainter()
         self.brush = QtGui.QBrush(QtCore.Qt.black)
         self.color = self.setBubbleColor('good')
@@ -74,11 +74,24 @@ class atomicBubble(QtGui.QGraphicsEllipseItem):
     '''    
         
     def paint(self, painter, option, widget):
+        painter.save()
         painter.setBrush(self.color)
-        painter.drawEllipse(self.loc,self.radius,self.radius) 
-        print self.color.red()      
-        print self.color.green()
+        painter.fillPath(self.shape(),self.color)
+        painter.restore()
+#       QtGui.QGraphicsEllipseItem.paint(painter,option,widget)
         
+#        painter.drawEllipse(self.loc,self.radius,self.radius) 
+#        print self.loc
+
+
+    def shape(self):
+        p=QtGui.QPainterPath()
+        p.addEllipse(self.loc,self.radius,self.radius)
+        return p
+    
+    
+    def getCurrentloc(self):
+        return self.loc   
         
     
 

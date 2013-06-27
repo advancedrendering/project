@@ -41,7 +41,8 @@ class MyWindow(QtGui.QMainWindow):
     def clickedPlay(self):
         self.site1Scene.animation.start()
         print "Play"
-    
+
+        
     def clickedPause(self):
 
         print "pause"
