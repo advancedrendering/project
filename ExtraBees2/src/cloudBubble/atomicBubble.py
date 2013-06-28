@@ -6,6 +6,8 @@ Created on 2013-6-18
 
 
 from PyQt4 import QtGui, QtCore 
+from numpy.lib.scimath import sqrt
+
 
 
 class atomicBubble(QtGui.QGraphicsEllipseItem):
@@ -21,7 +23,7 @@ class atomicBubble(QtGui.QGraphicsEllipseItem):
 #        self.painter=QtGui.QPainter()
         self.brush = QtGui.QBrush(QtCore.Qt.black)
         self.color = self.setBubbleColor('good')
-        self.setToolTip('Richard Bubble')
+        self.setToolTip(bubblename)
         self.setAcceptHoverEvents(True)
         
 
@@ -78,12 +80,9 @@ class atomicBubble(QtGui.QGraphicsEllipseItem):
         painter.setBrush(self.color)
         painter.fillPath(self.shape(),self.color)
         painter.restore()
-#       QtGui.QGraphicsEllipseItem.paint(painter,option,widget)
-        
-#        painter.drawEllipse(self.loc,self.radius,self.radius) 
-#        print self.loc
-
-
+    '''
+    Get the shape of bubble
+    '''                
     def shape(self):
         p=QtGui.QPainterPath()
         p.addEllipse(self.loc,self.radius,self.radius)
@@ -91,9 +90,15 @@ class atomicBubble(QtGui.QGraphicsEllipseItem):
     
     
     def getCurrentloc(self):
-        return self.loc   
-        
-    
-
-
-        
+        return self.loc
+    '''
+    detect collides with other bubble
+    '''
+    def collidesWithItem(self,otherbubble):
+        x =self.loc.x()
+        y =self.loc.y()
+        distance = sqrt(pow((otherbubble.loc.x()-x), 2) +pow((otherbubble.loc.y()-y), 2))
+        if distance >self.radius+otherbubble.radius:
+            return False
+        else:
+            return True

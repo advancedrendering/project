@@ -6,9 +6,7 @@ Created on 2013-6-22
 from PyQt4 import QtCore,QtGui
 
 
-
-
-class bubbleAnimation():
+class bubbleAnimation(QtCore.QObject):
     '''
     This class is used to implement animation of bubble
     '''
@@ -18,34 +16,44 @@ class bubbleAnimation():
         '''
         @param bubble:The bubble which needs to display animation 
         '''      
-        self.tl4loc = QtCore.QTimeLine()
-        self.tl4size = QtCore.QTimeLine()
+        QtCore.QObject.__init__(self)
         self.tl4color = QtCore.QTimeLine()
         self.bubble = bubble
+        self.radius = self.bubble.radius
+        self.location = self.bubble.loc
+        
         
         
         '''
         Move the bubble in a smooth way to the new location
         '''
     def setbubbleloc (self,duration,location):
-        self.tl4loc.setDuration(duration)
-        self.tl4loc.setFrameRange(0,100)
+        tl4loc = QtCore.QTimeLine()
+        tl4loc.setDuration(duration)
+        tl4loc.setFrameRange(0,100)
         self.changeLoc = QtGui.QGraphicsItemAnimation()
         self.changeLoc.setItem(self.bubble)
-        self.changeLoc.setTimeLine(self.tl4loc)
+        self.changeLoc.setTimeLine(tl4loc)
+        tl4loc.start()
         self.changeLoc.setPosAt(0.00000000001,location)
-#        self.bubble.loc = location
+        self.location = location
+        self.connect(tl4loc,QtCore.SIGNAL('finished()'),self.update)
+        
     
         '''
         Resize the bubble to visual the traffic load of each workstation
         '''
     def setbubblesize(self,duration,scale):
-        self.tl4size.setDuration(duration)
-        self.tl4size.setFrameRange(0,100)
+        tl4size = QtCore.QTimeLine()
+        tl4size.setDuration(duration)
+        tl4size.setFrameRange(0,100)
+        tl4size.start()
         self.changeSize = QtGui.QGraphicsItemAnimation()
         self.changeSize.setItem(self.bubble)
-        self.changeSize.setTimeLine(self.tl4loc)
+        self.changeSize.setTimeLine(tl4size)
         self.changeSize.setScaleAt(0.00000000001,scale,scale)
+        self.radius = self.radius*scale
+        self.connect(tl4size,QtCore.SIGNAL('finished()'),self.update)    
 #        self.bubble.radius=self.bubble.radius*scale
 
         
@@ -70,16 +78,18 @@ class bubbleAnimation():
          '''
         
         
-        '''start all timelines'''
-    def start(self): 
-        self.tl4loc.start()
-        self.tl4size.start()
-
-        
-        
         '''stop all timelines'''
     def stop(self):
-        self.tl4loc.stop()
-        self.tl4size.stop()
+
+        
+        '''
+        Everytime after using animation, we have to use update()
+        '''
+        
+    def update(self):
+        self.bubble.loc = self.location
+        self.bubble.radius = self.radius
+        
+
         
         

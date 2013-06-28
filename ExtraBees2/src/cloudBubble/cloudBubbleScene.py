@@ -59,15 +59,17 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
         global bubblelist
 #add first bubble into the scene        
         self.bubble = atomicBubble(0,0,10)
-        for eachbubble in bubblelist:
-            self.addItem(eachbubble)
+#        for eachbubble in bubblelist:
+#            self.addItem(eachbubble)
             
-        self.detectCollides()
+#        self.detectCollides()
 #assign some animation to the first bubble
-#        self.animation = bubbleAnimation(self.bubble)
-#        self.animation.setbubbleloc(1000000000, QtCore.QPoint(100,-100))
-#        self.animation.setbubbleloc(1000000000, QtCore.QPoint(100,100))
-#        self.animation.setbubblesize(1000000000, 0.01)        
+        self.addItem(self.bubble)
+        self.animation = bubbleAnimation(self.bubble)
+        
+#         self.animation.setbubbleloc(1000000000, QtCore.QPoint(100,-100))
+#         self.animation.setbubbleloc(1000000000, QtCore.QPoint(100,100))
+#         self.animation.setbubblesize(1000000000, 0.01)
 #        self.addAllBubble()
         '''
         Add new bubbles to the scene
@@ -86,17 +88,17 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
         i=0
         k=1
         for i in range(0,len(bubblelist)-1):       
-            for k in range(0,len(bubblelist)):
+            for k in range(i+1,len(bubblelist)):
                 j=bubblelist[i].collidesWithItem(bubblelist[k])
-                print j
-            
+                if j:
+                    print 'bubble %s collides with bubble %s' % (bubblelist[i].toolTip(),bubblelist[k].toolTip())
+    '''
+    Keep all bubble tight.
+    '''         
+    def keepTight(self):
+        i=0
+        for i in range(0,len(bubbleAnimationlist)-1):
+             bubbleAnimation[i].setbubbleloc(1000000000)
         
-    
-
-    
-
-            
-        
-        
-        
+                    
         
