@@ -1,5 +1,4 @@
 import sys
-import time
 from PyQt4 import QtGui, uic, QtCore 
 from cloudBubble.cloudBubbleScene import cloudBubbleScene
 from scipy.sparse.linalg.dsolve.umfpack.umfpack import updateDictWithVars
@@ -13,8 +12,9 @@ class MyWindow(QtGui.QMainWindow):
         self.connect(self.ui.pauseButton, QtCore.SIGNAL("clicked()"), self.clickedPause)
         self.connect(self.ui.daySlider, QtCore.SIGNAL("valueChanged(int)"), self.dayChanged)
         self.connect(self.ui.timeSlider, QtCore.SIGNAL("valueChanged(int)"), self.timeChanged)
-        self.t = GuiThread(0.005)
+        self.t = GuiThread(0.1)
         self.connect(self.t, QtCore.SIGNAL('seconds_passed'),self.loop)
+        self.connect(self.t, QtCore.SIGNAL('updateGraph'),self.updateGraph)
         self.t.start()
 
          
@@ -58,6 +58,7 @@ class MyWindow(QtGui.QMainWindow):
         self.ui.timeLabel.setText(string)
         
     def loop(self):
+        self.ui.widget.updateLineThickness()
         if self.ui.timeSlider.value() == self.ui.timeSlider.maximum():
             self.ui.timeSlider.setValue(self.ui.timeSlider.minimum())
             if self.ui.daySlider.value()== self.ui.daySlider.maximum():
@@ -66,6 +67,9 @@ class MyWindow(QtGui.QMainWindow):
                 self.ui.daySlider.setValue(self.ui.daySlider.value() +1)
         else:
             self.ui.timeSlider.setValue(self.ui.timeSlider.value() +1)
+    
+    def updateGraph(self):
+        self.ui.widget.update()
 
         
 if __name__ == '__main__':

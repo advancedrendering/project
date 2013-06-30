@@ -17,9 +17,10 @@ class GuiThread(QtCore.QThread):
     
     def run(self):
         while True:
-            if self.running :
-                time.sleep(self.time)
+            self.emit(QtCore.SIGNAL('updateGraph'))
+            if self.running:
                 self.emit(QtCore.SIGNAL('seconds_passed'))
+            time.sleep(self.time)
     
     def play(self):
         self.running = True
