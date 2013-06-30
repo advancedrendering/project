@@ -1,7 +1,8 @@
 import sys
 from PyQt4 import QtGui, uic, QtCore 
 from cloudBubble.cloudBubbleScene import cloudBubbleScene
-from scipy.sparse.linalg.dsolve.umfpack.umfpack import updateDictWithVars
+from cloudBubble.cloudBubbleScene import bubblelist
+#from scipy.sparse.linalg.dsolve.umfpack.umfpack import updateDictWithVars
 from cloudBubble.atomicBubble import atomicBubble
 from GuiThread import GuiThread
 
