@@ -1,9 +1,9 @@
 import sys
+import time
 from PyQt4 import QtGui, uic, QtCore 
 from cloudBubble.cloudBubbleScene import cloudBubbleScene
 from scipy.sparse.linalg.dsolve.umfpack.umfpack import updateDictWithVars
-
-
+from GuiThread import GuiThread
 
 class MyWindow(QtGui.QMainWindow):
     def __init__(self, parent = None):
@@ -11,6 +11,12 @@ class MyWindow(QtGui.QMainWindow):
         self.ui = uic.loadUi('gui.ui', self)
         self.connect(self.ui.playButton, QtCore.SIGNAL("clicked()"), self.clickedPlay)
         self.connect(self.ui.pauseButton, QtCore.SIGNAL("clicked()"), self.clickedPause)
+        self.connect(self.ui.daySlider, QtCore.SIGNAL("valueChanged(int)"), self.dayChanged)
+        self.connect(self.ui.timeSlider, QtCore.SIGNAL("valueChanged(int)"), self.timeChanged)
+        self.t = GuiThread(0.005)
+        self.connect(self.t, QtCore.SIGNAL('seconds_passed'),self.loop)
+        self.t.start()
+
          
 #Add hello world to scene, just for testing
 #         site1Scene = QtGui.QGraphicsScene()    
@@ -28,15 +34,38 @@ class MyWindow(QtGui.QMainWindow):
         self.ui.site3GraphicsView.setScene(self.site1Scene)
         self.ui.site3GraphicsView.show()
         self.show()
+        
     def clickedPlay(self):
         self.site1Scene.animation.setbubbleloc(1000000000, QtCore.QPointF(100,-100))
         print "Play"
+        self.t.play()
 
         
     def clickedPause(self):
-
-        print "pause"
-
+        print "Pause"
+        self.t.pause()
+    
+    def dayChanged(self):
+        day = self.ui.daySlider.value()
+        string = "Day "+ str(day).zfill(2)
+        self.ui.dayLabel.setText(string)
+        
+    def timeChanged(self):
+        timeSlot = self.ui.timeSlider.value()
+        hour = timeSlot/12
+        minute = (timeSlot % 12)*5
+        string = str(hour).zfill(2)+":"+str(minute).zfill(2)
+        self.ui.timeLabel.setText(string)
+        
+    def loop(self):
+        if self.ui.timeSlider.value() == self.ui.timeSlider.maximum():
+            self.ui.timeSlider.setValue(self.ui.timeSlider.minimum())
+            if self.ui.daySlider.value()== self.ui.daySlider.maximum():
+                self.ui.daySlider.setValue(self.ui.daySlider.minimum())
+            else:
+                self.ui.daySlider.setValue(self.ui.daySlider.value() +1)
+        else:
+            self.ui.timeSlider.setValue(self.ui.timeSlider.value() +1)
 
         
 if __name__ == '__main__':
