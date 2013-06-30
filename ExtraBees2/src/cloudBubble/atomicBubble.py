@@ -6,7 +6,8 @@ Created on 2013-6-18
 
 
 from PyQt4 import QtGui, QtCore 
-from numpy.lib.scimath import sqrt
+from math import sqrt
+#from numpy.lib.scimath import sqrt
 
 
 
@@ -88,9 +89,7 @@ class atomicBubble(QtGui.QGraphicsEllipseItem):
         p.addEllipse(self.loc,self.radius,self.radius)
         return p
     
-    
-    def getCurrentloc(self):
-        return self.loc
+
     '''
     detect collides with other bubble
     '''
@@ -102,3 +101,25 @@ class atomicBubble(QtGui.QGraphicsEllipseItem):
             return False
         else:
             return True
+
+    def getDistanceWithOtherBubble(self,otherbubble):
+        x=self.loc.x()
+        y=self.loc.y()
+        distance = (sqrt(pow((otherbubble.loc.x()-x), 2) +pow((otherbubble.loc.y()-y), 2)))-self.radius-otherbubble.radius
+        return distance
+    
+    
+    def getCenterDistanceWithOtherBubble(self,otherbubble):
+        x=self.loc.x()
+        y=self.loc.y()
+        distance = sqrt(pow((otherbubble.loc.x()-x), 2) +pow((otherbubble.loc.y()-y), 2))
+        return distance
+    
+    def getCurrentloc(self):
+        return self.loc
+    
+    def getCurrentRadius(self):
+        return self.radius
+    
+    
+    
