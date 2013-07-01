@@ -43,22 +43,28 @@ def createConnection(dbname, dbuser, dbpasswd, dbtype = "QMYSQL"):
     return db
 
 
-def processNetworkflowRawData(db, step_size = 1000):
+def processNetworkflowRawData(db, step_size = 100000):
+    db.open()
     #create new query object
     query = QtSql.QSqlQuery()
     row_counter = 0
-#    query.exec_("SELECT COUNT(ID) FROM networkflow;")
-#    query.next()
-#    num_rows = query.value(0).toInt()[0]
+    query.exec_("SELECT COUNT(ID) FROM networkflow;")
+    query.next()
+    num_rows = query.value(0).toInt()[0]
 
     loc_dict = {}
-        
-    while (row_counter < 2000):#< num_rows):
+    
+#    num_rows = 2000    
+    
+    while (row_counter < num_rows):
         sel_query = "SELECT * FROM datavis.networkflow LIMIT "  +  str(row_counter) + " , " + str(row_counter + step_size) + " ;"
         query.exec_(sel_query)
         iterateQuery(query, loc_dict)
         row_counter += step_size + 1
-#        print row_counter, "of", num_rows
+        print row_counter, "of", num_rows
+    saveDictToDB(loc_dict)
+    db.close()
+    
 
 ''' Iterates over a query.'''
 def iterateQuery(query, dict):
@@ -67,6 +73,7 @@ def iterateQuery(query, dict):
     while (query.next()):
         startdt = query.value(2).toDateTime()
         interval_start = determineIntervalStart(startdt) #note startdt is changed because passes only reference
+        unix_interval_start = interval_start.toMSecsSinceEpoch() #calculate unix time is used as key for dictionary because QDateTime is problematic since hash is computed by objects itself.
         srcIP = query.value(6).toString()
         destIP = query.value(7).toString()
         ipLayerProtocol = query.value(4).toInt()[0]
@@ -79,10 +86,12 @@ def iterateQuery(query, dict):
         srcES = determineNetworkEntity(srcIP)
         destES = determineNetworkEntity(destIP)
         
+        
+        
         #check whether connection is longer than five minutes.        
         if duration > FIVE_MINUTES_IN_SECONDS:
             #NOT YET TESTED
-            num_five_min = round(duration / 5.0)
+            num_five_min = int(duration / 5.0)
             loc_totalBytesSrc = round(totalBytesSrc / num_five_min)
             loc_totalBytesDest = round(totalBytesDest / num_five_min)
             loc_totalPacketCountSrc = round(totalPacketCountSrc / num_five_min)
@@ -98,9 +107,11 @@ def iterateQuery(query, dict):
                 #determine duration (if is last iteration than calculate rest duration
                 if i == (num_five_min - 1):
                     loc_duration = duration % 5
+                    
                 
+                unix_interval_start = loc_interval_start.toMSecsSinceEpoch()
                 #check with primary key whether entry already exists in dict
-                key = (loc_interval_start, srcES, destES, ipLayerProtocol)
+                key = (unix_interval_start, srcES, destES, ipLayerProtocol)
                 if not (key in dict):
                     #create entry
                     #use list instead of tuple because can change list and tuple cannot be changed
@@ -122,7 +133,7 @@ def iterateQuery(query, dict):
                 loc_interval_start.addSecs(FIVE_MINUTES_IN_SECONDS)
         else:
             #check with primary key whether entry already exists in dict
-            key = (interval_start, srcES, destES, ipLayerProtocol)
+            key = (unix_interval_start, srcES, destES, ipLayerProtocol)
             if not (key in dict):
                 #create entry
                 #use list instead of tuple because can change list and tuple cannot be changed
@@ -142,11 +153,6 @@ def iterateQuery(query, dict):
 #            print "SRC:", srcIP,  srcES, "DEST:", destIP, destES
 #            print "ipLayerProtocol", ipLayerProtocol
         
-        #TODO: Write method which determines the enterprise site from the ip address.
-        #TODO: Work with the data i.e. put it in a new datatable
-        #Need a check-, insert- and update Method for it.
-        #TODO: Write method which determines the exact starttime interval
-    print dict
          
         
 def determineNetworkEntity(ip):
@@ -161,6 +167,7 @@ def determineNetworkEntity(ip):
     else:
         return 'Other'
 
+
 # @note: startdt is an in/out variable i.e. startdt is changed during execution of the method.
 def determineIntervalStart(startdt):
     old_time = startdt.time()
@@ -172,6 +179,27 @@ def determineIntervalStart(startdt):
     new_time = QtCore.QTime(old_time.hour(), loc_minute, 0,0)
     startdt.setTime(new_time)
     return startdt
+
+def saveDictToDB(dict):
+    #create connection and open it
+#    loc_db = createConnection(dbname = "macro_networkflow", dbuser = "datavis", dbpasswd = "DataVis")
+    #create query
+    query = QtSql.QSqlQuery()
+    keys = dict.keys()
+    query.prepare("INSERT INTO datavis.macro_networkflow (StarttimeSeconds, srcESite, destESite, ipLayerProtocol, SumTotalBytesSrc, SumTotalBytesDest, SumPacketSrc, SumPacketDest, SumDuration, SumConnections) VALUES(:StarttimeSeconds, :srcESite, :destESite, :ipLayerProtocol, :SumTotalBytesSrc, :SumTotalBytesDest, :SumPacketSrc, :SumPacketDest, :SumDuration, :SumConnections);")
+    for key in keys:
+        query.bindValue(":StarttimeSeconds", dict[key][INTERVAL_START_TIME])
+        query.bindValue(":srcESite", dict[key][SRC_ES])
+        query.bindValue(":destESite", dict[key][DEST_ES])
+        query.bindValue(":ipLayerProtocol", dict[key][PROTOCOL])
+        query.bindValue(":SumTotalBytesSrc", dict[key][SUM_BYTES_SRC])
+        query.bindValue(":SumTotalBytesDest", dict[key][SUM_BYTES_DEST])
+        query.bindValue(":SumPacketSrc", dict[key][SUM_PACKET_SRC])
+        query.bindValue(":SumPacketDest", dict[key][SUM_PACKET_DEST])
+        query.bindValue(":SumDuration", dict[key][SUM_DURATION])
+        query.bindValue(":SumConnections", dict[key][CONNECTION_COUNT])
+        query.exec_()
+        
     
 if __name__ == "__main__":
 
@@ -179,8 +207,8 @@ if __name__ == "__main__":
  
     db = createConnection(dbname = "datavis", dbuser = "datavis", dbpasswd = "DataVis")
     
-    db.open()
-    print "Opened connection to database"
+    
+#    print "Opened connection to database"
 
 #    query = QtSql.QSqlQuery()
 #    query.exec_("SELECT * FROM datavis.networkflow LIMIT 0, 1000;") 
@@ -190,8 +218,8 @@ if __name__ == "__main__":
 #        print query.value(2).toString() #print the dates
 
 
-    processNetworkflowRawData(db)
-    db.close()
-    print "Closed connection to database"
+#    processNetworkflowRawData(db)
+#    db.close()
+#    print "Closed connection to database"
     
     raw_input("Press any key to exit...")
