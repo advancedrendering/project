@@ -8,6 +8,7 @@ from PyQt4 import QtGui,QtCore
 from atomicBubble import atomicBubble
 from bubbleAnimation import bubbleAnimation
 from math import sqrt
+from random import randint
 
 
 bubble1 = atomicBubble(0,0,10,'1st')
@@ -37,8 +38,96 @@ bubble8Animation = bubbleAnimation(bubble8)
 bubble9 = atomicBubble(0,0,10)
 bubble9Animation = bubbleAnimation(bubble9)
 
-bubblelist = [bubble1,bubble2]
-bubbleAnimationlist = [bubble1Animation,bubble2Animation,bubble3Animation]
+bubble10 = atomicBubble(0,0,10)
+bubble10Animation = bubbleAnimation(bubble10)
+
+bubble11 = atomicBubble(0,0,10)
+bubble11Animation = bubbleAnimation(bubble11)
+
+bubble12 = atomicBubble(0,0,10)
+bubble12Animation = bubbleAnimation(bubble12)
+bubble13 = atomicBubble(0,0,10)
+bubble13Animation = bubbleAnimation(bubble13)
+bubble14 = atomicBubble(0,0,10)
+bubble14Animation = bubbleAnimation(bubble14)
+bubble15 = atomicBubble(0,0,10)
+bubble15Animation = bubbleAnimation(bubble15)
+bubble16 = atomicBubble(0,0,10)
+bubble16Animation = bubbleAnimation(bubble16)
+bubble17 = atomicBubble(0,0,10)
+bubble17Animation = bubbleAnimation(bubble17)
+bubble18 = atomicBubble(0,0,10)
+bubble18Animation = bubbleAnimation(bubble18)
+bubble19 = atomicBubble(0,0,10)
+bubble19Animation = bubbleAnimation(bubble19)
+bubble20 = atomicBubble(0,0,10)
+bubble20Animation = bubbleAnimation(bubble20)
+bubble21 = atomicBubble(0,0,10)
+bubble21Animation = bubbleAnimation(bubble21)
+bubble22 = atomicBubble(0,0,10)
+bubble22Animation = bubbleAnimation(bubble22)
+bubble23 = atomicBubble(0,0,10)
+bubble23Animation = bubbleAnimation(bubble23)
+bubble24 = atomicBubble(0,0,10)
+bubble24Animation = bubbleAnimation(bubble24)
+bubble25 = atomicBubble(0,0,10)
+bubble25Animation = bubbleAnimation(bubble25)
+bubble26 = atomicBubble(0,0,10)
+bubble26Animation = bubbleAnimation(bubble26)
+bubble27 = atomicBubble(0,0,10)
+bubble27Animation = bubbleAnimation(bubble27)
+bubble28 = atomicBubble(0,0,10)
+bubble28Animation = bubbleAnimation(bubble28)
+bubble29 = atomicBubble(0,0,10)
+bubble29Animation = bubbleAnimation(bubble29)
+bubble30 = atomicBubble(0,0,10)
+bubble30Animation = bubbleAnimation(bubble30)
+bubble31 = atomicBubble(0,0,10)
+bubble31Animation = bubbleAnimation(bubble31)
+bubble32 = atomicBubble(0,0,10)
+bubble32Animation = bubbleAnimation(bubble32)
+bubble33 = atomicBubble(0,0,10)
+bubble33Animation = bubbleAnimation(bubble33)
+bubble34 = atomicBubble(0,0,10)
+bubble34Animation = bubbleAnimation(bubble34)
+bubble35 = atomicBubble(0,0,10)
+bubble35Animation = bubbleAnimation(bubble35)
+bubble36 = atomicBubble(0,0,10)
+bubble36Animation = bubbleAnimation(bubble36)
+bubble37 = atomicBubble(0,0,10)
+bubble37Animation = bubbleAnimation(bubble37)
+bubble38 = atomicBubble(0,0,10)
+bubble38Animation = bubbleAnimation(bubble38)
+bubble39 = atomicBubble(0,0,10)
+bubble39Animation = bubbleAnimation(bubble39)
+bubble40 = atomicBubble(0,0,10)
+bubble40Animation = bubbleAnimation(bubble40)
+bubble41 = atomicBubble(0,0,10)
+bubble41Animation = bubbleAnimation(bubble41)
+bubble42 = atomicBubble(0,0,10)
+bubble42Animation = bubbleAnimation(bubble42)
+bubble43 = atomicBubble(0,0,10)
+bubble43Animation = bubbleAnimation(bubble43)
+bubble44 = atomicBubble(0,0,10)
+bubble44Animation = bubbleAnimation(bubble44)
+bubble45 = atomicBubble(0,0,10)
+bubble45Animation = bubbleAnimation(bubble45)
+bubble46 = atomicBubble(0,0,10)
+bubble46Animation = bubbleAnimation(bubble46)
+bubble47 = atomicBubble(0,0,10)
+bubble47Animation = bubbleAnimation(bubble47)
+bubble48 = atomicBubble(0,0,10)
+bubble48Animation = bubbleAnimation(bubble48)
+bubble49 = atomicBubble(0,0,10)
+bubble49Animation = bubbleAnimation(bubble49)
+bubble50 = atomicBubble(0,0,10)
+bubble50Animation = bubbleAnimation(bubble50)
+
+
+
+
+bubblelist = [bubble1, bubble2, bubble3, bubble4, bubble5, bubble6, bubble7, bubble8, bubble9, bubble10, bubble11, bubble12, bubble13, bubble14, bubble15, bubble16, bubble17, bubble18, bubble19, bubble20, bubble21, bubble22, bubble23, bubble24, bubble25, bubble26, bubble27, bubble28, bubble29, bubble30, bubble31, bubble32, bubble33, bubble34, bubble35, bubble36, bubble37, bubble38, bubble39, bubble40, bubble41, bubble42, bubble43, bubble44, bubble45, bubble46, bubble47, bubble48, bubble49, bubble50]
+bubbleAnimationlist = [bubble1Animation, bubble2Animation, bubble3Animation, bubble4Animation, bubble5Animation, bubble6Animation, bubble7Animation, bubble8Animation, bubble9Animation, bubble10Animation, bubble11Animation, bubble12Animation, bubble13Animation, bubble14Animation, bubble15Animation, bubble16Animation, bubble17Animation, bubble18Animation, bubble19Animation, bubble20Animation, bubble21Animation, bubble22Animation, bubble23Animation, bubble24Animation, bubble25Animation, bubble26Animation, bubble27Animation, bubble28Animation, bubble29Animation, bubble30Animation, bubble31Animation, bubble32Animation, bubble33Animation, bubble34Animation, bubble35Animation, bubble36Animation, bubble37Animation, bubble38Animation, bubble39Animation, bubble40Animation, bubble41Animation, bubble42Animation, bubble43Animation, bubble44Animation, bubble45Animation, bubble46Animation, bubble47Animation, bubble48Animation, bubble49Animation, bubble50Animation]
 
 
 bubbledict = {'bubble1':'1st','bubble2':'2nd','bubble3':'3rd','bubble4':'4th'}
@@ -58,7 +147,7 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
         super(cloudBubbleScene, self).__init__()
         global bubblelist
 #add first bubble into the scene        
-        self.bubble = atomicBubble(0,0,10)
+        
         for eachbubble in bubblelist:
             self.addItem(eachbubble)
             
@@ -92,8 +181,8 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
             for k in range(i+1,len(bubblelist)):
                 j=bubblelist[i].collidesWithItem(bubblelist[k])
                 if j:
-                    collidesBubble.append(bubblelist[i])
-                    collidesBubble.append(bubblelist[k])
+                    collidesBubble.append(i)
+                    collidesBubble.append(k)
                     print 'bubble %s collides with bubble %s' % (bubblelist[i].toolTip(),bubblelist[k].toolTip())
         if len(collidesBubble)==0:
             print 'Collides Bubbles is zero.'
@@ -126,7 +215,33 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
     '''
     Keep all bubble tight.
     '''     
-#    def keeptight(self):
+    def keepTight(self):
+        global bubblelist
+        global bubbleAnimationlist
+        i=2
+        fakedata=self.getFakeData()
+        self.locatefirstandsecondbubble(fakedata[0],fakedata[1])
+        location=[bubblelist[0].loc,bubblelist[1].loc]
+        errorbubble=[]
+        for i in range(2,50):
+            insectionpoints=self.insect(bubblelist[i-2], bubblelist[i-1], fakedata[i])
+            if len(insectionpoints)==0:
+                errorbubble.append(i)
+                location.append(QtCore.QPointF(0,0))
+            else:
+                location.append(insectionpoints[0])
+        scale=[]
+        k=0
+        for k in range(0,50):
+            eachscale=fakedata[k]/bubblelist[k].radius
+            scale.append(eachscale)
+        j=0
+        for j in range(0,50):
+            bubbleAnimationlist[j].setbubbleloc(1000000000,location[j])
+            bubbleAnimationlist[j].setbubblesize(1000000000,scale[j])
+        
+            
+            
         
     '''
     Get an empty space for the third bubble
@@ -139,8 +254,10 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
         firstbubbleradius=firstbubble.radius+thirdBubbleradius
         secondbubbleradius=secondbubble.radius+thirdBubbleradius
         d = firstbubble.getCenterDistanceWithOtherBubble(secondbubble)
+        insectionPoints=[]
         if d>=(firstbubbleradius+secondbubbleradius):
             print 'Third bubble size is 0'
+            return insectionPoints
         else:
             a = 2.0 * firstbubbleradius * (firstbubble.loc.x() - secondbubble.loc.x());
             b = 2.0 * secondbubbleradius * (firstbubble.loc.y() - secondbubble.loc.y());
@@ -159,4 +276,19 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
     
     def distance_sqr(self,firstbubble,secondbubble):
         return pow(firstbubble.loc.x()-secondbubble.loc.x(), 2)+pow(firstbubble.loc.y()-secondbubble.loc.y(), 2)
+    '''
+    For testing
+    '''
+    def getFakeData(self):
+        data=[10,10]
+        i=0
+        for i in range(0,50):
+            x=randint(10,20)
+            data.append(x)
+        return data 
     
+    def locatefirstandsecondbubble(self,firstbubbleradius,secondbubbleradius):
+        global bubble1
+        global bubble2
+        bubble1.loc=QtCore.QPointF(0,0)
+        bubble2.loc=QtCore.QPointF(0,firstbubbleradius+secondbubbleradius)
