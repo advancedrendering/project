@@ -5,7 +5,10 @@ Created on 2013-6-18
 '''
 
 
-from PyQt4 import QtGui, uic, QtCore 
+from PyQt4 import QtGui, QtCore 
+from math import sqrt
+#from numpy.lib.scimath import sqrt
+
 
 
 class atomicBubble(QtGui.QGraphicsEllipseItem):
@@ -14,15 +17,17 @@ class atomicBubble(QtGui.QGraphicsEllipseItem):
     '''
     bubblepainter =None
 
-    def __init__(self,x,y,radius):
+    def __init__(self,x,y,radius,bubblename='empty'):
         QtGui.QGraphicsEllipseItem.__init__(self,x,y,radius,radius)
         self.radius=radius
-        self.loc = QtCore.QPoint(x,y)
+        self.loc = QtCore.QPointF(x,y)
 #        self.painter=QtGui.QPainter()
         self.brush = QtGui.QBrush(QtCore.Qt.black)
         self.color = self.setBubbleColor('good')
-       
- #       self.dr()
+        self.setToolTip(bubblename)
+        self.setAcceptHoverEvents(True)
+        
+
     '''
     set Bubble size based on the traffic load
     '''
@@ -40,22 +45,81 @@ class atomicBubble(QtGui.QGraphicsEllipseItem):
         else:
             return QtCore.Qt.black
         
-#     def setBubbleLoc(self,duration,newloc,bubble):
-#         self.tl.setDuration(duration)
-#         self.tl.setFrameRange(0,100)
-#         self.animation = QtGui.QGraphicsItemAnimation()
-#         self.animation.setItem(bubble)
-#         self.animation.setPosAt(0.00000000001,newloc)
-#                       
-#      
-
         
+    '''
+    If the bubble is not in top 50 list, the bubble needs to be renamed. 
+    @param newname: QString
+    '''
+    def setBubbleName(self,newname):
+        self.setToolTip(newname)
+        
+        
+    '''
+    Override the hoverEnterEvent
+    Implement that shows the name of bubble when the mouse is hovering on the bubble.
+    '''
+    def hoverEnterEvent(self,event):
+        pos= event.screenPos()
+        tooltip =self.toolTip()
+        QtGui.QToolTip.showText(pos,tooltip)
+    
+    
+    '''
+    Override the hoverLeaveEvent
+    Implement that hide the name of bubble when the mouse leaves hovering on the bubble.
+    '''
+    def hoverLeaveEvent(self, event):
+        QtGui.QToolTip.hideText()
+        
+    '''
+    Override the paint
+    Draw a circle
+    '''    
         
     def paint(self, painter, option, widget):
+        painter.save()
         painter.setBrush(self.color)
-        painter.drawEllipse(self.loc,self.radius,self.radius) 
-        print self.color.red()      
-        print self.color.green()
+        painter.fillPath(self.shape(),self.color)
+        painter.restore()
+    '''
+    Get the shape of bubble
+    '''                
+    def shape(self):
+        p=QtGui.QPainterPath()
+        p.addEllipse(self.loc,self.radius,self.radius)
+        return p
+    
 
+    '''
+    detect collides with other bubble
+    '''
+    def collidesWithItem(self,otherbubble):
+        x =self.loc.x()
+        y =self.loc.y()
+        distance = sqrt(pow((otherbubble.loc.x()-x), 2) +pow((otherbubble.loc.y()-y), 2))
+        if distance >self.radius+otherbubble.radius:
+            return False
+        else:
+            return True
 
-        
+    def getDistanceWithOtherBubble(self,otherbubble):
+        x=self.loc.x()
+        y=self.loc.y()
+        distance = (sqrt(pow((otherbubble.loc.x()-x), 2) +pow((otherbubble.loc.y()-y), 2)))-self.radius-otherbubble.radius
+        return distance
+    
+    
+    def getCenterDistanceWithOtherBubble(self,otherbubble):
+        x=self.loc.x()
+        y=self.loc.y()
+        distance = sqrt(pow((otherbubble.loc.x()-x), 2) +pow((otherbubble.loc.y()-y), 2))
+        return distance
+    
+    def getCurrentloc(self):
+        return self.loc
+    
+    def getCurrentRadius(self):
+        return self.radius
+    
+    
+    

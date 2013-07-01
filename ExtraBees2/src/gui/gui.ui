@@ -24,7 +24,7 @@
        <enum>Qt::LeftToRight</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="overviewTab">
        <attribute name="title">
@@ -69,8 +69,63 @@
      </widget>
     </item>
     <item>
+     <layout class="QHBoxLayout" name="sliderHBox">
+      <item>
+       <layout class="QVBoxLayout" name="labelVBox">
+        <item>
+         <widget class="QLabel" name="dayLabel">
+          <property name="text">
+           <string>Day 01</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="timeLabel">
+          <property name="text">
+           <string>00:00</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="sliderVBox">
+        <item>
+         <widget class="QSlider" name="daySlider">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>14</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSlider" name="timeSlider">
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="maximum">
+           <number>287</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item>
      <widget class="QWidget" name="buttonContainer" native="true">
       <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="margin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QPushButton" name="playButton">
          <property name="text">
