@@ -7,6 +7,7 @@ Created on 2013-6-18
 
 from PyQt4 import QtGui, QtCore 
 from math import sqrt
+
 #from numpy.lib.scimath import sqrt
 
 
@@ -26,6 +27,8 @@ class atomicBubble(QtGui.QGraphicsEllipseItem):
         self.color = self.setBubbleColor('good')
         self.setToolTip(bubblename)
         self.setAcceptHoverEvents(True)
+        self.nextradius = 10
+        self.nextlocation = QtCore.QPointF(0,0)
         
 
     '''
@@ -93,14 +96,22 @@ class atomicBubble(QtGui.QGraphicsEllipseItem):
     '''
     detect collides with other bubble
     '''
-    def collidesWithItem(self,otherbubble):
-        x =self.loc.x()
-        y =self.loc.y()
-        distance = sqrt(pow((otherbubble.loc.x()-x), 2) +pow((otherbubble.loc.y()-y), 2))
-        if distance >self.radius+otherbubble.radius:
+    def collidesWithItem(self,otherbubblenextlocation,otherbubblenextradius):
+        x =self.nextlocation.x()
+        y =self.nextlocation.y()
+        distance = sqrt(pow((otherbubblenextlocation.x()-x), 2) +pow((otherbubblenextlocation.y()-y), 2))
+        if distance >=self.nextradius+otherbubblenextradius:
             return False
         else:
             return True
+        
+    def detectCollideInNextLocation(self,nextradiuslist,nextlocationlist,seq):
+        for i in range (0,seq):
+            j=self.collidesWithItem(nextlocationlist[i],nextradiuslist[i])
+            if j:
+                return True
+        return False
+        
 
     def getDistanceWithOtherBubble(self,otherbubble):
         x=self.loc.x()
@@ -121,5 +132,13 @@ class atomicBubble(QtGui.QGraphicsEllipseItem):
     def getCurrentRadius(self):
         return self.radius
     
+    def setNextRadius(self,nextradius):
+        self.nextradius = nextradius
+        
+    def setNextLocation(self,nextlocation):
+        self.nextlocation = nextlocation
+    
+    def getNextLocation(self):
+        return self.nextlocation
     
     

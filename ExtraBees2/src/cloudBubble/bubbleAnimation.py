@@ -37,8 +37,8 @@ class bubbleAnimation(QtCore.QObject):
         tl4loc.start()
         self.changeLoc.setPosAt(0.00000000001,location)
         self.location = location
-        self.connect(tl4loc,QtCore.SIGNAL('finished()'),self.update)
-        
+        self.connect(tl4loc,QtCore.SIGNAL('finished()'),self.updateloc)
+            
     
         '''
         Resize the bubble to visual the traffic load of each workstation
@@ -53,9 +53,9 @@ class bubbleAnimation(QtCore.QObject):
         self.changeSize.setTimeLine(tl4size)
         self.changeSize.setScaleAt(0.00000000001,scale,scale)
         self.radius = self.radius*scale
-        self.connect(tl4size,QtCore.SIGNAL('finished()'),self.update)    
+        self.connect(tl4size,QtCore.SIGNAL('finished()'),self.updateradius)    
 #        self.bubble.radius=self.bubble.radius*scale
-
+        
         
         '''
         Smoothly change the bubble color
@@ -86,8 +86,9 @@ class bubbleAnimation(QtCore.QObject):
         Everytime after using animation, we have to use update()
         '''
         
-    def update(self):
+    def updateloc(self):
         self.bubble.loc = self.location
+    def updateradius(self):
         self.bubble.radius = self.radius
         
 
