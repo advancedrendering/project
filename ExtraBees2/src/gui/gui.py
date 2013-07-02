@@ -2,6 +2,7 @@ import sys
 from PyQt4 import QtGui, uic, QtCore 
 from cloudBubble.cloudBubbleScene import cloudBubbleScene
 from cloudBubble.cloudBubbleScene import bubblelist
+from cloudBubble.cloudBubbleScene import bubbleAnimationlist
 #from scipy.sparse.linalg.dsolve.umfpack.umfpack import updateDictWithVars
 from cloudBubble.atomicBubble import atomicBubble
 from GuiThread import GuiThread
@@ -38,10 +39,8 @@ class MyWindow(QtGui.QMainWindow):
         self.show()
         
     def clickedPlay(self):
-        global bubblelist
-        insectionPoints=self.site1Scene.insect(bubblelist[0],bubblelist[1],30)
-        thirdbubble = atomicBubble(insectionPoints[0].x(),insectionPoints[0].y(),30)
-        self.site1Scene.addItem(thirdbubble) 
+
+#        self.site1Scene.keepTight() 
 #        self.site1Scene.animation.setbubbleloc(1000000000, QtCore.QPointF(100,-100))
 #        self.site1Scene.animation.setbubblesize(1000000000, 2.0)
         print "Play"
@@ -77,6 +76,12 @@ class MyWindow(QtGui.QMainWindow):
     
     def updateGraph(self):
         self.ui.widget.update()
+        
+    def addAllBubbleIntoScene(self):
+        global bubblelist
+        i=0
+        for i in range(0,50):
+            self.site1Scene.addItem(bubblelist[i])
 
         
 if __name__ == '__main__':
