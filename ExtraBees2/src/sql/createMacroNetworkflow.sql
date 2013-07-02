@@ -1,4 +1,5 @@
 CREATE  TABLE `datavis`.`macro_networkflow` (
+  `Starttime` DATETIME NOT NULL ,
   `srcESite` VARCHAR(45) NOT NULL ,
   `destESite` VARCHAR(45) NOT NULL ,
   `ipLayerProtocol` INT NOT NULL ,
@@ -6,5 +7,4 @@ CREATE  TABLE `datavis`.`macro_networkflow` (
   `SumTotalBytesDest` BIGINT NULL ,
   `SumDuration` BIGINT NULL ,
   `SumConnections` INT NULL ,
-  `StarttimeSeconds` BIGINT NOT NULL ,
-  PRIMARY KEY (`srcESite`, `StarttimeSeconds`, `destESite`, `ipLayerProtocol`) );
+  PRIMARY KEY (`Starttime`, `srcESite`, `destESite`, `ipLayerProtocol`) );
