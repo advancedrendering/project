@@ -1,10 +1,15 @@
-CREATE  TABLE `datavis`.`macro_networkflow` (
-  `srcESite` VARCHAR(45) NOT NULL ,
-  `destESite` VARCHAR(45) NOT NULL ,
-  `ipLayerProtocol` INT NOT NULL ,
-  `SumTotalBytesSrc` BIGINT NULL ,
-  `SumTotalBytesDest` BIGINT NULL ,
-  `SumDuration` BIGINT NULL ,
-  `SumConnections` INT NULL ,
-  `StarttimeSeconds` BIGINT NOT NULL ,
-  PRIMARY KEY (`srcESite`, `StarttimeSeconds`, `destESite`, `ipLayerProtocol`) );
+delimiter $$
+
+CREATE TABLE macro_networkflow (
+  Starttime datetime NOT NULL,
+  srcESite varchar(45) NOT NULL,
+  destESite varchar(45) NOT NULL,
+  ipLayerProtocol int(11) NOT NULL,
+  SumTotalBytesSrc bigint(20) DEFAULT NULL,
+  SumTotalBytesDest bigint(20) DEFAULT NULL,
+  SumPacketSrc int(11) DEFAULT NULL,
+  SumPacketDest int(11) DEFAULT NULL,
+  SumDuration bigint(20) DEFAULT NULL,
+  SumConnections int(11) DEFAULT NULL,
+  PRIMARY KEY (Starttime,srcESite,destESite,ipLayerProtocol)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8$$
