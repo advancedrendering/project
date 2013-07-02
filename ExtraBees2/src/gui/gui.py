@@ -3,6 +3,7 @@ from PyQt4 import QtGui, uic, QtCore
 from cloudBubble.cloudBubbleScene import cloudBubbleScene
 from scipy.sparse.linalg.dsolve.umfpack.umfpack import updateDictWithVars
 from cloudBubble.atomicBubble import atomicBubble
+from cloudBubble.cloudBubbleScene import bubblelist
 from GuiThread import GuiThread
 
 class MyWindow(QtGui.QMainWindow):
@@ -37,7 +38,6 @@ class MyWindow(QtGui.QMainWindow):
         self.show()
         
     def clickedPlay(self):
-        global bubblelist
         insectionPoints=self.site1Scene.insect(bubblelist[0],bubblelist[1],30)
         thirdbubble = atomicBubble(insectionPoints[0].x(),insectionPoints[0].y(),30)
         self.site1Scene.addItem(thirdbubble) 
