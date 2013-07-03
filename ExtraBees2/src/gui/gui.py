@@ -55,6 +55,7 @@ class MyWindow(QtGui.QMainWindow):
         day = self.ui.daySlider.value()
         string = "Day "+ str(day).zfill(2)
         self.ui.dayLabel.setText(string)
+        self.ui.widget.updateData(self.ui.timeSlider.value(),self.ui.daySlider.value())
         
     def timeChanged(self):
         timeSlot = self.ui.timeSlider.value()
@@ -62,9 +63,10 @@ class MyWindow(QtGui.QMainWindow):
         minute = (timeSlot % 12)*5
         string = str(hour).zfill(2)+":"+str(minute).zfill(2)
         self.ui.timeLabel.setText(string)
+        self.ui.widget.updateData(self.ui.timeSlider.value(),self.ui.daySlider.value())
         
     def loop(self):
-        self.ui.widget.updateLineThickness()
+        self.ui.widget.updateData(self.ui.timeSlider.value(),self.ui.daySlider.value())
         if self.ui.timeSlider.value() == self.ui.timeSlider.maximum():
             self.ui.timeSlider.setValue(self.ui.timeSlider.minimum())
             if self.ui.daySlider.value()== self.ui.daySlider.maximum():
