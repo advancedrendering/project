@@ -39,10 +39,16 @@ class MyWindow(QtGui.QMainWindow):
         self.show()
         
     def clickedPlay(self):
-
 #        self.site1Scene.keepTight() 
 #        self.site1Scene.animation.setbubbleloc(1000000000, QtCore.QPointF(100,-100))
 #        self.site1Scene.animation.setbubblesize(1000000000, 2.0)
+        global bubblelist,bubbleAnimationlist
+        self.site1Scene.locatefirstandsecondbubble(10,14)
+        insectionPoints=self.site1Scene.insect(bubblelist[0],bubblelist[1],17)
+        print len(insectionPoints)
+        if len(insectionPoints)>=1:
+            bubbleAnimationlist[2].setbubbleloc(1000000000,insectionPoints[0])
+            bubbleAnimationlist[2].setbubblesize(1000000000,17/bubblelist[2].radius)
         print "Play"
         self.t.play()
 
