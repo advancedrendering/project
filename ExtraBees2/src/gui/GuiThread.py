@@ -12,18 +12,9 @@ from PyQt4 import QtCore
 class GuiThread(QtCore.QThread):
     def __init__(self,seconds):
         QtCore.QThread.__init__(self)
-        self.running = False
         self.time = seconds
     
     def run(self):
         while True:
-            self.emit(QtCore.SIGNAL('updateGraph'))
-            if self.running:
-                self.emit(QtCore.SIGNAL('seconds_passed'))
+            self.emit(QtCore.SIGNAL('update'))
             time.sleep(self.time)
-    
-    def play(self):
-        self.running = True
-    
-    def pause(self):
-        self.running = False

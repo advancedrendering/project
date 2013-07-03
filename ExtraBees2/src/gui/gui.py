@@ -1,4 +1,6 @@
 import sys
+import csv
+import random
 from PyQt4 import QtGui, uic, QtCore 
 from cloudBubble.cloudBubbleScene import cloudBubbleScene
 from cloudBubble.cloudBubbleScene import bubblelist
@@ -16,9 +18,20 @@ class MyWindow(QtGui.QMainWindow):
         self.connect(self.ui.daySlider, QtCore.SIGNAL("valueChanged(int)"), self.dayChanged)
         self.connect(self.ui.timeSlider, QtCore.SIGNAL("valueChanged(int)"), self.timeChanged)
         self.t = GuiThread(0.1)
-        self.connect(self.t, QtCore.SIGNAL('seconds_passed'),self.loop)
-        self.connect(self.t, QtCore.SIGNAL('updateGraph'),self.updateGraph)
+        self.connect(self.t, QtCore.SIGNAL('update'),self.loop)
         self.t.start()
+        
+        self.running = False
+        
+        ifile = open('../csvfiles/overallTrafficPerTimeSlot.csv')
+        reader = csv.reader(ifile)
+        self.trafficChart = []
+        for row in reader:
+            self.trafficChart.append(row[1])
+        self.ui.chart.canvas.ax.clear()
+        self.ui.chart.canvas.ax.plot(self.trafficChart)
+
+        self.ui.chart.canvas.draw()
 
          
 #Add hello world to scene, just for testing
@@ -50,18 +63,19 @@ class MyWindow(QtGui.QMainWindow):
             bubbleAnimationlist[2].setbubbleloc(1000000000,insectionPoints[0])
             bubbleAnimationlist[2].setbubblesize(1000000000,17/bubblelist[2].radius)
         print "Play"
-        self.t.play()
+        self.running = True
 
         
     def clickedPause(self):
         print "Pause"
-        self.t.pause()
+        self.running = False
     
     def dayChanged(self):
         day = self.ui.daySlider.value()
         string = "Day "+ str(day).zfill(2)
         self.ui.dayLabel.setText(string)
         self.ui.widget.updateData(self.ui.timeSlider.value(),self.ui.daySlider.value())
+        self.updateChart(self.ui.timeSlider.value())
         
     def timeChanged(self):
         timeSlot = self.ui.timeSlider.value()
@@ -70,20 +84,33 @@ class MyWindow(QtGui.QMainWindow):
         string = str(hour).zfill(2)+":"+str(minute).zfill(2)
         self.ui.timeLabel.setText(string)
         self.ui.widget.updateData(self.ui.timeSlider.value(),self.ui.daySlider.value())
+        self.updateChart(self.ui.timeSlider.value())
         
     def loop(self):
-        self.ui.widget.updateData(self.ui.timeSlider.value(),self.ui.daySlider.value())
-        if self.ui.timeSlider.value() == self.ui.timeSlider.maximum():
-            self.ui.timeSlider.setValue(self.ui.timeSlider.minimum())
-            if self.ui.daySlider.value()== self.ui.daySlider.maximum():
-                self.ui.daySlider.setValue(self.ui.daySlider.minimum())
+        self.updateGraph()
+        if self.running:
+            self.updateChart(self.ui.timeSlider.value())
+            self.ui.widget.updateData(self.ui.timeSlider.value(),self.ui.daySlider.value())
+            if self.ui.timeSlider.value() == self.ui.timeSlider.maximum():
+                self.ui.timeSlider.setValue(self.ui.timeSlider.minimum())
+                if self.ui.daySlider.value()== self.ui.daySlider.maximum():
+                    self.ui.daySlider.setValue(self.ui.daySlider.minimum())
+                else:
+                    self.ui.daySlider.setValue(self.ui.daySlider.value() +1)
             else:
-                self.ui.daySlider.setValue(self.ui.daySlider.value() +1)
+                self.ui.timeSlider.setValue(self.ui.timeSlider.value() +1)
         else:
-            self.ui.timeSlider.setValue(self.ui.timeSlider.value() +1)
+            self.updateChart(self.ui.chart.canvas.xdata) 
     
     def updateGraph(self):
         self.ui.widget.update()
+    
+    def updateChart(self,value):
+        self.ui.chart.canvas.ax.clear()
+        self.ui.chart.canvas.ax.plot(self.trafficChart)
+        self.ui.chart.canvas.ax.vlines(value,0,1100000000)
+        self.ui.chart.canvas.draw()
+        
         
     def addAllBubbleIntoScene(self):
         global bubblelist
