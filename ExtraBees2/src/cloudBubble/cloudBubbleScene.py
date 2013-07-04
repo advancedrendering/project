@@ -219,6 +219,7 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
         padding =2
         fakedata = self.getFakeData()
         fakehealth = self.getFakeHealth()
+        fakename = self.getFakeName()
         subduration = 5000000
         for k in range(10):
             for h in range(len(self.bubblelist)):
@@ -249,6 +250,8 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
             self.bubbleAnimationlist[i].setbubblesize(subduration,fakedata[i])
             self.bubbleAnimationlist[i].setbubbleloc(subduration,self.nextlocation[i]) 
             self.bubbleAnimationlist[i].setbubblecolor(fakehealth[i])
+            self.bubblelist[i].setBubbleName(str(fakename[i]))
+            self.bubblelist[i].update()
  
     def distance(self,firstpoint,secondpoint):
         return sqrt(pow(firstpoint.x()-secondpoint.x(), 2)+pow(firstpoint.y()-secondpoint.y(), 2))
@@ -268,4 +271,9 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
             x=randint(1,4)
             health.append(x)
         return health
+    def getFakeName(self):
+        name=[]
+        for i in range(50):
+            name.append(i)
+        return name
     
