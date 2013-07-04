@@ -11,16 +11,16 @@ from math import sqrt
 from random import randint
 
 
-bubble1 = atomicBubble(20,20,10,'1st')
+bubble1 = atomicBubble(40,20,10,'1st')
 bubble1Animation = bubbleAnimation(bubble1)
 
 bubble2 = atomicBubble(0,0,10,'2nd')
 bubble2Animation = bubbleAnimation(bubble2)
 
-bubble3 = atomicBubble(0,0,10,'3rd')
+bubble3 = atomicBubble(13,14,10,'3rd')
 bubble3Animation = bubbleAnimation(bubble3)
 
-bubble4 = atomicBubble(0,0,10)
+bubble4 = atomicBubble(15,0,10)
 bubble4Animation = bubbleAnimation(bubble4)
 
 bubble5 = atomicBubble(0,0,10)
@@ -128,13 +128,10 @@ bubble50Animation = bubbleAnimation(bubble50)
 
 bubblelist = [bubble1, bubble2, bubble3, bubble4, bubble5, bubble6, bubble7, bubble8, bubble9, bubble10, bubble11, bubble12, bubble13, bubble14, bubble15, bubble16, bubble17, bubble18, bubble19, bubble20, bubble21, bubble22, bubble23, bubble24, bubble25, bubble26, bubble27, bubble28, bubble29, bubble30, bubble31, bubble32, bubble33, bubble34, bubble35, bubble36, bubble37, bubble38, bubble39, bubble40, bubble41, bubble42, bubble43, bubble44, bubble45, bubble46, bubble47, bubble48, bubble49, bubble50]
 bubbleAnimationlist = [bubble1Animation, bubble2Animation, bubble3Animation, bubble4Animation, bubble5Animation, bubble6Animation, bubble7Animation, bubble8Animation, bubble9Animation, bubble10Animation, bubble11Animation, bubble12Animation, bubble13Animation, bubble14Animation, bubble15Animation, bubble16Animation, bubble17Animation, bubble18Animation, bubble19Animation, bubble20Animation, bubble21Animation, bubble22Animation, bubble23Animation, bubble24Animation, bubble25Animation, bubble26Animation, bubble27Animation, bubble28Animation, bubble29Animation, bubble30Animation, bubble31Animation, bubble32Animation, bubble33Animation, bubble34Animation, bubble35Animation, bubble36Animation, bubble37Animation, bubble38Animation, bubble39Animation, bubble40Animation, bubble41Animation, bubble42Animation, bubble43Animation, bubble44Animation, bubble45Animation, bubble46Animation, bubble47Animation, bubble48Animation, bubble49Animation, bubble50Animation]
+#bubblelist = [bubble1, bubble2, bubble3, bubble4, bubble5, bubble6]
+#bubbleAnimationlist = [bubble1Animation, bubble2Animation, bubble3Animation, bubble4Animation, bubble5Animation, bubble6Animation]
+nextlocation=[QtCore.QPointF(0,0)] *50
 
-
-bubbledict = {'bubble1':'1st','bubble2':'2nd','bubble3':'3rd','bubble4':'4th'}
-bubbleAnimationdict = {'bubble1Animation':'bubble1',
-                       'bubble2Animation':'bubble2','bubble3Animation':'bubble3','bubble4Animation':'bubble4'}
-bubblenumber = [x for x in range(1,4)]
-bubblenamelist = ["1st","2nd","3rd"]
 class cloudBubbleScene(QtGui.QGraphicsScene):
     '''
     This class is used to specify the bubble scene. 
@@ -146,32 +143,10 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
         ''' 
         super(cloudBubbleScene, self).__init__()
         global bubblelist
-#add first bubble into the scene        
-        
+
         for eachbubble in bubblelist:
             self.addItem(eachbubble)
-            
-#        self.detectCollides()
-#assign some animation to the first bubble
-#        self.addItem(self.bubble)
-#        self.animation = bubbleAnimation(self.bubble)
-        
-#         self.animation.setbubbleloc(1000000000, QtCore.QPoint(100,-100))
-#         self.animation.setbubbleloc(1000000000, QtCore.QPoint(100,100))
-#         self.animation.setbubblesize(1000000000, 0.01)
-#        self.addAllBubble()
-        '''
-        Add new bubbles to the scene
-        '''
-    def addAllBubble(self):
-        global bubbledict
-        i=0
-        for i in range(0,3):
-            print 'bubble'+str(i)
-#            'bubble'+str(i)=atomicBubble(5+i,5+i,5)
-#            self.addItem(self.('bubble'+str(i)))
-#            print 'key=%s, value=' % (bubbledict[i])
-#            i=i+4
+#        self.addItem(bubblelist[0])
 
 #     def detectCollides(self,radiuslist,locationlist):
 #         collidesBubble = []
@@ -212,114 +187,72 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
         for i in range(0,len(bubblelist)):
             currentbubbleradius.append(bubblelist[i].getCurrentRadius())   
         return currentbubbleradius
+
     '''
     Keep all bubble tight.
     '''     
     def keepTight(self):
         global bubblelist
-        global bubbleAnimationlist
+        padding =2
+        damping = 0.1        
+        for i in range(len(bubblelist)):
+            circle1 = bubblelist[i]
+            for j in range(i+1, len(bubblelist)):
+                circle2 = bubblelist[j]
+                d = self.distance(circle1.loc,circle2.loc)
+                r = circle1.radius + circle2.radius + padding
+             
         
-        fakedata=self.getFakeData()
-        print fakedata[2]
-        self.setAllBubblesNextRadius(fakedata)
-#         for i in range(0,50):
-#             bubblelist[i].setNextRadius(fakedata[i])
-        self.locatefirstandsecondbubble(fakedata[0],fakedata[1])
-        nextlocations=[bubblelist[0].nextlocation,bubblelist[1].nextlocation]
-        errorbubble=[]
+                if d**2 < r**2 - 0.01:
+                    dx = circle2.loc.x() - circle1.loc.x()
+                    dy = circle2.loc.y() - circle1.loc.y()
+                    vx = (dx / d) * (r-d) * 0.5
+                    vy = (dy / d) * (r-d) * 0.5
+                    
+                    
+                    circle1.loc.setX(circle1.loc.x() - vx)
+                    circle1.loc.setY(circle1.loc.y() - vy)
+                    circle2.loc.setX(circle2.loc.x() + vx)
+                    circle2.loc.setY(circle2.loc.y() + vy)
 
-        for i in range(2,50):
-            insectionpoints=self.insect(bubblelist[i-2], bubblelist[i-1], fakedata[i])
-            if len(insectionpoints)==0:
-                errorbubble.append(i)
-                nextlocations.append(QtCore.QPointF(0,0))
-               #print '+1'
-            elif len(insectionpoints)==1:
-                
-                nextlocations.append(insectionpoints[0])
-            else:
-                nextlocations.append(insectionpoints[1])
-            bubblelist[i].setNextLocation(nextlocations[i])
-            while bubblelist[i].detectCollideInNextLocation(fakedata,nextlocations,i):
-                bubblelist[i].setNextLocation(QtCore.QPointF(nextlocations[i].x()+1,nextlocations[i].y()+1))
-            nextlocations.insert(i, bubblelist[i].getNextLocation())
-        scale=[]
-         
-        for k in range(0,50):
-            eachscale=fakedata[k]/bubblelist[k].radius
-            scale.append(eachscale)
-         
-        for j in range(0,50):
-            bubbleAnimationlist[j].setbubbleloc(1000000000,nextlocations[j])
-            bubbleAnimationlist[j].setbubblesize(1000000000,scale[j])
-        
-        def newkeeptight(self):
-            global bubblelist
-            global bubbleAnimationlist
-            fakedata = self.getFakeData()
-                     
-            
-            
-        
-    '''
-    Get an empty space for the third bubble
-    @param firstbubble:cloudBubble.atomicBubble
-    @param secondbubble:cloudBubble.atomicBubble
-    @param thirdBubbleradius: float   
-    @return: list of QtCore.QPointF. The third bubble center points 
-    '''    
-    def insect(self,firstbubble,secondbubble,thirdBubbleradius):
-        firstbubbleradius=firstbubble.nextradius+thirdBubbleradius
-        secondbubbleradius=secondbubble.nextradius+thirdBubbleradius
-        insectionPoints=[]
-        if self.double_equals(firstbubble.nextlocation.x(),secondbubble.nextlocation.x()) and self.double_equals(firstbubble.nextlocation.y(),secondbubble.nextlocation.y()):
-            return insectionPoints
-        d = firstbubble.getCenterDistanceWithOtherBubble(secondbubble)
-        if d>firstbubbleradius+secondbubbleradius or d<abs(firstbubbleradius-secondbubbleradius):
-            insectionPoint = QtCore.QPointF((firstbubble.nextlocation.x()+secondbubble.nextlocation.x())/2,(firstbubble.nextlocation.y()+secondbubble.nextlocation.y())/2)
-            print 'Third bubble size is 0'
-            insectionPoints = [insectionPoint]
-            return insectionPoints        
-        a = 2.0 * firstbubbleradius * (firstbubble.nextlocation.x() - secondbubble.nextlocation.x());
-        b = 2.0 * secondbubbleradius * (firstbubble.nextlocation.y() - secondbubble.nextlocation.y());
-        c = secondbubbleradius * secondbubbleradius - firstbubbleradius * firstbubbleradius- self.distance_sqr(firstbubble.nextlocation, secondbubble.nextlocation)
-        p = a * a + b * b
-        q = -2.0 * a * c
-        
-        #if only one insection
-        if not self.double_equals(d,firstbubbleradius+secondbubbleradius) or self.double_equals(d,abs(firstbubbleradius-secondbubbleradius)):
-            cos_value=-q / p / 2.0;
-            sin_value=sqrt(1 - (cos_value * cos_value))
-            insectionPoint = QtCore.QPointF(firstbubbleradius*cos_value+firstbubble.nextlocation.x(),firstbubbleradius*sin_value+firstbubble.nextlocation.y())
-            if self.double_equals(self.distance_sqr(insectionPoint,secondbubble.nextlocation),secondbubbleradius*secondbubbleradius):
-                insectionPoint=QtCore.QPointF(firstbubbleradius*cos_value+firstbubble.nextlocation.x(),firstbubble.nextlocation.y()-firstbubbleradius*sin_value)
-            insectionPoints=[insectionPoint]
-            return insectionPoints
-        
-        r = c * c - b * b
-        cos_value=[(sqrt(q * q - 4.0 * p * r) - q) / p / 2.0,(-sqrt(q * q - 4.0 * p * r) - q) / p / 2.0]  
-        sin_value=[sqrt(1 - cos_value[0] * cos_value[0]),sqrt(1 - cos_value[1] * cos_value[1])]
-        insectionPoints1=QtCore.QPointF(firstbubbleradius * cos_value[0] + firstbubble.nextlocation.x(),firstbubbleradius * sin_value[0] + firstbubble.nextlocation.y())
-        insectionPoints2=QtCore.QPointF(firstbubbleradius * cos_value[1] + firstbubble.nextlocation.x(),firstbubbleradius * sin_value[1] + firstbubble.nextlocation.y())
-        if not self.double_equals(self.distance_sqr(insectionPoints1,secondbubble.nextlocation),secondbubbleradius*secondbubbleradius):
-            insectionPoints1=QtCore.QPointF(firstbubbleradius * cos_value[0] + firstbubble.nextlocation.x(),firstbubble.nextlocation.y()-firstbubbleradius*sin_value[0])
-        if not self.double_equals(self.distance_sqr(insectionPoints2,secondbubble.nextlocation),secondbubbleradius*secondbubbleradius):
-            insectionPoints2=QtCore.QPointF(firstbubbleradius * cos_value[1] + firstbubble.nextlocation.x(), firstbubble.nextlocation.y()-firstbubbleradius * sin_value[1])
-        if self.double_equals(insectionPoints1.y(),insectionPoints2.y()) and self.double_equals(insectionPoints1.x(),insectionPoints2.x()):
-            if insectionPoints1.y()>0:
-                insectionPoints2.setY(-insectionPoints2.y())
-            else:
-                insectionPoints1.setY(-insectionPoints1.y())
-        insectionPoints=[insectionPoints1,insectionPoints2]
-        return insectionPoints
-
-    def distance_sqr(self,firstpoint,secondpoint):
-        return pow(firstpoint.x()-secondpoint.x(), 2)+pow(firstpoint.y()-secondpoint.y(), 2)
     
-    def double_equals(self,a,b):
-        ZERO =1e-9
-        return abs(a-b)<ZERO
-
+    def newkeepTight(self):
+        global bubblelist,bubbleAnimationlist,nextlocation
+        padding =2
+        fakedata = self.getFakeData()
+        
+        subduration = 5000000
+        for k in range(10):
+            for h in range(len(bubblelist)):
+                bubblelist[h].setNextRadius(fakedata[h])
+            for i in range(len(bubblelist)):
+                circle1 = bubblelist[i]
+                for j in range(i+1, len(bubblelist)):
+                    circle2 = bubblelist[j]
+                    d = self.distance(circle1.nextlocation,circle2.nextlocation)
+                    r = circle1.nextradius + circle2.nextradius + padding
+                    
+                    if d**2 < r**2 - 0.01:
+                        if d==0:
+                            d=0.1
+                        dx = circle2.nextlocation.x() - circle1.nextlocation.x()
+                        dy = circle2.nextlocation.y() - circle1.nextlocation.y()
+                        vx = (dx / d) * (r-d) * 0.5
+                        vy = (dy / d) * (r-d) * 0.5
+                        circle1loc = QtCore.QPointF(float(circle1.nextlocation.x() - vx),float(circle1.nextlocation.y() - vy))
+                        circle2loc = QtCore.QPointF(float(circle2.nextlocation.x() + vx),float(circle2.nextlocation.y() + vy))
+                        circle1.setNextLocation(circle1loc)
+                        circle2.setNextLocation(circle2loc)
+                        nextlocation[i] = circle1loc
+                        nextlocation[j] = circle2loc
+                        
+        print len(nextlocation)  
+        for i in range(len(bubbleAnimationlist)):
+            bubbleAnimationlist[i].setbubblesize(subduration,fakedata[i])
+            bubbleAnimationlist[i].setbubbleloc(subduration,nextlocation[i]) 
+ 
+    def distance(self,firstpoint,secondpoint):
+        return sqrt(pow(firstpoint.x()-secondpoint.x(), 2)+pow(firstpoint.y()-secondpoint.y(), 2))
     
     '''
     For testing
@@ -327,7 +260,7 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
     def getFakeData(self):
         data=[]
         for i in range(0,50):
-            x=randint(10,20)
+            x=randint(10,30)
             data.append(x)
         return data 
     

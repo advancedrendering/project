@@ -30,31 +30,36 @@ class bubbleAnimation(QtCore.QObject):
     def setbubbleloc (self,duration,location):
         tl4loc = QtCore.QTimeLine()
         tl4loc.setDuration(duration)
-        tl4loc.setFrameRange(0,100)
+#        self.connect(tl4loc,QtCore.SIGNAL("finished()"),self.updateloc)
+        tl4loc.setFrameRange(0,10000)
         self.changeLoc = QtGui.QGraphicsItemAnimation()
         self.changeLoc.setItem(self.bubble)
         self.changeLoc.setTimeLine(tl4loc)
         tl4loc.start()
-        self.changeLoc.setPosAt(0.00000000001,location)
+        self.changeLoc.setPosAt(0.00000001,location)
         self.location = location
-        self.connect(tl4loc,QtCore.SIGNAL('finished()'),self.updateloc)
+        
             
     
         '''
         Resize the bubble to visual the traffic load of each workstation
         '''
-    def setbubblesize(self,duration,scale):
+    def setbubblesize(self,duration,radius):
+        
         tl4size = QtCore.QTimeLine()
+#        self.connect(tl4size,QtCore.SIGNAL("finished()"),self.updateradius) 
         tl4size.setDuration(duration)
-        tl4size.setFrameRange(0,100)
+        tl4size.setFrameRange(0,10000)
         tl4size.start()
         self.changeSize = QtGui.QGraphicsItemAnimation()
         self.changeSize.setItem(self.bubble)
         self.changeSize.setTimeLine(tl4size)
-        self.changeSize.setScaleAt(0.00000000001,scale,scale)
-        self.radius = self.radius*scale
-        self.connect(tl4size,QtCore.SIGNAL('finished()'),self.updateradius)    
-#        self.bubble.radius=self.bubble.radius*scale
+#         if self.bubble.radius>=radius:
+#             self.changeSize.setShearAt(0.00000000001,self.bubble.radius/radius,self.bubble.radius/radius)
+#         else:
+        self.changeSize.setScaleAt(0.00000001,radius/self.bubble.radius,radius/self.bubble.radius)
+        self.radius = radius
+           
         
         
         '''
@@ -89,7 +94,8 @@ class bubbleAnimation(QtCore.QObject):
     def updateloc(self):
         self.bubble.loc = self.location
     def updateradius(self):
-        self.bubble.radius = self.radius
+        self.bubble.setBubbleSize(self.radius)
+#        self.bubble.radius = self.radius
         
 
         
