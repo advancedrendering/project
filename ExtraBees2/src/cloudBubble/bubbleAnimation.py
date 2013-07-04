@@ -31,7 +31,7 @@ class bubbleAnimation(QtCore.QObject):
         tl4loc = QtCore.QTimeLine()
         tl4loc.setDuration(duration)
 #        self.connect(tl4loc,QtCore.SIGNAL("finished()"),self.updateloc)
-        tl4loc.setFrameRange(0,10000)
+        tl4loc.setFrameRange(30,100)
         self.changeLoc = QtGui.QGraphicsItemAnimation()
         self.changeLoc.setItem(self.bubble)
         self.changeLoc.setTimeLine(tl4loc)
@@ -49,7 +49,7 @@ class bubbleAnimation(QtCore.QObject):
         tl4size = QtCore.QTimeLine()
 #        self.connect(tl4size,QtCore.SIGNAL("finished()"),self.updateradius) 
         tl4size.setDuration(duration)
-        tl4size.setFrameRange(0,10000)
+        tl4size.setFrameRange(30,100)
         tl4size.start()
         self.changeSize = QtGui.QGraphicsItemAnimation()
         self.changeSize.setItem(self.bubble)
@@ -69,18 +69,15 @@ class bubbleAnimation(QtCore.QObject):
         @todo: optimize the setbubblecolor after discussing
         '''
     def setbubblecolor(self,health):
-        self.bubble.color = health
-        '''
-        green = self.bubble.color.green()
-        red = self.bubble.color.red()
-        blue = self.bubble.color.blue()
-       
-        for i in range(0,abs(redchange)):
-            red = abs(red +(redchange/abs(redchange)))
-            for k in range(0,abs(greenchange)):
-                green = abs(green +(greenchange/abs(greenchange)))
-                self.bubble.color = QtGui.QColor(red,green,0)
-         '''
+        if health==1:
+            self.bubble.color = QtGui.QColor(0,255,0)
+        elif health==2:
+            self.bubble.color = QtGui.QColor(255,153,0)   
+        elif health==3:
+            self.bubble.color = QtGui.QColor(255,0,0)
+        elif health==4:
+            self.bubble.color = QtGui.QColor(153,204,255)
+
         
         
         '''stop all timelines'''

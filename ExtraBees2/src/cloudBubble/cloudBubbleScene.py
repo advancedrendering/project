@@ -220,7 +220,7 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
         global bubblelist,bubbleAnimationlist,nextlocation
         padding =2
         fakedata = self.getFakeData()
-        
+        fakehealth = self.getFakeHealth()
         subduration = 5000000
         for k in range(10):
             for h in range(len(bubblelist)):
@@ -250,6 +250,7 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
         for i in range(len(bubbleAnimationlist)):
             bubbleAnimationlist[i].setbubblesize(subduration,fakedata[i])
             bubbleAnimationlist[i].setbubbleloc(subduration,nextlocation[i]) 
+            bubbleAnimationlist[i].setbubblecolor(fakehealth[i])
  
     def distance(self,firstpoint,secondpoint):
         return sqrt(pow(firstpoint.x()-secondpoint.x(), 2)+pow(firstpoint.y()-secondpoint.y(), 2))
@@ -262,7 +263,13 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
         for i in range(0,50):
             x=randint(10,30)
             data.append(x)
-        return data 
+        return data
+    def getFakeHealth(self):
+        health=[]
+        for i in range(50):
+            x=randint(1,4)
+            health.append(x)
+        return health
     
     def locatefirstandsecondbubble(self,firstbubblenextradius,secondbubblenextradius):
         global bubble1

@@ -29,6 +29,7 @@ class atomicBubble(QtGui.QGraphicsEllipseItem):
         self.setAcceptHoverEvents(True)
         self.nextradius = 10
         self.nextlocation = self.loc
+        self.setCacheMode(0)
         
 
     '''
