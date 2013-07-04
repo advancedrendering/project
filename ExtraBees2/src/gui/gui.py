@@ -3,8 +3,6 @@ import csv
 import random
 from PyQt4 import QtGui, uic, QtCore 
 from cloudBubble.cloudBubbleScene import cloudBubbleScene
-from cloudBubble.cloudBubbleScene import bubblelist
-from cloudBubble.cloudBubbleScene import bubbleAnimationlist
 #from scipy.sparse.linalg.dsolve.umfpack.umfpack import updateDictWithVars
 from cloudBubble.atomicBubble import atomicBubble
 from GuiThread import GuiThread
@@ -20,9 +18,9 @@ class MyWindow(QtGui.QMainWindow):
         self.t = GuiThread(0.1)
         self.connect(self.t, QtCore.SIGNAL('update'),self.loop)
         self.t.start()
-        
+         
         self.running = False
-        
+         
         ifile = open('../csvfiles/overallTrafficPerTimeSlot.csv')
         reader = csv.reader(ifile)
         self.trafficChart = []
@@ -30,7 +28,7 @@ class MyWindow(QtGui.QMainWindow):
             self.trafficChart.append(row[1])
         self.ui.chart.canvas.ax.clear()
         self.ui.chart.canvas.ax.plot(self.trafficChart)
-
+ 
         self.ui.chart.canvas.draw()
 
          
@@ -42,28 +40,28 @@ class MyWindow(QtGui.QMainWindow):
 #         site1Scene.addPath(site1Path, QtGui.QPen(QtCore.Qt.black), QtGui.QBrush(QtCore.Qt.green));
 #         site1Scene.addText("Hello, world!", QtGui.QFont("Times", 15, QtGui.QFont.Bold)); 
 #           
-        self.site1Scene = cloudBubbleScene()   
+        self.site1Scene = cloudBubbleScene()
+        self.site2Scene = cloudBubbleScene()
+        self.site3Scene = cloudBubbleScene()  
         self.ui.site1GraphicsView.setScene(self.site1Scene)
         self.ui.site1GraphicsView.show()
-        self.ui.site2GraphicsView.setScene(self.site1Scene)
+        self.ui.site2GraphicsView.setScene(self.site2Scene)
         self.ui.site2GraphicsView.show()
-        self.ui.site3GraphicsView.setScene(self.site1Scene)
+        self.ui.site3GraphicsView.setScene(self.site3Scene)
         self.ui.site3GraphicsView.show()
         self.show()
         
     def clickedPlay(self):
+
 #        self.site1Scene.keepTight() 
+        self.site1Scene.newkeepTight()
+        self.site2Scene.newkeepTight()
+        self.site3Scene.newkeepTight()
 #        self.site1Scene.animation.setbubbleloc(1000000000, QtCore.QPointF(100,-100))
 #        self.site1Scene.animation.setbubblesize(1000000000, 2.0)
-        global bubblelist,bubbleAnimationlist
-        self.site1Scene.locatefirstandsecondbubble(10,14)
-        insectionPoints=self.site1Scene.insect(bubblelist[0],bubblelist[1],17)
-        print len(insectionPoints)
-        if len(insectionPoints)>=1:
-            bubbleAnimationlist[2].setbubbleloc(1000000000,insectionPoints[0])
-            bubbleAnimationlist[2].setbubblesize(1000000000,17/bubblelist[2].radius)
+
         print "Play"
-        self.running = True
+#        self.running = True
 
         
     def clickedPause(self):
