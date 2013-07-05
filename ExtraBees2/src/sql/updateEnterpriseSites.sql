@@ -14,5 +14,5 @@ firstSeenDestIP = CASE
 	WHEN SUBSTRING(firstSeenDestIP,1, 6) LIKE '172.30' THEN 'EnterpriseSite3'
 	WHEN SUBSTRING(firstSeenDestIP,1, 3) LIKE '10.' THEN 'INTERNET'
 	ELSE 'Other'
-END WHERE ID >= 20;
+END;
 SET SQL_SAFE_UPDATES=1; #enable save updates again.
