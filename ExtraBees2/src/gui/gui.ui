@@ -30,9 +30,26 @@
        <attribute name="title">
         <string>Overview</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="3,1">
         <item>
-         <widget class="NetworkFlow" name="widget" native="true"/>
+         <widget class="NetworkFlow" name="widget" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>10</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="TrafficChartWidget" name="chart" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>10</height>
+           </size>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -162,6 +179,12 @@
    <class>NetworkFlow</class>
    <extends>QWidget</extends>
    <header>NetworkFlow</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TrafficChartWidget</class>
+   <extends>QWidget</extends>
+   <header>TrafficChartWidget</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
