@@ -15,7 +15,7 @@ class MyWindow(QtGui.QMainWindow):
         self.connect(self.ui.pauseButton, QtCore.SIGNAL("clicked()"), self.clickedPause)
         self.connect(self.ui.daySlider, QtCore.SIGNAL("valueChanged(int)"), self.dayChanged)
         self.connect(self.ui.timeSlider, QtCore.SIGNAL("valueChanged(int)"), self.timeChanged)
-        self.t = GuiThread(0.1)
+        self.t = GuiThread(1)
         self.connect(self.t, QtCore.SIGNAL('update'),self.loop)
         self.t.start()
          
@@ -54,9 +54,7 @@ class MyWindow(QtGui.QMainWindow):
     def clickedPlay(self):
 
 #        self.site1Scene.keepTight() 
-        self.site1Scene.newkeepTight()
-        self.site2Scene.newkeepTight()
-        self.site3Scene.newkeepTight()
+
 #        self.site1Scene.animation.setbubbleloc(1000000000, QtCore.QPointF(100,-100))
 #        self.site1Scene.animation.setbubblesize(1000000000, 2.0)
 
@@ -85,21 +83,23 @@ class MyWindow(QtGui.QMainWindow):
         self.updateChart(self.ui.timeSlider.value())
         
     def loop(self):
-        self.updateGraph()
-        if self.running:
-            self.updateChart(self.ui.timeSlider.value())
-            self.ui.widget.updateData(self.ui.timeSlider.value(),self.ui.daySlider.value())
-            if self.ui.timeSlider.value() == self.ui.timeSlider.maximum():
-                self.ui.timeSlider.setValue(self.ui.timeSlider.minimum())
-                if self.ui.daySlider.value()== self.ui.daySlider.maximum():
-                    self.ui.daySlider.setValue(self.ui.daySlider.minimum())
-                else:
-                    self.ui.daySlider.setValue(self.ui.daySlider.value() +1)
-            else:
-                self.ui.timeSlider.setValue(self.ui.timeSlider.value() +1)
-        else:
-            self.updateChart(self.ui.chart.canvas.xdata) 
-    
+#         self.updateGraph()
+#         if self.running:
+#             self.updateChart(self.ui.timeSlider.value())
+#             self.ui.widget.updateData(self.ui.timeSlider.value(),self.ui.daySlider.value())
+#             if self.ui.timeSlider.value() == self.ui.timeSlider.maximum():
+#                 self.ui.timeSlider.setValue(self.ui.timeSlider.minimum())
+#                 if self.ui.daySlider.value()== self.ui.daySlider.maximum():
+#                     self.ui.daySlider.setValue(self.ui.daySlider.minimum())
+#                 else:
+#                     self.ui.daySlider.setValue(self.ui.daySlider.value() +1)
+#             else:
+#                 self.ui.timeSlider.setValue(self.ui.timeSlider.value() +1)
+#         else:
+#             self.updateChart(self.ui.chart.canvas.xdata) 
+        self.site1Scene.newkeepTight()
+        self.site2Scene.newkeepTight()
+        self.site3Scene.newkeepTight()
     def updateGraph(self):
         self.ui.widget.update()
     
@@ -108,14 +108,6 @@ class MyWindow(QtGui.QMainWindow):
         self.ui.chart.canvas.ax.plot(self.trafficChart)
         self.ui.chart.canvas.ax.vlines(value,0,1100000000)
         self.ui.chart.canvas.draw()
-        
-        
-    def addAllBubbleIntoScene(self):
-        global bubblelist
-        i=0
-        for i in range(0,50):
-            self.site1Scene.addItem(bubblelist[i])
-
         
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)

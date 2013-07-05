@@ -245,7 +245,7 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
                         self.nextlocation[i] = circle1loc
                         self.nextlocation[j] = circle2loc
                         
-        print len(self.nextlocation)  
+#        print len(self.nextlocation)  
         for i in range(len(self.bubbleAnimationlist)):
             self.bubbleAnimationlist[i].setbubblesize(subduration,fakedata[i])
             self.bubbleAnimationlist[i].setbubbleloc(subduration,self.nextlocation[i]) 
