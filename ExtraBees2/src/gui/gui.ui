@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="4,1,0">
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="focusPolicy">
@@ -27,25 +27,15 @@
        <enum>Qt::LeftToRight</enum>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="overviewTab">
        <attribute name="title">
         <string>Overview</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="3,1">
+       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="3">
         <item>
          <widget class="NetworkFlow" name="widget" native="true">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>10</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="PyQtGraphTest" name="chart" native="true">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -113,56 +103,7 @@
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="sliderHBox">
-      <item>
-       <layout class="QVBoxLayout" name="labelVBox">
-        <item>
-         <widget class="QLabel" name="dayLabel">
-          <property name="text">
-           <string>Day 01</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="timeLabel">
-          <property name="text">
-           <string>00:00</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="sliderVBox">
-        <item>
-         <widget class="QSlider" name="daySlider">
-          <property name="minimum">
-           <number>1</number>
-          </property>
-          <property name="maximum">
-           <number>14</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSlider" name="timeSlider">
-          <property name="minimum">
-           <number>0</number>
-          </property>
-          <property name="maximum">
-           <number>287</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
+     <widget class="PyQtGraphTest" name="widget_2" native="true"/>
     </item>
     <item>
      <widget class="QWidget" name="buttonContainer" native="true">
@@ -195,7 +136,7 @@
      <x>0</x>
      <y>0</y>
      <width>826</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

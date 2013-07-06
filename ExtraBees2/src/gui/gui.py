@@ -11,8 +11,6 @@ class MyWindow(QtGui.QMainWindow):
         self.ui = uic.loadUi('gui.ui', self)
         self.connect(self.ui.playButton, QtCore.SIGNAL("clicked()"), self.clickedPlay)
         self.connect(self.ui.pauseButton, QtCore.SIGNAL("clicked()"), self.clickedPause)
-        self.connect(self.ui.daySlider, QtCore.SIGNAL("valueChanged(int)"), self.dayChanged)
-        self.connect(self.ui.timeSlider, QtCore.SIGNAL("valueChanged(int)"), self.timeChanged)
         self.t = GuiThread(1)
         self.connect(self.t, QtCore.SIGNAL('update'),self.loop)
         self.t.start()
