@@ -8,24 +8,39 @@ import pyqtgraph as pg
 from PyQt4 import QtGui, QtCore
 
 WEEKDAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+WEEKDAYS_SHORT = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
 
-class PyQtGraphTest(QtGui.QWidget):
+class PyQtGraphTest(QtGui.QFrame):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
+        self.setAutoFillBackground(True)
+        p = self.palette()
+        p.setColor(self.backgroundRole(), QtGui.QColor(255,255,255,255))
+        self.setPalette(p)
         
         pg.setConfigOption('background', 'w')
         pg.setConfigOption('foreground', 'k')
         
         self.layout = QtGui.QVBoxLayout()
+        self.layout.setMargin(0)
         self.setLayout(self.layout)
-        timeSlots = 12*24*7
+        self.timeSlots = 12*24*7
         self.plotWidgetTop = pg.PlotWidget(name="week")
+        self.plotWidgetTop.getPlotItem().hideAxis("bottom")
+        self.plotWidgetTop.getPlotItem().showAxis("top")
         self.plotWidgetBottom = pg.PlotWidget(name="detail")
-        dayLabels= []
+        dayLabels = []
         for i in range(0,len(WEEKDAYS)):
             dayLabels.append((i*288,WEEKDAYS[i]))
-        
-        self.plotWidgetTop.getPlotItem().getAxis("bottom").setTicks([dayLabels])
+        timeLabels = []
+        for i in range(0,self.timeSlots):
+            hour = (i/12)%24
+            minute = (i % 12)*5
+            string = str(hour).zfill(2)+":"+str(minute).zfill(2)
+            timeLabels.append((i,string))
+
+        self.plotWidgetTop.getPlotItem().getAxis("top").setTicks([dayLabels])
+        #self.plotWidgetBottom.getPlotItem().getAxis("bottom").setTicks([timeLabels])
         
         self.plotWidgetTop.getPlotItem().hideAxis("left")
         self.plotWidgetBottom.getPlotItem().hideAxis("left")
@@ -34,14 +49,14 @@ class PyQtGraphTest(QtGui.QWidget):
         self.layout.addWidget(self.plotWidgetBottom)
         
         # sample data
-        x2 = np.linspace(0, timeSlots, timeSlots)
+        x2 = np.linspace(0, self.timeSlots, self.timeSlots)
         data2 = np.sin(x2)
         #self.numberOfTimeSlots 
         
         self.plotWidgetTop.plot(data2, pen=(0,0,0,200))
         
         self.regionSelection = pg.LinearRegionItem([200,400])
-        self.regionSelection.setBounds([0,timeSlots])
+        self.regionSelection.setBounds([0,self.timeSlots])
         self.regionSelection.setBrush(QtGui.QBrush(QtGui.QColor(100,100,255,50)))
         self.regionSelection.setZValue(-10)
         
@@ -50,7 +65,7 @@ class PyQtGraphTest(QtGui.QWidget):
         
         self.line = pg.InfiniteLine(angle=90, movable=True)
         self.line.setPen(pen=(0,0,0,200))
-        self.line.setBounds([0,timeSlots])
+        self.line.setBounds([0,self.timeSlots])
         
         self.plotWidgetBottom.addItem(self.line)
         
@@ -63,7 +78,20 @@ class PyQtGraphTest(QtGui.QWidget):
         self.plotWidgetBottom.setXRange(*self.regionSelection.getRegion(), padding=0)
         linePos = QtCore.QPointF((self.regionSelection.getRegion()[0]+self.regionSelection.getRegion()[1])/2,0)
         self.line.setPos(linePos)
+        tickSpacing = (self.regionSelection.getRegion()[1]-self.regionSelection.getRegion()[0])/10
+        
+        tickLabels = []
+        for i in range(int(self.regionSelection.getRegion()[0]),int(self.regionSelection.getRegion()[1]),int(tickSpacing)):
+            tickLabels.append((i,self.timeSlotToString(i)))
+        self.plotWidgetBottom.getPlotItem().getAxis("bottom").setTicks([tickLabels])
         
     def updateRegion(self):
         self.regionSelection.setRegion(self.plotWidgetBottom.getViewBox().viewRange()[0])
+        
+    def timeSlotToString(self,timeslot):
+        day = timeslot/(12*24)
+        hour = (timeslot/12)%24
+        minute = (timeslot % 12)*5
+        return WEEKDAYS[day]+" "+str(hour).zfill(2)+":"+str(minute).zfill(2)
+        
 
