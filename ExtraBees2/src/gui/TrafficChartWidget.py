@@ -3,7 +3,7 @@ Created on 03.07.2013
 
 @author: richard
 '''
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
  
 from matplotlib.figure import Figure
@@ -29,10 +29,11 @@ class MplCanvas(FigureCanvas):
         FigureCanvas.__init__(self, self.fig)
         FigureCanvas.setSizePolicy(self, QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
+        
     def mousePressEvent(self, event):
         inv = self.ax.transData.inverted()
         self.xdata = int(inv.transform((event.x(),event.y()))[0])
-        print self.xdata
+        self.emit(QtCore.SIGNAL('chartClicked'))
 
 
 class TrafficChartWidget(QtGui.QWidget):

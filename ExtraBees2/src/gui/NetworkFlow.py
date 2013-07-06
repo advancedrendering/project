@@ -4,7 +4,6 @@ Created on 2013-6-18
 @author: Richard
 '''
 import math
-import random
 from SiteNode import SiteNode
 from PyQt4 import QtGui, QtCore, QtSql
 
@@ -31,8 +30,7 @@ class NetworkFlow(QtGui.QWidget):
 
     def initNodes(self,width,height):
         numberOfSites = 3
-        lineHealthMin = 2
-        lineHealthMax = 10
+
         nodeNames = ["Internet", "Site 1", "Site 2", "Site 3"]
         nodeWidth = NODE_WIDTH_SCALE*width
         nodeHeight = NODE_HEIGHT_SCALE*width
@@ -136,7 +134,7 @@ class NetworkFlow(QtGui.QWidget):
         '''
 
     def drawEdges(self,paint):
-         # quick 'n' dirty implementation >temporarily< 
+        # quick 'n' dirty implementation >temporarily< 
         if (self.lineThickness[0] != 0):
             paint.setPen(QtGui.QPen(QtCore.Qt.black , self.lineThickness[0] , QtCore.Qt.SolidLine))
             paint.drawLine(self.nodeList[0].pos,self.nodeList[1].pos)

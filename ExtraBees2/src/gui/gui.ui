@@ -45,7 +45,7 @@
          </widget>
         </item>
         <item>
-         <widget class="TrafficChartWidget" name="chart" native="true">
+         <widget class="PyQtGraphTest" name="chart" native="true">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -209,9 +209,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>TrafficChartWidget</class>
+   <class>PyQtGraphTest</class>
    <extends>QWidget</extends>
-   <header>TrafficChartWidget</header>
+   <header>PyQtGraphTest</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -1,10 +1,8 @@
 import sys
 import csv
-import random
 from PyQt4 import QtGui, uic, QtCore 
 from cloudBubble.cloudBubbleScene import cloudBubbleScene
 #from scipy.sparse.linalg.dsolve.umfpack.umfpack import updateDictWithVars
-from cloudBubble.atomicBubble import atomicBubble
 from GuiThread import GuiThread
 
 class MyWindow(QtGui.QMainWindow):
@@ -20,16 +18,16 @@ class MyWindow(QtGui.QMainWindow):
         self.t.start()
          
         self.running = False
-         
-        ifile = open('../csvfiles/overallTrafficPerTimeSlot.csv')
-        reader = csv.reader(ifile)
-        self.trafficChart = []
-        for row in reader:
-            self.trafficChart.append(row[1])
-        self.ui.chart.canvas.ax.clear()
-        self.ui.chart.canvas.ax.plot(self.trafficChart)
+        
+        #ifile = open('../csvfiles/overallTrafficPerTimeSlot.csv')
+        #reader = csv.reader(ifile)
+        #self.trafficChart = []
+        #for row in reader:
+        #    self.trafficChart.append(row[1])
+        #self.ui.chart.canvas.ax.clear()
+        #self.ui.chart.canvas.ax.plot(self.trafficChart)
  
-        self.ui.chart.canvas.draw()
+        #self.ui.chart.canvas.draw()
 
          
 #Add hello world to scene, just for testing
@@ -44,11 +42,8 @@ class MyWindow(QtGui.QMainWindow):
         self.site2Scene = cloudBubbleScene()
         self.site3Scene = cloudBubbleScene()  
         self.ui.site1GraphicsView.setScene(self.site1Scene)
-        self.ui.site1GraphicsView.show()
         self.ui.site2GraphicsView.setScene(self.site2Scene)
-        self.ui.site2GraphicsView.show()
         self.ui.site3GraphicsView.setScene(self.site3Scene)
-        self.ui.site3GraphicsView.show()
         self.show()
         
     def clickedPlay(self):
@@ -59,7 +54,7 @@ class MyWindow(QtGui.QMainWindow):
 #        self.site1Scene.animation.setbubblesize(1000000000, 2.0)
 
         print "Play"
-#        self.running = True
+        self.running = True
 
         
     def clickedPause(self):
@@ -71,7 +66,6 @@ class MyWindow(QtGui.QMainWindow):
         string = "Day "+ str(day).zfill(2)
         self.ui.dayLabel.setText(string)
         self.ui.widget.updateData(self.ui.timeSlider.value(),self.ui.daySlider.value())
-        self.updateChart(self.ui.timeSlider.value())
         
     def timeChanged(self):
         timeSlot = self.ui.timeSlider.value()
@@ -80,34 +74,31 @@ class MyWindow(QtGui.QMainWindow):
         string = str(hour).zfill(2)+":"+str(minute).zfill(2)
         self.ui.timeLabel.setText(string)
         self.ui.widget.updateData(self.ui.timeSlider.value(),self.ui.daySlider.value())
-        self.updateChart(self.ui.timeSlider.value())
         
     def loop(self):
-#         self.updateGraph()
-#         if self.running:
-#             self.updateChart(self.ui.timeSlider.value())
-#             self.ui.widget.updateData(self.ui.timeSlider.value(),self.ui.daySlider.value())
-#             if self.ui.timeSlider.value() == self.ui.timeSlider.maximum():
-#                 self.ui.timeSlider.setValue(self.ui.timeSlider.minimum())
-#                 if self.ui.daySlider.value()== self.ui.daySlider.maximum():
-#                     self.ui.daySlider.setValue(self.ui.daySlider.minimum())
-#                 else:
-#                     self.ui.daySlider.setValue(self.ui.daySlider.value() +1)
-#             else:
-#                 self.ui.timeSlider.setValue(self.ui.timeSlider.value() +1)
-#         else:
-#             self.updateChart(self.ui.chart.canvas.xdata) 
-        self.site1Scene.newkeepTight()
-        self.site2Scene.newkeepTight()
-        self.site3Scene.newkeepTight()
+        self.updateGraph()
+        if self.running:
+            if (self.tabWidget.currentIndex()==1): 
+                self.site1Scene.newkeepTight()
+            if (self.tabWidget.currentIndex()==2): 
+                self.site2Scene.newkeepTight()
+            if (self.tabWidget.currentIndex()==3):
+                self.site3Scene.newkeepTight()
+            self.ui.widget.updateData(self.ui.timeSlider.value(),self.ui.daySlider.value())
+            if self.ui.timeSlider.value() == self.ui.timeSlider.maximum():
+                self.ui.timeSlider.setValue(self.ui.timeSlider.minimum())
+                if self.ui.daySlider.value()== self.ui.daySlider.maximum():
+                    self.ui.daySlider.setValue(self.ui.daySlider.minimum())
+                else:
+                    self.ui.daySlider.setValue(self.ui.daySlider.value() +1)
+            else:
+                self.ui.timeSlider.setValue(self.ui.timeSlider.value() +1)
+
     def updateGraph(self):
         self.ui.widget.update()
-    
-    def updateChart(self,value):
-        self.ui.chart.canvas.ax.clear()
-        self.ui.chart.canvas.ax.plot(self.trafficChart)
-        self.ui.chart.canvas.ax.vlines(value,0,1100000000)
-        self.ui.chart.canvas.draw()
+            
+    #def chartClicked(self):
+        #self.ui.timeSlider.setValue()
         
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
