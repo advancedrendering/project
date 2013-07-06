@@ -1,13 +1,17 @@
 import sys
 import csv
-from PyQt4 import QtGui, uic, QtCore 
+from PyQt4 import QtGui, uic, QtCore, QtSql
 from cloudBubble.cloudBubbleScene import cloudBubbleScene
 #from scipy.sparse.linalg.dsolve.umfpack.umfpack import updateDictWithVars
 from GuiThread import GuiThread
 
-class MyWindow(QtGui.QMainWindow):
+from SlaveClass import SlaveClass
+
+class MyWindow(QtGui.QMainWindow, SlaveClass):
     def __init__(self, parent = None):
         super(MyWindow, self).__init__()
+        SlaveClass.__init__(self)
+        
         self.ui = uic.loadUi('gui.ui', self)
         self.connect(self.ui.playButton, QtCore.SIGNAL("clicked()"), self.clickedPlay)
         self.connect(self.ui.pauseButton, QtCore.SIGNAL("clicked()"), self.clickedPause)
@@ -19,6 +23,7 @@ class MyWindow(QtGui.QMainWindow):
          
         self.running = False
         
+        
         #ifile = open('../csvfiles/overallTrafficPerTimeSlot.csv')
         #reader = csv.reader(ifile)
         #self.trafficChart = []
@@ -29,7 +34,6 @@ class MyWindow(QtGui.QMainWindow):
  
         #self.ui.chart.canvas.draw()
 
-         
 #Add hello world to scene, just for testing
 #         site1Scene = QtGui.QGraphicsScene()    
 #         site1Path = QtGui.QPainterPath()

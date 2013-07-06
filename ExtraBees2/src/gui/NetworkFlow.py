@@ -6,6 +6,7 @@ Created on 2013-6-18
 import math
 from SiteNode import SiteNode
 from PyQt4 import QtGui, QtCore, QtSql
+import gui
 
 CENTER_X_SCALE = 0.5
 CENTER_Y_SCALE = 0.6
@@ -18,12 +19,7 @@ class NetworkFlow(QtGui.QWidget):
         
         self.lineThickness = [0,0,0,0,0,0] # initial
         self.health = [[0,0,0],[1,2,1],[4,1,2],[5,6,7]]
-
-        self.db = QtSql.QSqlDatabase.addDatabase("QMYSQL")
-        self.db.setDatabaseName("datavis")
-        self.db.setUserName("root")    
-        self.db.setPassword("datavis")
-        self.db.open()
+        
         self.communicationQuery = QtSql.QSqlQuery()
         self.communicationQuery.prepare("Select if(test.srcESite = :site, test.destESite, test.srcESite) as dest, sum(test.traffic) from (SELECT srcEsite, destESite,SUM(SumTotalBytesSrc + SumTotalBytesDest) as traffic FROM datavis.macro_networkflow WHERE Starttime = :time AND NOT (srcESite = destESite) GROUP BY srcESite, destESite HAVING srcESite = :site OR destESite = :site) as test group by dest;")
         self.initNodes(784,439)
@@ -32,6 +28,7 @@ class NetworkFlow(QtGui.QWidget):
         numberOfSites = 3
 
         nodeNames = ["Internet", "Site 1", "Site 2", "Site 3"]
+        nodeDBName = ["INTERNET", "EnterpriseSite1", "EnterpriseSite2", "EnterpriseSite3"]
         nodeWidth = NODE_WIDTH_SCALE*width
         nodeHeight = NODE_HEIGHT_SCALE*width
         
@@ -44,7 +41,7 @@ class NetworkFlow(QtGui.QWidget):
             point = QtCore.QPointF(nodeRadius *math.cos(math.radians(startAngle)),nodeRadius * math.sin(math.radians(startAngle)))
             nodePositions.append(point)
             startAngle = startAngle + angleStep
-            node = node = SiteNode(nodePositions[i],width*CENTER_X_SCALE,height*CENTER_Y_SCALE,nodeWidth,nodeHeight,nodeNames[i],self.health[i])
+            node = node = SiteNode(nodePositions[i],width*CENTER_X_SCALE,height*CENTER_Y_SCALE,nodeWidth,nodeHeight,nodeNames[i],self.health[i], nodeDBName[i])
             self.nodeList.append(node)
         
     def paintEvent(self, event):
