@@ -1,6 +1,6 @@
 delimiter $$
 
-CREATE TABLE networkflow (
+CREATE TABLE networkflow0 (
   ID int(11) NOT NULL AUTO_INCREMENT,
   TimeSeconds double DEFAULT NULL,
   parsedDate datetime DEFAULT NULL,
