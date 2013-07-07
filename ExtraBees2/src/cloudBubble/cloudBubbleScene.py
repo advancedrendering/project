@@ -147,6 +147,8 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
         for eachbubble in self.bubblelist:
             self.addItem(eachbubble)
         self.updatefactory = cloudbubbledata(sitenumber)
+
+
     '''
     Get All bubbles Current Location .
     @return: List of QtCore.QPointF
@@ -216,7 +218,7 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
         namelist = []
         radiuslist = []
         healthlist = []
-        print len(trafficlist)
+        
         for p in range(len(trafficlist)):
             namelist.append(trafficlist[p][0])
             radiuslist.append(trafficlist[p][1])
@@ -226,6 +228,12 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
                 healthlist.append(1)
              
         subduration = 5000000
+        if len(trafficlist)<50:
+            restnumber =50-len(trafficlist)
+            for w in range(restnumber):
+                namelist.append("No enough machine")
+                radiuslist.append(0)
+                healthlist.append(1)
         for k in range(10):
             for h in range(len(self.bubblelist)):
                 self.bubblelist[h].setNextRadius(radiuslist[h])
