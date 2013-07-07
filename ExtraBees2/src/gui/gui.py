@@ -85,10 +85,13 @@ class MyWindow(QtGui.QMainWindow, SlaveClass):
     def dateTimeChanged(self):
         date = self.ui.dateTimeEdit.dateTime().date()
         dayOfWeek = (date.dayOfWeek())
-        date2 = date.addDays(-dayOfWeek+1)
-        self.manager.CW = date2
+        old_week_num = self.manager.CW.weekNumber()
+        self.manager.CW = date.addDays(-dayOfWeek+1)
+        if self.manager.CW.weekNumber() != old_week_num:
+            self.ui.chart.updateData()
         self.manager.CT = deepcopy(self.ui.dateTimeEdit.dateTime())
         self.ui.chart.setLinePos()
+        
     #def chartClicked(self):
         #self.ui.timeSlider.setValue()
         

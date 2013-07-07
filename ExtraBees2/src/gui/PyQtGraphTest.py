@@ -64,7 +64,7 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
         data2 = np.sin(x2)
         #self.numberOfTimeSlots 
         
-        self.plotWidgetTop.plot(self.data, pen=(0,0,0,200))
+        self.top_data_plot = self.plotWidgetTop.plot(self.data, pen=(0,0,0,200))
         
         self.regionSelection = pg.LinearRegionItem([200,400])
         self.regionSelection.setBounds([0,self.timeSlots])
@@ -72,7 +72,7 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
         self.regionSelection.setZValue(-10)
         
         self.plotWidgetTop.addItem(self.regionSelection)
-        self.plotWidgetBottom.plot(self.data, pen=(0,0,0,200))
+        self.bottom_data_plot = self.plotWidgetBottom.plot(self.data, pen=(0,0,0,200))
         
         self.line = pg.InfiniteLine(angle=90, movable=True)
         self.line.setPen(pen=(0,0,0,200))
@@ -90,6 +90,12 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
         
         
     def updateData(self):
+        
+        self.plotWidgetTop.removeItem(self.top_data_plot)
+        self.plotWidgetBottom.removeItem(self.bottom_data_plot)
+        
+        self.data = np.zeros(12 * 24 * 7)
+        
         loc_datetime = QtCore.QDateTime(self.manager.CW, QtCore.QTime(0,0,0))
         self.communicationQuery.bindValue(":starttime1", loc_datetime)
         self.communicationQuery.bindValue(":starttime2",loc_datetime)
@@ -103,11 +109,10 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
             hour_minutes = loc_datetime.time().hour() * 12
             minute = loc_datetime.time().minute() / 5
             loc_index = day_of_week_minutes + hour_minutes + minute
-            print int(self.communicationQuery.value(1).toString()) + 1
             self.data[loc_index] = math.log(int(self.communicationQuery.value(1).toString()) + 1)
-        self.plotWidgetTop.plot(self.data, pen=(0,0,0,200))
-        self.plotWidgetBottom.plot(self.data, pen=(0,0,0,200))
-        
+            
+        self.top_data_plot = self.plotWidgetTop.plot(self.data, pen=(0,0,0,200))
+        self.bottom_data_plot = self.plotWidgetBottom.plot(self.data, pen=(0,0,0,200))
         
         
     def updatePlot(self):
