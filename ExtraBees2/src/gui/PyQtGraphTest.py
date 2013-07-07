@@ -73,7 +73,7 @@ class PyQtGraphTest(QtGui.QFrame,SlaveClass):
         
         self.regionSelection.sigRegionChanged.connect(self.updatePlot)
         self.plotWidgetBottom.sigXRangeChanged.connect(self.updateRegion)
-        self.line.sigPositionChangeFinished.connect(self.setTimeSlot)
+        self.line.sigDragged.connect(self.setTimeSlot)
         
         self.updatePlot()
         
@@ -82,6 +82,8 @@ class PyQtGraphTest(QtGui.QFrame,SlaveClass):
         linePos = QtCore.QPointF((self.regionSelection.getRegion()[0]+self.regionSelection.getRegion()[1])/2,0)
         self.line.setPos(linePos)
         tickSpacing = (self.regionSelection.getRegion()[1]-self.regionSelection.getRegion()[0])/10
+        if tickSpacing < 1.0:
+            tickSpacing = 1
         
         tickLabels = []
         for i in range(int(self.regionSelection.getRegion()[0]),int(self.regionSelection.getRegion()[1]),int(tickSpacing)):
@@ -91,6 +93,7 @@ class PyQtGraphTest(QtGui.QFrame,SlaveClass):
         
     def updateRegion(self):
         self.regionSelection.setRegion(self.plotWidgetBottom.getViewBox().viewRange()[0])
+        self.setTimeSlot()
         
     def timeSlotToString(self,timeslot):
         day = timeslot/(12*24)
@@ -105,8 +108,9 @@ class PyQtGraphTest(QtGui.QFrame,SlaveClass):
         year = self.manager.CW.year()
         hour = (timeslot/12)%24
         minute = (int(timeslot) % 12)*5
-        print self.manager.CT  
-        print year, month, day, hour, minute
+#       print self.manager.CT  
+#       print year, month, day, hour, minute
         self.manager.CT = QtCore.QDateTime(QtCore.QDate(year, month, day), QtCore.QTime(hour,minute,0))
-        print self.manager.CT        
+#       print self.manager.CT        
+        self.emit(QtCore.SIGNAL('update'))
 

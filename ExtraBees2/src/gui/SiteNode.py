@@ -28,6 +28,7 @@ class SiteNode(SlaveClass):
         self.maxDiskUsagePercent = 1
         self.avgLoadPercent = 2
         self.maxLoadPercent = 3
+        print "init!"
         
     def mouseOver(self,event):
         xDistance = abs(self.pos.x()-(event.x()-self.xC))
@@ -72,10 +73,10 @@ class SiteNode(SlaveClass):
         innerRadius = height *0.8   
         outerRadius = height *0.9
         for i in range(0, numberOfHealthStatuses):
-            painter.setPen(QtGui.QPen(QtGui.QColor(113,187, 194, 128) , width*0.25 , QtCore.Qt.SolidLine))
+            painter.setPen(QtGui.QPen(QtGui.QColor(113,187, 194, 255) , width*0.25 , QtCore.Qt.SolidLine))
             if name != "Internet" and health[i] != 0:
                 painter.drawLine(QtCore.QPointF(innerRadius *math.cos(math.radians(angle)),innerRadius * math.sin(math.radians(angle))),
-                             QtCore.QPointF((outerRadius+(health[i] / 100.0)) * math.cos(math.radians(angle)),(outerRadius+(health[i] / 100.0)) * math.sin(math.radians(angle))))
+                             QtCore.QPointF((outerRadius+(health[i] / 10.0)) * math.cos(math.radians(angle)),(outerRadius+(health[i] / 10.0)) * math.sin(math.radians(angle))))
             angle = angle + angleStep
         painter.setPen(QtGui.QPen(QtCore.Qt.black , 1 , QtCore.Qt.SolidLine))
         painter.drawEllipse(-width/2, -height/2, width, height)

@@ -6,46 +6,59 @@ Created on 2013-6-18
 import math
 from SiteNode import SiteNode
 from PyQt4 import QtGui, QtCore, QtSql
-import gui
+from gui import SlaveClass
 
 CENTER_X_SCALE = 0.5
 CENTER_Y_SCALE = 0.6
 NODE_WIDTH_SCALE = 0.08
 NODE_HEIGHT_SCALE = 0.08
 
-class NetworkFlow(QtGui.QWidget):
+class NetworkFlow(QtGui.QWidget, SlaveClass):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
-        
+        SlaveClass.__init__(self)        
         self.lineThickness = [0,0,0,0,0,0] # initial
         self.health = [[0,0,0],[1,2,1],[4,1,2],[5,6,7]]
         
         self.communicationQuery = QtSql.QSqlQuery()
         self.communicationQuery.prepare("Select if(test.srcESite = :site, test.destESite, test.srcESite) as dest, sum(test.traffic) from (SELECT srcEsite, destESite,SUM(SumTotalBytesSrc + SumTotalBytesDest) as traffic FROM datavis.macro_networkflow WHERE Starttime = :time AND NOT (srcESite = destESite) GROUP BY srcESite, destESite HAVING srcESite = :site OR destESite = :site) as test group by dest;")
+        
+        self.numberOfSites = 3        
+        self.startAngle = -90
+        self.angleStep = 360 / self.numberOfSites 
+             
+        
+        self.nodeList = []
         self.initNodes(784,439)
 
     def initNodes(self,width,height):
-        numberOfSites = 3
-
         nodeNames = ["Internet", "Site 1", "Site 2", "Site 3"]
         nodeDBName = ["INTERNET", "EnterpriseSite1", "EnterpriseSite2", "EnterpriseSite3"]
         nodeWidth = NODE_WIDTH_SCALE*width
         nodeHeight = NODE_HEIGHT_SCALE*width
         
-        startAngle = -90
-        angleStep = 360 / numberOfSites 
         nodeRadius = height *0.4     
         nodePositions = [QtCore.QPoint(0,0)]
-        self.nodeList = []
         for i in range(0,len(nodeNames)):
-            point = QtCore.QPointF(nodeRadius *math.cos(math.radians(startAngle)),nodeRadius * math.sin(math.radians(startAngle)))
+            point = QtCore.QPointF(nodeRadius *math.cos(math.radians(self.startAngle)),nodeRadius * math.sin(math.radians(self.startAngle)))
             nodePositions.append(point)
-            startAngle = startAngle + angleStep
-            node = node = SiteNode(nodePositions[i],width*CENTER_X_SCALE,height*CENTER_Y_SCALE,nodeWidth,nodeHeight,nodeNames[i],self.health[i], nodeDBName[i])
+            self.startAngle = self.startAngle + self.angleStep
+            node = SiteNode(nodePositions[i],width*CENTER_X_SCALE,height*CENTER_Y_SCALE,nodeWidth,nodeHeight,nodeNames[i],self.health[i], nodeDBName[i])
             self.nodeList.append(node)
+            
+    def updateNodes(self,width,height):
+        nodeRadius = height *0.4
+        for i in range(0,len(self.nodeList)):
+            if not (i == 0):
+                point = QtCore.QPointF(nodeRadius *math.cos(math.radians(self.startAngle)),nodeRadius * math.sin(math.radians(self.startAngle)))
+                self.nodeList[i].pos = point
+            self.nodeList[i].w = width*NODE_WIDTH_SCALE
+            self.nodeList[i].h = width*NODE_HEIGHT_SCALE
+            self.startAngle = self.startAngle + self.angleStep
         
     def paintEvent(self, event):
-        self.initNodes(self.width(),self.height())
+        self.updateData()
+        self.updateNodes(self.width(),self.height())
         paint = QtGui.QPainter()
         paint.begin(self)
         paint.setRenderHint(QtGui.QPainter.Antialiasing, True)
@@ -68,13 +81,9 @@ class NetworkFlow(QtGui.QWidget):
 
         paint.end()
         
-    def updateData(self,timeSlot,day):
-        hour = timeSlot/12
-        minute = (timeSlot % 12)*5
-        timeString = str(hour).zfill(2)+":"+str(minute).zfill(2)+":00"
-        timeDate = "2013-04-"+str(day).zfill(2)+" "+timeString
-        
-        self.communicationQuery.bindValue(":time", timeDate)
+    def updateData(self):
+                
+        self.communicationQuery.bindValue(":time", self.manager.CT)
         #print timeDate
         self.lineThickness = [0,0,0,0,0,0]
         self.communicationQuery.bindValue(":site", "INTERNET")
@@ -119,7 +128,7 @@ class NetworkFlow(QtGui.QWidget):
         
         #print self.lineThickness
         for i in range(0,len(self.lineThickness)):
-            self.lineThickness[i] = self.lineThickness[i] * 0.000001 
+            self.lineThickness[i] = math.log(self.lineThickness[i]+1) 
         #print self.lineThickness  
      
                 
