@@ -7,6 +7,7 @@ import numpy as np
 import pyqtgraph as pg
 from PyQt4 import QtGui, QtCore
 from gui import SlaveClass
+from copy import deepcopy
 
 WEEKDAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
 WEEKDAYS_SHORT = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
@@ -32,8 +33,8 @@ class PyQtGraphTest(QtGui.QFrame,SlaveClass):
         self.plotWidgetTop.getPlotItem().showAxis("top")
         self.plotWidgetBottom = pg.PlotWidget(name="detail")
         dayLabels = []
-        for i in range(0,len(WEEKDAYS)):
-            dayLabels.append((i*288,WEEKDAYS[i]))
+        for i in range(0,len(WEEKDAYS_SHORT)):
+            dayLabels.append((i*288,WEEKDAYS_SHORT[i]))
         timeLabels = []
         for i in range(0,self.timeSlots):
             hour = (i/12)%24
@@ -73,7 +74,7 @@ class PyQtGraphTest(QtGui.QFrame,SlaveClass):
         
         self.regionSelection.sigRegionChanged.connect(self.updatePlot)
         self.plotWidgetBottom.sigXRangeChanged.connect(self.updateRegion)
-        self.line.sigDragged.connect(self.setTimeSlot)
+        self.line.sigDragged.connect(self.setDateTime)
         
         self.updatePlot()
         
@@ -89,28 +90,34 @@ class PyQtGraphTest(QtGui.QFrame,SlaveClass):
         for i in range(int(self.regionSelection.getRegion()[0]),int(self.regionSelection.getRegion()[1]),int(tickSpacing)):
             tickLabels.append((i,self.timeSlotToString(i)))
         self.plotWidgetBottom.getPlotItem().getAxis("bottom").setTicks([tickLabels])
-        self.setTimeSlot()
+        self.setDateTime()
         
     def updateRegion(self):
         self.regionSelection.setRegion(self.plotWidgetBottom.getViewBox().viewRange()[0])
-        self.setTimeSlot()
+        self.setDateTime()
         
     def timeSlotToString(self,timeslot):
         day = timeslot/(12*24)
         hour = (timeslot/12)%24
         minute = (timeslot % 12)*5
-        return WEEKDAYS[day]+" "+str(hour).zfill(2)+":"+str(minute).zfill(2)
+        return WEEKDAYS_SHORT[day]+" "+str(hour).zfill(2)+":"+str(minute).zfill(2)
+
+    def setLinePos(self):
+        dayOfWeek = deepcopy(self.manager.CT.date().dayOfWeek()-1)
+        day = dayOfWeek*(24*12)
+        hour = deepcopy(self.manager.CT.time().hour() *12)
+        minute = deepcopy(self.manager.CT.time().minute()/5)
+        pos = int(day)+int(hour)+int(minute)
+        self.regionSelection.setRegion([pos-144,pos+144])
     
-    def setTimeSlot(self):
+    def setDateTime(self):
         timeslot = self.line.getPos()[0]
-        day = self.manager.CW.day() +(timeslot/(12*24)) 
+        day = self.manager.CW.day() + int(timeslot/(12*24)) 
         month = self.manager.CW.month()
         year = self.manager.CW.year()
-        hour = (timeslot/12)%24
-        minute = (int(timeslot) % 12)*5
+        hour = int((timeslot/12)%24)
+        minute = int((timeslot) % 12)*5
 #       print self.manager.CT  
-#       print year, month, day, hour, minute
         self.manager.CT = QtCore.QDateTime(QtCore.QDate(year, month, day), QtCore.QTime(hour,minute,0))
-#       print self.manager.CT        
         self.emit(QtCore.SIGNAL('update'))
 

@@ -28,7 +28,6 @@ class SiteNode(SlaveClass):
         self.maxDiskUsagePercent = 1
         self.avgLoadPercent = 2
         self.maxLoadPercent = 3
-        print "init!"
         
     def mouseOver(self,event):
         xDistance = abs(self.pos.x()-(event.x()-self.xC))
@@ -62,7 +61,6 @@ class SiteNode(SlaveClass):
             loc_health.append(self.communicationQuery.value(self.avgLoadPercent).toInt()[0])
             loc_health.append(self.communicationQuery.value(self.maxLoadPercent).toInt()[0])
         
-        print "here", self.manager.CT, loc_health
         self.drawEllipticNode(painter, self.pos, self.w, self.h, self.name, loc_health, 120)
         
 
