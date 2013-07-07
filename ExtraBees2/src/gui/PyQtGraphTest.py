@@ -29,8 +29,8 @@ class PyQtGraphTest(QtGui.QFrame,SlaveClass):
         self.communicationQuery.prepare("""SELECT Starttime, (SumTotalBytesSrc + SumTotalBytesDest), (SumPacketSrc + SumPacketDest), SumConnections FROM datavis.macro_networkflow WHERE Starttime >= :starttime1
 AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
         
-        self.health_com_query = QtSql.QSqlQuery()
-        self.health_com_query.prepare("")
+        self.health_err_com_query = QtSql.QSqlQuery()
+        self.health_err_com_query.prepare("""SELECT receivedDate, COUNT(*) FROM datavis.healthserverbyesites WHERE statusVal = 3 GROUP BY receivedDate;""")
                 
         pg.setConfigOption('background', 'w')
         pg.setConfigOption('foreground', 'k')
@@ -121,8 +121,8 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
                 self.data[loc_index] = math.log(float(self.communicationQuery.value(2).toString()) / 300.0 + 1)
             elif (self.manager.NetMode == self.manager.NUM_CONNECTIONS):
                 self.data[loc_index] = math.log(float(self.communicationQuery.value(3).toString()) + 1)
-        self.top_data_plot = self.plotWidgetTop.plot(self.data,  pen=(0,0,0,200), fillLevel = 0.1,  fillBrush = QtGui.QBrush(QtGui.QColor(200,200,200, 100)))
-        self.bottom_data_plot = self.plotWidgetBottom.plot(self.data, pen=(0,0,0,200), fillLevel = 0.1,  fillBrush = QtGui.QBrush(QtGui.QColor(200,200,200, 100)))
+        self.top_data_plot = self.plotWidgetTop.plot(self.data,  pen=(0,0,0,200), fillLevel = 0.0,  fillBrush = QtGui.QBrush(QtGui.QColor(200,200,200, 100)))
+        self.bottom_data_plot = self.plotWidgetBottom.plot(self.data, pen=(0,0,0,200), fillLevel = 0.0,  fillBrush = QtGui.QBrush(QtGui.QColor(200,200,200, 100)))
         
         
     def updatePlot(self):
