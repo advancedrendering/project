@@ -21,8 +21,8 @@ class ManagerClass(object):
         self.INTERVAL = 0
         self.DB = QtSql.QSqlDatabase.addDatabase("QMYSQL")
         self.DB.setDatabaseName("datavis")
-        self.DB.setUserName("root")    
-        self.DB.setPassword("datavis")
+        self.DB.setUserName("datavis")    
+        self.DB.setPassword("DataVis")
         self.DB.open()
         
         self.TOTALBYTES = 0
@@ -34,8 +34,7 @@ class ManagerClass(object):
         self.NUM_WARNINGS = 6
         self.NUM_SERVER_NOT_AVAILABLE = 7 
         
-        #self.NetMode = self.TOTALBYTES
-        self.NetMode = self.NUM_ERRORS
+        self.NetMode = self.TOTALBYTES
         
     
         
