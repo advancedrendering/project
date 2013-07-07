@@ -41,8 +41,10 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
         self.plotWidgetTop.getPlotItem().showAxis("top")
         self.plotWidgetBottom = pg.PlotWidget(name="detail")
         dayLabels = []
+        date = self.manager.CT.date()
         for i in range(0,len(WEEKDAYS_SHORT)):
-            dayLabels.append((i*288,WEEKDAYS_SHORT[i]))
+            dayLabels.append((i*288,WEEKDAYS_SHORT[i]+" "+date.toString("MM-dd")))
+            date = date.addDays(1)
         timeLabels = []
         for i in range(0,self.timeSlots):
             hour = (i/12)%24
@@ -58,12 +60,7 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
         
         self.layout.addWidget(self.plotWidgetTop)
         self.layout.addWidget(self.plotWidgetBottom)
-        
-        # sample data
-        x2 = np.linspace(0, self.timeSlots, self.timeSlots)
-        data2 = np.sin(x2)
-        #self.numberOfTimeSlots 
-        
+                
         self.top_data_plot = self.plotWidgetTop.plot(self.data, pen=(0,0,0,200))
         
         self.regionSelection = pg.LinearRegionItem([200,400])
@@ -75,7 +72,7 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
         self.bottom_data_plot = self.plotWidgetBottom.plot(self.data, pen=(0,0,0,200))
         
         self.line = pg.InfiniteLine(angle=90, movable=True)
-        self.line.setPen(pen=(0,0,0,200))
+        self.line.setPen(pen=(255,0,0,200))
         self.line.setBounds([0,self.timeSlots])
         
         self.plotWidgetBottom.addItem(self.line)
@@ -84,10 +81,8 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
         self.plotWidgetBottom.sigXRangeChanged.connect(self.updateRegion)
         self.line.sigDragged.connect(self.setDateTime)
         
-        self.updateData()
         self.updatePlot()
-        
-        
+        self.updateData()
         
     def updateData(self):
         
@@ -114,7 +109,6 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
         self.top_data_plot = self.plotWidgetTop.plot(self.data, pen=(0,0,0,200))
         self.bottom_data_plot = self.plotWidgetBottom.plot(self.data, pen=(0,0,0,200))
         
-        
     def updatePlot(self):
         self.plotWidgetBottom.setXRange(*self.regionSelection.getRegion(), padding=0)
         linePos = QtCore.QPointF((self.regionSelection.getRegion()[0]+self.regionSelection.getRegion()[1])/2,0)
@@ -122,7 +116,6 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
         tickSpacing = (self.regionSelection.getRegion()[1]-self.regionSelection.getRegion()[0])/10
         if tickSpacing < 1.0:
             tickSpacing = 1
-        
         tickLabels = []
         for i in range(int(self.regionSelection.getRegion()[0]),int(self.regionSelection.getRegion()[1]),int(tickSpacing)):
             tickLabels.append((i,self.timeSlotToString(i)))
