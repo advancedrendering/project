@@ -7,7 +7,7 @@ Created on 2013-July-7th
 import math
 from PyQt4 import QtGui, QtCore, QtSql
 from locale import str
-from gui.SlaveClass import SlaveClass
+from SlaveClass import SlaveClass
 
 class cloudbubbledata(SlaveClass):
     '''
@@ -20,14 +20,14 @@ class cloudbubbledata(SlaveClass):
         Constructor
         '''
         SlaveClass.__init__(self)  
-        self.sitenumber = sitenumber
-        self.communicationQuery =QtSql.QSqlQuery()
-        self.healthQuery = QtSql.QSqlQuery()
-        self.trafficdict = {}
-        self.averageValue=self.getAverageValue()
-        self.basenumber = self.averageValue**(1.0/20)
-        self.healthdict = {}
-        self.prepareSiteQuery()
+#         self.sitenumber = sitenumber
+#         self.communicationQuery =QtSql.QSqlQuery()
+#         self.healthQuery = QtSql.QSqlQuery()
+#         self.trafficdict = {}
+#         self.averageValue=self.getAverageValue()
+#         self.basenumber = self.averageValue**(1.0/20)
+#         self.healthdict = {}
+#         self.prepareSiteQuery()
 #        self.communicationQuery.prepare("Select * from networkflow.site1networkflow where Starttime=:time Order By Trafficload LIMIT 50 ")
 
         '''
