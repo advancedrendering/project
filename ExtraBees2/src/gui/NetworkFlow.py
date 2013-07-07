@@ -13,6 +13,7 @@ CENTER_X_SCALE = 0.5
 CENTER_Y_SCALE = 0.6
 NODE_WIDTH_SCALE = 0.08
 NODE_HEIGHT_SCALE = 0.08
+COLOR_MAP_STEPS = 15.0
 
 class NetworkFlow(QtGui.QWidget, SlaveClass):
     def __init__(self, parent=None):
@@ -84,6 +85,7 @@ class NetworkFlow(QtGui.QWidget, SlaveClass):
         
         for n in self.nodeList:
             n.draw(paint)
+        self.drawHeatMap(paint)
 
         paint.end()
         
@@ -134,7 +136,7 @@ class NetworkFlow(QtGui.QWidget, SlaveClass):
         
         #print self.lineThickness
         for i in range(0,len(self.lineThickness)):
-            self.lineThickness[i] = math.log(self.lineThickness[i]+1) 
+            self.lineThickness[i] = math.log((self.lineThickness[i]/1024)+1)
         #print self.lineThickness  
      
                 
@@ -148,22 +150,22 @@ class NetworkFlow(QtGui.QWidget, SlaveClass):
     def drawEdges(self,paint):
         # quick 'n' dirty implementation >temporarily< 
         if (self.lineThickness[0] != 0):
-            paint.setPen(QtGui.QPen(QtCore.Qt.black , self.lineThickness[0] , QtCore.Qt.SolidLine))
+            paint.setPen(QtGui.QPen(self.getEdgeColor(self.lineThickness[0]) , self.lineThickness[0] , QtCore.Qt.SolidLine))
             paint.drawLine(self.nodeList[0].pos,self.nodeList[1].pos)
         if (self.lineThickness[1] != 0):
-            paint.setPen(QtGui.QPen(QtCore.Qt.black , self.lineThickness[1] , QtCore.Qt.SolidLine))
+            paint.setPen(QtGui.QPen(self.getEdgeColor(self.lineThickness[1]) , self.lineThickness[1] , QtCore.Qt.SolidLine))
             paint.drawLine(self.nodeList[0].pos,self.nodeList[2].pos)
         if (self.lineThickness[2] != 0):
-            paint.setPen(QtGui.QPen(QtCore.Qt.black , self.lineThickness[2] , QtCore.Qt.SolidLine))
+            paint.setPen(QtGui.QPen(self.getEdgeColor(self.lineThickness[2]) , self.lineThickness[2] , QtCore.Qt.SolidLine))
             paint.drawLine(self.nodeList[0].pos,self.nodeList[3].pos)
         if (self.lineThickness[3] != 0):
-            paint.setPen(QtGui.QPen(QtCore.Qt.black , self.lineThickness[3] , QtCore.Qt.SolidLine))
+            paint.setPen(QtGui.QPen(self.getEdgeColor(self.lineThickness[3]) , self.lineThickness[3] , QtCore.Qt.SolidLine))
             paint.drawLine(self.nodeList[1].pos,self.nodeList[2].pos)
         if (self.lineThickness[4] != 0):
-            paint.setPen(QtGui.QPen(QtCore.Qt.black , self.lineThickness[4] , QtCore.Qt.SolidLine))
+            paint.setPen(QtGui.QPen(self.getEdgeColor(self.lineThickness[4]) , self.lineThickness[4] , QtCore.Qt.SolidLine))
             paint.drawLine(self.nodeList[1].pos,self.nodeList[3].pos)
         if (self.lineThickness[5] != 0):
-            paint.setPen(QtGui.QPen(QtCore.Qt.black , self.lineThickness[5] , QtCore.Qt.SolidLine))
+            paint.setPen(QtGui.QPen(self.getEdgeColor(self.lineThickness[5]) , self.lineThickness[5] , QtCore.Qt.SolidLine))
             paint.drawLine(self.nodeList[2].pos,self.nodeList[3].pos)
        
     def drawRectNode(self,painter,pos,width,height,name="Blubb"):
@@ -171,6 +173,9 @@ class NetworkFlow(QtGui.QWidget, SlaveClass):
         painter.drawRect(-width/2, -height/2, width, height)
         painter.drawText(-width/2, -height/2, width, height,QtCore.Qt.AlignCenter,name)
         painter.translate(-pos.x(),-pos.y())
+        
+    def getEdgeColor(self,lineThickness):
+        return QtGui.QColor((lineThickness / COLOR_MAP_STEPS) * 255.0,((COLOR_MAP_STEPS - lineThickness) / COLOR_MAP_STEPS) * 255.0,0, 220.0)
     
     def mouseMoveEvent(self, event):
         self.mouseOverNode(event)
@@ -198,6 +203,16 @@ class NetworkFlow(QtGui.QWidget, SlaveClass):
     
     def mouseReleaseEvent(self,event):
         self.clickedOnNode(event)
+        
+    def drawHeatMap(self,paint):
+        lineThickness = self.height()/COLOR_MAP_STEPS
+        for i in range(0,int(COLOR_MAP_STEPS)):
+            paint.setPen(QtGui.QPen(self.getEdgeColor(COLOR_MAP_STEPS-i) , lineThickness , QtCore.Qt.SolidLine))
+            paint.drawLine(QtCore.QPoint((self.width()/2)-25,-(self.height()*0.6)+(i*lineThickness)+lineThickness/2-1),QtCore.QPoint((self.width()/2)-5,-(self.height()*0.6)+(i*lineThickness)+lineThickness/2-1))
+        paint.setPen(QtGui.QPen(QtGui.QColor(0,0,0,255) , 1 , QtCore.Qt.SolidLine))
+        paint.drawText(QtCore.QPoint((self.width()/2)-140,-(self.height()*0.6)+(lineThickness)-lineThickness*0.3),"1Gbyte/5min")
+        paint.drawText(QtCore.QPoint((self.width()/2)-140,-(self.height()*0.6)+(COLOR_MAP_STEPS*lineThickness)-lineThickness*0.3)," 2Byte/5min")
+        
        
     def clickedOnNode(self,event):
         for n in self.nodeList:
