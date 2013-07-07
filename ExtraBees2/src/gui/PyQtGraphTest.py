@@ -71,8 +71,7 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
         self.plotWidgetTop.addItem(self.regionSelection)
         self.bottom_data_plot = self.plotWidgetBottom.plot(self.data, pen=(0,0,0,200))
         
-        self.line = pg.InfiniteLine(angle=90, movable=True)
-        self.line.setPen(pen=(255,0,0,200))
+        self.line = pg.InfiniteLine(angle=90, movable=True,pen=(255,0,0,200))
         self.line.setBounds([0,self.timeSlots])
         
         self.plotWidgetBottom.addItem(self.line)
@@ -81,8 +80,9 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
         self.plotWidgetBottom.sigXRangeChanged.connect(self.updateRegion)
         self.line.sigDragged.connect(self.setDateTime)
         
-        self.updatePlot()
+		self.updatePlot()
         self.updateData()
+        
         
     def updateData(self):
         
@@ -106,8 +106,8 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
             loc_index = day_of_week_minutes + hour_minutes + minute
             self.data[loc_index] = math.log(int(self.communicationQuery.value(1).toString()) + 1)
             
-        self.top_data_plot = self.plotWidgetTop.plot(self.data, pen=(0,0,0,200))
-        self.bottom_data_plot = self.plotWidgetBottom.plot(self.data, pen=(0,0,0,200))
+        self.top_data_plot = self.plotWidgetTop.plot(self.data,  pen=(0,0,0,200), fillLevel = 1.0,  fillBrush = QtGui.QBrush(QtGui.QColor(200,200,200, 100)))
+        self.bottom_data_plot = self.plotWidgetBottom.plot(self.data, pen=(0,0,0,200), fillLevel = 1.0,  fillBrush = QtGui.QBrush(QtGui.QColor(200,200,200, 100)))
         
     def updatePlot(self):
         self.plotWidgetBottom.setXRange(*self.regionSelection.getRegion(), padding=0)
