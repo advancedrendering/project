@@ -23,6 +23,8 @@ class NetworkFlow(QtGui.QWidget):
         self.communicationQuery = QtSql.QSqlQuery()
         self.communicationQuery.prepare("Select if(test.srcESite = :site, test.destESite, test.srcESite) as dest, sum(test.traffic) from (SELECT srcEsite, destESite,SUM(SumTotalBytesSrc + SumTotalBytesDest) as traffic FROM datavis.macro_networkflow WHERE Starttime = :time AND NOT (srcESite = destESite) GROUP BY srcESite, destESite HAVING srcESite = :site OR destESite = :site) as test group by dest;")
         self.initNodes(784,439)
+        
+        self.setMouseTracking(True)
 
     def initNodes(self,width,height):
         numberOfSites = 3
@@ -41,7 +43,7 @@ class NetworkFlow(QtGui.QWidget):
             point = QtCore.QPointF(nodeRadius *math.cos(math.radians(startAngle)),nodeRadius * math.sin(math.radians(startAngle)))
             nodePositions.append(point)
             startAngle = startAngle + angleStep
-            node = node = SiteNode(nodePositions[i],width*CENTER_X_SCALE,height*CENTER_Y_SCALE,nodeWidth,nodeHeight,nodeNames[i],self.health[i], nodeDBName[i])
+            node = SiteNode(nodePositions[i],width*CENTER_X_SCALE,height*CENTER_Y_SCALE,nodeWidth,nodeHeight,nodeNames[i],self.health[i], nodeDBName[i])
             self.nodeList.append(node)
         
     def paintEvent(self, event):
@@ -156,7 +158,23 @@ class NetworkFlow(QtGui.QWidget):
         painter.drawRect(-width/2, -height/2, width, height)
         painter.drawText(-width/2, -height/2, width, height,QtCore.Qt.AlignCenter,name)
         painter.translate(-pos.x(),-pos.y())
-               
+    
+    def mouseMoveEvent(self, event):
+        self.mouseOverNode(event)
+    
+    def mouseOverNode(self, event):
+        for n in self.nodeList:
+            xDistance = abs(n.pos.x()-(event.x()-(self.width()*CENTER_X_SCALE)))
+            yDistance = abs(n.pos.y()-(event.y()-(self.height()*CENTER_Y_SCALE)))
+            if(xDistance < (n.w*0.5) and yDistance < (n.h*0.5)):
+                newPoint = QtCore.QPoint(event.x()-(self.width()*CENTER_X_SCALE),event.y()-(self.height()*CENTER_Y_SCALE))
+                n.setPos(newPoint)
+                n.isOver = True
+            else:
+                pass
+                n.isOver = False
+            print "isover", n.name, n.isOver
+    
     def mouseReleaseEvent(self,event):
         self.clickedOnNode(event)
        
