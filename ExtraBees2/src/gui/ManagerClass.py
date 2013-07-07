@@ -12,10 +12,13 @@ class ManagerClass(object):
     _instance = None
     def __init__(self):    
         self.CT = QtCore.QDateTime(QtCore.QDate(2013, 4, 1), QtCore.QTime(8,40,0))
+        self.CW = QtCore.QDate(2013,4,1)
         self.INTERVAL = 0
         self.DB = QtSql.QSqlDatabase.addDatabase("QMYSQL")
         self.DB.setDatabaseName("datavis")
-        self.DB.setUserName("datavis")    
-        self.DB.setPassword("DataVis")
+        self.DB.setUserName("root")    
+        self.DB.setPassword("datavis")
         self.DB.open()
+        
+    
         

@@ -6,13 +6,15 @@ Created on 06.07.2013
 import numpy as np
 import pyqtgraph as pg
 from PyQt4 import QtGui, QtCore
+from gui import SlaveClass
 
 WEEKDAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
 WEEKDAYS_SHORT = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
 
-class PyQtGraphTest(QtGui.QFrame):
+class PyQtGraphTest(QtGui.QFrame,SlaveClass):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
+        SlaveClass.__init__(self)
         self.setAutoFillBackground(True)
         p = self.palette()
         p.setColor(self.backgroundRole(), QtGui.QColor(255,255,255,255))
@@ -22,7 +24,7 @@ class PyQtGraphTest(QtGui.QFrame):
         pg.setConfigOption('foreground', 'k')
         
         self.layout = QtGui.QVBoxLayout()
-        self.layout.setMargin(0)
+        self.layout.setMargin(2)
         self.setLayout(self.layout)
         self.timeSlots = 12*24*7
         self.plotWidgetTop = pg.PlotWidget(name="week")
@@ -71,6 +73,7 @@ class PyQtGraphTest(QtGui.QFrame):
         
         self.regionSelection.sigRegionChanged.connect(self.updatePlot)
         self.plotWidgetBottom.sigXRangeChanged.connect(self.updateRegion)
+        self.line.sigPositionChangeFinished.connect(self.setTimeSlot)
         
         self.updatePlot()
         
@@ -85,6 +88,7 @@ class PyQtGraphTest(QtGui.QFrame):
             tickLabels.append((i,self.timeSlotToString(i)))
         self.plotWidgetBottom.getPlotItem().getAxis("bottom").setTicks([tickLabels])
         
+        
     def updateRegion(self):
         self.regionSelection.setRegion(self.plotWidgetBottom.getViewBox().viewRange()[0])
         
@@ -93,5 +97,16 @@ class PyQtGraphTest(QtGui.QFrame):
         hour = (timeslot/12)%24
         minute = (timeslot % 12)*5
         return WEEKDAYS[day]+" "+str(hour).zfill(2)+":"+str(minute).zfill(2)
-        
+    
+    def setTimeSlot(self):
+        timeslot = self.line.getPos()[0]
+        day = self.manager.CW.day() +(timeslot/(12*24))
+        month = self.manager.CW.month()
+        year = self.manager.CW.year()
+        hour = (timeslot/12)%24
+        minute = (timeslot % 12)*5
+        print self.manager.CT  
+        print year, month, day, hour, minute
+        self.manager.CT = QtCore.QDateTime(QtCore.QDate(year, month, day), QtCore.QTime(hour,minute,0))
+        print self.manager.CT        
 
