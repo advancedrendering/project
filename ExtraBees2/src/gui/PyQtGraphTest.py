@@ -87,7 +87,7 @@ class PyQtGraphTest(QtGui.QFrame,SlaveClass):
         for i in range(int(self.regionSelection.getRegion()[0]),int(self.regionSelection.getRegion()[1]),int(tickSpacing)):
             tickLabels.append((i,self.timeSlotToString(i)))
         self.plotWidgetBottom.getPlotItem().getAxis("bottom").setTicks([tickLabels])
-        
+        self.setTimeSlot()
         
     def updateRegion(self):
         self.regionSelection.setRegion(self.plotWidgetBottom.getViewBox().viewRange()[0])
