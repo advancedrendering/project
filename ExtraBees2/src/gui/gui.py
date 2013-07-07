@@ -6,7 +6,8 @@ Created on 2013-7-7
 
 import sys
 from PyQt4 import QtGui, uic, QtCore, QtSql
-from cloudBubble.cloudBubbleScene import cloudBubbleScene
+import cloudBubble
+from cloudBubble import cloudBubbleScene
 #from scipy.sparse.linalg.dsolve.umfpack.umfpack import updateDictWithVars
 from GuiThread import GuiThread
 from copy import deepcopy
@@ -36,9 +37,9 @@ class MyWindow(QtGui.QMainWindow, SlaveClass):
 #         site1Scene.addPath(site1Path, QtGui.QPen(QtCore.Qt.black), QtGui.QBrush(QtCore.Qt.green));
 #         site1Scene.addText("Hello, world!", QtGui.QFont("Times", 15, QtGui.QFont.Bold)); 
 #           
-        self.site1Scene = cloudBubbleScene()
-        self.site2Scene = cloudBubbleScene()
-        self.site3Scene = cloudBubbleScene()  
+        self.site1Scene = cloudBubbleScene(1)
+        self.site2Scene = cloudBubbleScene(2)
+        self.site3Scene = cloudBubbleScene(3)  
         self.ui.site1GraphicsView.setScene(self.site1Scene)
         self.ui.site2GraphicsView.setScene(self.site2Scene)
         self.ui.site3GraphicsView.setScene(self.site3Scene)

@@ -4,6 +4,7 @@ Created on 2013-6-18
 @author: sijia
 '''
 
+
 from PyQt4 import QtGui,QtCore
 from atomicBubble import atomicBubble
 from bubbleAnimation import bubbleAnimation
@@ -205,12 +206,11 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
 #        fakehealth = self.getFakeHealth()
 #        fakename = self.getFakeName()
 
-        '''These part for testing '''
+        
         self.updatefactory.updateSiteData()
         trafficdict=self.updatefactory.trafficdict
         healthdict = self.updatefactory.healthdict
         
-        ''''''''''''''''''
 
         trafficlist = self.updatefactory.trafficdict.items()
         namelist = []
