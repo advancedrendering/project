@@ -180,10 +180,12 @@ class NetworkFlow(QtGui.QWidget, SlaveClass):
             yDistance = abs(n.pos.y()-(event.y()-(self.height()*CENTER_Y_SCALE)))
             if(xDistance < (n.w*0.5) and yDistance < (n.h*0.5)):
                 if n.isOver == False:
+                    n.isOver = True
                     self.emit(QtCore.SIGNAL('mouseOverSiteChanged'))
                 n.isOver = True
             else:
                 if n.isOver == True:
+                    n.isOver = True
                     self.emit(QtCore.SIGNAL('mouseOverSiteChanged'))
                 n.isOver = False
                 
@@ -201,6 +203,8 @@ class NetworkFlow(QtGui.QWidget, SlaveClass):
             xDistance = abs(n.pos.x()-(event.x()-(self.width()*CENTER_X_SCALE)))
             yDistance = abs(n.pos.y()-(event.y()-(self.height()*CENTER_Y_SCALE)))
             if(xDistance < (n.w*0.5) and yDistance < (n.h*0.5)):
+                n.isSelected = not n.isSelected
+                self.emit(QtCore.SIGNAL('mouseOverSiteChanged'))
+                print "hit", n.name
                 #newPoint = QtCore.QPoint(event.x()-(self.width()*CENTER_X_SCALE),event.y()-(self.height()*CENTER_Y_SCALE))
                 #n.setPos(newPoint)
-                print "Hit " + n.name
