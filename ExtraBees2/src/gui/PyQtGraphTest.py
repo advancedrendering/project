@@ -100,11 +100,11 @@ class PyQtGraphTest(QtGui.QFrame,SlaveClass):
     
     def setTimeSlot(self):
         timeslot = self.line.getPos()[0]
-        day = self.manager.CW.day() +(timeslot/(12*24))
+        day = self.manager.CW.day() +(timeslot/(12*24)) 
         month = self.manager.CW.month()
         year = self.manager.CW.year()
         hour = (timeslot/12)%24
-        minute = (timeslot % 12)*5
+        minute = (int(timeslot) % 12)*5
         print self.manager.CT  
         print year, month, day, hour, minute
         self.manager.CT = QtCore.QDateTime(QtCore.QDate(year, month, day), QtCore.QTime(hour,minute,0))

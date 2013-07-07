@@ -61,7 +61,7 @@ class SiteNode(SlaveClass):
             loc_health.append(self.communicationQuery.value(self.avgLoadPercent).toInt()[0])
             loc_health.append(self.communicationQuery.value(self.maxLoadPercent).toInt()[0])
         
-        print loc_health
+        print "here", self.manager.CT, loc_health
         self.drawEllipticNode(painter, self.pos, self.w, self.h, self.name, loc_health, 120)
         
 
