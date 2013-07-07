@@ -21,8 +21,8 @@ class ManagerClass(object):
         self.INTERVAL = 0
         self.DB = QtSql.QSqlDatabase.addDatabase("QMYSQL")
         self.DB.setDatabaseName("datavis")
-        self.DB.setUserName("datavis")    
-        self.DB.setPassword("DataVis")
+        self.DB.setUserName("root")    
+        self.DB.setPassword("datavis")
         self.DB.open()
         
     

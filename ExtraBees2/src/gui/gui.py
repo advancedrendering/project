@@ -54,11 +54,11 @@ class MyWindow(QtGui.QMainWindow, SlaveClass):
         if self.running:
             self.running = False
             self.ui.playPauseButton.setText("Play")
-            print "Play"
+            print "Pause"
         else:
             self.running = True
             self.ui.playPauseButton.setText("Pause")
-            print "Pause"
+            print "Play"
         self.ui.update()
 
         
@@ -67,6 +67,9 @@ class MyWindow(QtGui.QMainWindow, SlaveClass):
         self.running = False
         
     def loop(self):
+        self.ui.dateTimeEdit.blockSignals(True)
+        self.ui.dateTimeEdit.setDateTime(self.manager.CT)
+        self.ui.dateTimeEdit.blockSignals(False)
         self.updateGraph()
         if self.running:     
             if (self.tabWidget.currentIndex()==1): 
@@ -78,13 +81,14 @@ class MyWindow(QtGui.QMainWindow, SlaveClass):
                 
     def updateGraph(self):
         self.ui.widget.update()
-    
+        
     def dateTimeChanged(self):
-        date = deepcopy(self.ui.dateTimeEdit.dateTime().date())
-        dayOfWeek = date.dayOfWeek()
-        date.addDays(-(dayOfWeek-1))
-        self.manager.CW = date
-        print self.manager.CW
+        date = self.ui.dateTimeEdit.dateTime().date()
+        dayOfWeek = (date.dayOfWeek())
+        date2 = date.addDays(-dayOfWeek+1)
+        self.manager.CW = date2
+        self.manager.CT = deepcopy(self.ui.dateTimeEdit.dateTime())
+        self.ui.chart.setLinePos()
     #def chartClicked(self):
         #self.ui.timeSlider.setValue()
         
