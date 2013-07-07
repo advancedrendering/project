@@ -47,6 +47,7 @@ class NetworkFlow(QtGui.QWidget, SlaveClass):
             self.startAngle = self.startAngle + self.angleStep
             node = SiteNode(nodePositions[i],width*CENTER_X_SCALE,height*CENTER_Y_SCALE,nodeWidth,nodeHeight,nodeNames[i],self.health[i], nodeDBName[i])
             self.nodeList.append(node)
+        self.startAngle = -90
             
     def updateNodes(self,width,height):
         pass
@@ -58,6 +59,7 @@ class NetworkFlow(QtGui.QWidget, SlaveClass):
 #             self.nodeList[i].w = width*NODE_WIDTH_SCALE
 #             self.nodeList[i].h = width*NODE_HEIGHT_SCALE
 #             self.startAngle = self.startAngle + self.angleStep
+        self.startAngle = -90
         
     def paintEvent(self, event):
         self.updateData()
@@ -190,6 +192,6 @@ class NetworkFlow(QtGui.QWidget, SlaveClass):
             xDistance = abs(n.pos.x()-(event.x()-(self.width()*CENTER_X_SCALE)))
             yDistance = abs(n.pos.y()-(event.y()-(self.height()*CENTER_Y_SCALE)))
             if(xDistance < (n.w*0.5) and yDistance < (n.h*0.5)):
-                newPoint = QtCore.QPoint(event.x()-(self.width()*CENTER_X_SCALE),event.y()-(self.height()*CENTER_Y_SCALE))
-                n.setPos(newPoint)
+                #newPoint = QtCore.QPoint(event.x()-(self.width()*CENTER_X_SCALE),event.y()-(self.height()*CENTER_Y_SCALE))
+                #n.setPos(newPoint)
                 print "Hit " + n.name
