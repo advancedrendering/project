@@ -150,7 +150,7 @@ class SiteNode(SlaveClass):
                 painter.setPen(QtGui.QPen(QtGui.QColor(70,70,70, 150) , 1 , QtCore.Qt.SolidLine))
                 painter.font().setPointSize(300)
                 painter.drawText(- 1 * 0.5 - 12, 4, str(0) + "%")
-                painter.drawText(-135, 4, health_labels[i])
+                painter.drawText(-130, 4, health_labels[i])
                 painter.rotate(-angle + 180)
                 painter.translate(QtCore.QPointF(-innerRadius *math.cos(math.radians(angle)),-innerRadius * math.sin(math.radians(angle))))
             angle = angle + angleStep
