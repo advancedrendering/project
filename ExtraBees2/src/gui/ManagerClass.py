@@ -35,7 +35,7 @@ class ManagerClass(object):
         self.NUM_SERVER_NOT_AVAILABLE = 7 
         
         #self.NetMode = self.TOTALBYTES
-        self.NetMode = self.NUM_CONNECTIONS
+        self.NetMode = self.NUM_ERRORS
         
     
         

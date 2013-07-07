@@ -29,8 +29,9 @@ class PyQtGraphTest(QtGui.QFrame,SlaveClass):
         self.communicationQuery.prepare("""SELECT Starttime, (SumTotalBytesSrc + SumTotalBytesDest), (SumPacketSrc + SumPacketDest), SumConnections FROM datavis.macro_networkflow WHERE Starttime >= :starttime1
 AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
         
-        self.health_err_com_query = QtSql.QSqlQuery()
-        self.health_err_com_query.prepare("""SELECT receivedDate, COUNT(*) FROM datavis.healthserverbyesites WHERE statusVal = 3 GROUP BY receivedDate;""")
+        self.health_com_query = QtSql.QSqlQuery()
+        self.health_com_query.prepare("""SELECT receivedDate, COUNT(*) FROM datavis.healthserverbyesites WHERE  statusVal = :statusVal AND
+        receivedDate >= :receivedDate1 AND receivedDate <= DATE_ADD(:receivedDate2, INTERVAL 7 DAY) GROUP BY receivedDate;""")
                 
         pg.setConfigOption('background', 'w')
         pg.setConfigOption('foreground', 'k')
@@ -98,29 +99,50 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
         
         self.data = np.zeros(12 * 24 * 7)
         
-        loc_datetime = QtCore.QDateTime(self.manager.CW, QtCore.QTime(0,0,0))
-        self.communicationQuery.bindValue(":starttime1", loc_datetime)
-        self.communicationQuery.bindValue(":starttime2",loc_datetime)
-        self.communicationQuery.exec_()
         
-        while (self.communicationQuery.next()):
-            #print self.communicationQuery.value(1).toDateTime(), self.communicationQuery.value(0).toInt()[0]
-            #calc the index of the array using the datetime
-            loc_datetime = self.communicationQuery.value(0).toDateTime()
-            day_of_week_minutes = (loc_datetime.date().dayOfWeek() - 1) * 24 * 12#* 84 # 7 * 12 
-            hour_minutes = loc_datetime.time().hour() * 12
-            minute = loc_datetime.time().minute() / 5
-            loc_index = day_of_week_minutes + hour_minutes + minute
-            if (self.manager.NetMode == self.manager.TOTALBYTES):
-                self.data[loc_index] = math.log(int(self.communicationQuery.value(1).toString()) + 1)
-            elif (self.manager.NetMode == self.manager.THROUGHPUT):
-                self.data[loc_index] = math.log(float(self.communicationQuery.value(1).toString()) / 300.0 + 1)
-            elif (self.manager.NetMode == self.manager.NUM_PACKAGES):
-                self.data[loc_index] = math.log(float(self.communicationQuery.value(2).toString()) + 1)
-            elif (self.manager.NetMode == self.manager.NUM_PACKAGES_PER_SECOND):
-                self.data[loc_index] = math.log(float(self.communicationQuery.value(2).toString()) / 300.0 + 1)
-            elif (self.manager.NetMode == self.manager.NUM_CONNECTIONS):
-                self.data[loc_index] = math.log(float(self.communicationQuery.value(3).toString()) + 1)
+        if self.manager.NetMode == self.manager.NUM_ERRORS or self.manager.NetMode == self.manager.NUM_WARNINGS or self.manager.NetMode == self.manager.NUM_SERVER_NOT_AVAILABLE:
+            loc_datetime = QtCore.QDateTime(self.manager.CW, QtCore.QTime(0,0,0))
+            self.health_com_query.bindValue(":receivedDate1", loc_datetime)
+            self.health_com_query.bindValue(":receivedDate2", loc_datetime)
+            if self.manager == self.manager.NUM_ERRORS:
+                self.health_com_query.bindValue(":statusVal", 3)
+            elif self.manager == self.manager.NUM_WARNINGS:
+                self.health_com_query.bindValue(":statusVal", 2)
+            elif self.manager == self.manager.NUM_SERVER_NOT_AVAILABLE:
+                self.health_com_query.bindValue(":statusVal", 4)
+            self.health_com_query.exec_()
+            while (self.health_com_query.next()):
+                #calc the index of the array using the datetime
+                loc_datetime = self.health_com_query.value(0).toDateTime()
+                day_of_week_minutes = (loc_datetime.date().dayOfWeek() - 1) * 24 * 12#* 84 # 7 * 12 
+                hour_minutes = loc_datetime.time().hour() * 12
+                minute = loc_datetime.time().minute() / 5
+                loc_index = day_of_week_minutes + hour_minutes + minute
+                self.data[loc_index] = self.health_com_query.value(1).toInt()[0]
+        else:
+            loc_datetime = QtCore.QDateTime(self.manager.CW, QtCore.QTime(0,0,0))
+            self.communicationQuery.bindValue(":starttime1", loc_datetime)
+            self.communicationQuery.bindValue(":starttime2",loc_datetime)
+            self.communicationQuery.exec_()
+            
+            while (self.communicationQuery.next()):
+                #print self.communicationQuery.value(1).toDateTime(), self.communicationQuery.value(0).toInt()[0]
+                #calc the index of the array using the datetime
+                loc_datetime = self.communicationQuery.value(0).toDateTime()
+                day_of_week_minutes = (loc_datetime.date().dayOfWeek() - 1) * 24 * 12#* 84 # 7 * 12 
+                hour_minutes = loc_datetime.time().hour() * 12
+                minute = loc_datetime.time().minute() / 5
+                loc_index = day_of_week_minutes + hour_minutes + minute
+                if (self.manager.NetMode == self.manager.TOTALBYTES):
+                    self.data[loc_index] = math.log(int(self.communicationQuery.value(1).toString()) + 1)
+                elif (self.manager.NetMode == self.manager.THROUGHPUT):
+                    self.data[loc_index] = math.log(float(self.communicationQuery.value(1).toString()) / 300.0 + 1)
+                elif (self.manager.NetMode == self.manager.NUM_PACKAGES):
+                    self.data[loc_index] = math.log(float(self.communicationQuery.value(2).toString()) + 1)
+                elif (self.manager.NetMode == self.manager.NUM_PACKAGES_PER_SECOND):
+                    self.data[loc_index] = math.log(float(self.communicationQuery.value(2).toString()) / 300.0 + 1)
+                elif (self.manager.NetMode == self.manager.NUM_CONNECTIONS):
+                    self.data[loc_index] = math.log(float(self.communicationQuery.value(3).toString()) + 1)
         self.top_data_plot = self.plotWidgetTop.plot(self.data,  pen=(0,0,0,200), fillLevel = 0.0,  fillBrush = QtGui.QBrush(QtGui.QColor(200,200,200, 100)))
         self.bottom_data_plot = self.plotWidgetBottom.plot(self.data, pen=(0,0,0,200), fillLevel = 0.0,  fillBrush = QtGui.QBrush(QtGui.QColor(200,200,200, 100)))
         
