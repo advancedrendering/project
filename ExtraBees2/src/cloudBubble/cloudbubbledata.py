@@ -20,15 +20,15 @@ class cloudbubbledata(SlaveClass):
         Constructor
         '''
         SlaveClass.__init__(self)  
-#         self.sitenumber = sitenumber
-#         self.communicationQuery =QtSql.QSqlQuery()
-#         self.healthQuery = QtSql.QSqlQuery()
-#         self.trafficdict = {}
-#         self.averageValue=self.getAverageValue()
-#         self.basenumber = self.averageValue**(1.0/20)
-#         self.healthdict = {}
-#         self.prepareSiteQuery()
-#        self.communicationQuery.prepare("Select * from networkflow.site1networkflow where Starttime=:time Order By Trafficload LIMIT 50 ")
+        self.sitenumber = sitenumber
+        self.communicationQuery =QtSql.QSqlQuery()
+        self.healthQuery = QtSql.QSqlQuery()
+        self.trafficdict = {}
+        self.averageValue=self.getAverageValue()
+        self.basenumber = self.averageValue**(1.0/20) 
+        self.healthdict = {}
+        self.prepareSiteQuery()
+        self.communicationQuery.prepare("Select * from networkflow.site1networkflow where Starttime=:time Order By Trafficload LIMIT 50 ")
 
         '''
         @param sitenumber: Should be 1, 2 or 3 to specify the site number
@@ -55,16 +55,13 @@ class cloudbubbledata(SlaveClass):
         self.communicationQuery.exec_()
         while(self.communicationQuery.next()):
             radius = self.transToRadius(int(self.communicationQuery.value(2).toString()))
-            print int(self.communicationQuery.value(2).toString())
-            print radius
-            print self.communicationQuery.value(1).toString()
+
             self.trafficdict[self.communicationQuery.value(1).toString()] = float(radius)
             
         self.healthQuery.bindValue(":time", self.manager.CT)
         self.healthQuery.exec_()
         while(self.healthQuery.next()):
             healthip = self.healthQuery.value(1).toString()
-            print healthip
             if self.trafficdict.has_key(healthip):
                 self.healthdict[self.healthQuery.value(1).toString()]= int(self.healthQuery.value(2).toString())
 
