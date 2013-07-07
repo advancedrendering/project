@@ -1,3 +1,9 @@
+'''
+Created on 2013-7-7
+
+@author: Richard, Maarten
+'''
+
 import sys
 from PyQt4 import QtGui, uic, QtCore, QtSql
 from cloudBubble.cloudBubbleScene import cloudBubbleScene

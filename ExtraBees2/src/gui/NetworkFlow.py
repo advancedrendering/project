@@ -1,8 +1,9 @@
 '''
 Created on 2013-6-18
 
-@author: Richard
+@author: Richard, Maarten
 '''
+
 import math
 from SiteNode import SiteNode
 from PyQt4 import QtGui, QtCore, QtSql

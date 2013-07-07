@@ -1,11 +1,12 @@
 '''
 Created on 06.07.2013
 
-@author: richard
+@author: Richard, Maarten
 '''
+
 import numpy as np
 import pyqtgraph as pg
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui, QtCore, QtSql
 from gui import SlaveClass
 
 WEEKDAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
@@ -19,6 +20,31 @@ class PyQtGraphTest(QtGui.QFrame,SlaveClass):
         p = self.palette()
         p.setColor(self.backgroundRole(), QtGui.QColor(255,255,255,255))
         self.setPalette(p)
+        
+        self.data = np.zeros(12 * 24 * 7)
+        
+        
+        self.communicationQuery = QtSql.QSqlQuery()
+        self.communicationQuery.prepare("""SELECT Starttime, SumTotalBytesSrc + SumTotalBytesDest FROM datavis.macro_networkflow WHERE Starttime >= :starttime1
+AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
+        self.communicationQuery.bindValue(":starttime1", self.manager.CW)
+        self.communicationQuery.bindValue(":starttime2", self.manager.CW)
+        self.communicationQuery.exec_()
+        
+                
+        while (self.communicationQuery.next()):
+            #print self.communicationQuery.value(1).toDateTime(), self.communicationQuery.value(0).toInt()[0]
+            #calc the index of the array using the datetime
+            loc_datetime = self.communicationQuery.value(0).toDateTime()
+            day_of_week_minutes = (loc_datetime.date().dayOfWeek() - 1) * 24 * 12#* 84 # 7 * 12 
+            hour_minutes = loc_datetime.time().hour() * 12
+            minute = loc_datetime.time().minute() / 5
+            loc_index = day_of_week_minutes + hour_minutes + minute
+            self.data[loc_index] = self.communicationQuery.value(1).toInt()[0]
+#         self.plotWidgetTop.plot(self.data, pen=(0,0,0,200))
+#         self.plotWidgetBottom.plot(self.data, pen=(0,0,0,200))
+        print self.communicationQuery.size()
+        print self.data
         
         pg.setConfigOption('background', 'w')
         pg.setConfigOption('foreground', 'k')
@@ -55,7 +81,7 @@ class PyQtGraphTest(QtGui.QFrame,SlaveClass):
         data2 = np.sin(x2)
         #self.numberOfTimeSlots 
         
-        self.plotWidgetTop.plot(data2, pen=(0,0,0,200))
+        self.plotWidgetTop.plot(self.data, pen=(0,0,0,200))
         
         self.regionSelection = pg.LinearRegionItem([200,400])
         self.regionSelection.setBounds([0,self.timeSlots])
@@ -63,7 +89,7 @@ class PyQtGraphTest(QtGui.QFrame,SlaveClass):
         self.regionSelection.setZValue(-10)
         
         self.plotWidgetTop.addItem(self.regionSelection)
-        self.plotWidgetBottom.plot(data2, pen=(0,0,0,200))
+        self.plotWidgetBottom.plot(self.data, pen=(0,0,0,200))
         
         self.line = pg.InfiniteLine(angle=90, movable=True)
         self.line.setPen(pen=(0,0,0,200))
@@ -75,7 +101,30 @@ class PyQtGraphTest(QtGui.QFrame,SlaveClass):
         self.plotWidgetBottom.sigXRangeChanged.connect(self.updateRegion)
         self.line.sigDragged.connect(self.setTimeSlot)
         
+#         self.updateData()
         self.updatePlot()
+        
+        
+        
+    def updateData(self):
+        self.communicationQuery.bindValue(":starttime1", self.manager.CW)
+        self.communicationQuery.bindValue(":starttime2", self.manager.CW)
+        self.communicationQuery.exec_()
+        
+        loc_array = np.zeros(self.communicationQuery.size())
+        
+        while (self.communicationQuery.next()):
+            #calc the index of the array using the datetime
+            loc_datetime = self.communicationQuery.value(0).toDateTime()
+            day_of_week_minutes = loc_datetime.date().dayOfWeek() * 84 # 7 * 12 
+            hour_minutes = loc_datetime.time().hour() * 12
+            minute = loc_datetime.time().minute()
+            loc_index = day_of_week_minutes + hour_minutes + minute
+            loc_array[loc_index] = self.communicationQuery.value(0).toInt()[0]
+        self.plotWidgetTop.plot(self.data, pen=(0,0,0,200))
+        self.plotWidgetBottom.plot(self.data, pen=(0,0,0,200))
+        
+        
         
     def updatePlot(self):
         self.plotWidgetBottom.setXRange(*self.regionSelection.getRegion(), padding=0)

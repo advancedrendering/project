@@ -1,3 +1,8 @@
+'''
+Created on 2013-7-7
+
+@author: Richard, Maarten
+'''
 
 from PyQt4 import QtCore, QtSql
 

@@ -1,7 +1,7 @@
 '''
 Created on 03.07.2013
 
-@author: richard
+@author: Richard, Maarten
 '''
 import math
 from PyQt4 import QtGui, QtCore, QtSql
@@ -64,7 +64,7 @@ class SiteNode(SlaveClass):
                 loc_health.append(self.communicationQuery.value(self.avgLoadPercent).toInt()[0])
                 loc_health.append(self.communicationQuery.value(self.maxLoadPercent).toInt()[0])
             
-            print self.name, loc_health
+#             print self.name, loc_health
             self.drawBars(painter, self.pos, 10, self.h, self.name, loc_health, loc_health_labels, 135)
         self.drawEllipticNode(painter, self.pos, self.w, self.h, self.name)
     
