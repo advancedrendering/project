@@ -205,12 +205,11 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
 #        fakehealth = self.getFakeHealth()
 #        fakename = self.getFakeName()
 
-        '''These part for testing '''
+        
         self.updatefactory.updateSiteData()
         trafficdict=self.updatefactory.trafficdict
         healthdict = self.updatefactory.healthdict
         
-        ''''''''''''''''''
 
         trafficlist = self.updatefactory.trafficdict.items()
         namelist = []
