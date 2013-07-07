@@ -30,6 +30,8 @@ class NetworkFlow(QtGui.QWidget, SlaveClass):
         
         self.nodeList = []
         self.initNodes(784,439)
+        
+        self.setMouseTracking(True)
 
     def initNodes(self,width,height):
         nodeNames = ["Internet", "Site 1", "Site 2", "Site 3"]
@@ -48,14 +50,15 @@ class NetworkFlow(QtGui.QWidget, SlaveClass):
         self.startAngle = -90
             
     def updateNodes(self,width,height):
-        nodeRadius = height *0.4
-        for i in range(0,len(self.nodeList)):
-            if not (i == 0):
-                point = QtCore.QPointF(nodeRadius *math.cos(math.radians(self.startAngle)),nodeRadius * math.sin(math.radians(self.startAngle)))
-                self.nodeList[i].pos = point
-            self.nodeList[i].w = width*NODE_WIDTH_SCALE
-            self.nodeList[i].h = width*NODE_HEIGHT_SCALE
-            self.startAngle = self.startAngle + self.angleStep
+        pass
+#         nodeRadius = height *0.4
+#         for i in range(0,len(self.nodeList)):
+#             if not (i == 0):
+#                 point = QtCore.QPointF(nodeRadius *math.cos(math.radians(self.startAngle)),nodeRadius * math.sin(math.radians(self.startAngle)))
+#                 self.nodeList[i].pos = point
+#             self.nodeList[i].w = width*NODE_WIDTH_SCALE
+#             self.nodeList[i].h = width*NODE_HEIGHT_SCALE
+#             self.startAngle = self.startAngle + self.angleStep
         self.startAngle = -90
         
     def paintEvent(self, event):
@@ -167,7 +170,31 @@ class NetworkFlow(QtGui.QWidget, SlaveClass):
         painter.drawRect(-width/2, -height/2, width, height)
         painter.drawText(-width/2, -height/2, width, height,QtCore.Qt.AlignCenter,name)
         painter.translate(-pos.x(),-pos.y())
-               
+    
+    def mouseMoveEvent(self, event):
+        self.mouseOverNode(event)
+    
+    def mouseOverNode(self, event):
+        for n in self.nodeList:
+            xDistance = abs(n.pos.x()-(event.x()-(self.width()*CENTER_X_SCALE)))
+            yDistance = abs(n.pos.y()-(event.y()-(self.height()*CENTER_Y_SCALE)))
+            if(xDistance < (n.w*0.5) and yDistance < (n.h*0.5)):
+                if n.isOver == False:
+                    n.isOver = True
+                    self.emit(QtCore.SIGNAL('mouseOverSiteChanged'))
+                n.isOver = True
+            else:
+                if n.isOver == True:
+                    n.isOver = True
+                    self.emit(QtCore.SIGNAL('mouseOverSiteChanged'))
+                n.isOver = False
+                
+    def mouseEnter(self, event):
+        self.mouseOverNode(event)
+        
+    def mouseLeave(self, event):
+        self.mouseLeave(event)
+    
     def mouseReleaseEvent(self,event):
         self.clickedOnNode(event)
        
@@ -176,6 +203,8 @@ class NetworkFlow(QtGui.QWidget, SlaveClass):
             xDistance = abs(n.pos.x()-(event.x()-(self.width()*CENTER_X_SCALE)))
             yDistance = abs(n.pos.y()-(event.y()-(self.height()*CENTER_Y_SCALE)))
             if(xDistance < (n.w*0.5) and yDistance < (n.h*0.5)):
+                n.isSelected = not n.isSelected
+                self.emit(QtCore.SIGNAL('mouseOverSiteChanged'))
+                print "hit", n.name
                 #newPoint = QtCore.QPoint(event.x()-(self.width()*CENTER_X_SCALE),event.y()-(self.height()*CENTER_Y_SCALE))
                 #n.setPos(newPoint)
-                print "Hit " + n.name
