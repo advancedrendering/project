@@ -25,6 +25,9 @@ class SiteNode(SlaveClass):
         self.communicationQuery.prepare("""SELECT AVG(avgDiskUsagePercent), MAX(maxDiskUsagePercent), AVG(avgLoadPercent), MAX(maxLoadPercent) FROM datavis.healthserverbyesites 
         WHERE  ESite = :esite AND receivedDate = :currentTime;""")
         
+        self.health_com_query = QtSql.QSqlQuery()
+        self.health_com_query.prepare("""SELECT statusVal, COUNT(*) FROM datavis.healthserverbyesites WHERE receivedDate = :receivedDate AND ESite = :esite GROUP BY statusVal;""")
+                
         #define some constantss
         self.avgDiskUsagePercent = 0
         self.maxDiskUsagePercent = 1
@@ -49,7 +52,7 @@ class SiteNode(SlaveClass):
 
     def draw(self,painter):
         painter.setBrush(QtGui.QColor(153, 217, 234, 255))
-
+        loc_text = self.name
         if self.isOver == True or self.isSelected == True:
             self.communicationQuery.bindValue(":currentTime", self.manager.CT)
             self.communicationQuery.bindValue(":esite", self.dbname)
@@ -66,7 +69,50 @@ class SiteNode(SlaveClass):
             
 #             print self.name, loc_health
             self.drawBars(painter, self.pos, 10, self.h, self.name, loc_health, loc_health_labels, 135)
-        self.drawEllipticNode(painter, self.pos, self.w, self.h, self.name)
+
+            #get health info.
+            
+            num_info_messages = 0
+            num_warn_messages = 0
+            num_err_messages = 0
+            num_conn_lost_messages = 0
+            
+            self.health_com_query.bindValue(":receivedTime", self.manager.CT)
+            self.health_com_query.bindValue(":esite", self.dbname)
+            self.health_com_query.exec_()
+            while(self.health_com_query.next()):
+                statusVal = self.health_com_query.value(0).toInt()[0]
+                if statusVal == 1:
+                    num_info_messages = self.health_com_query.value(1).toInt()[0]
+                elif statusVal == 2:
+                    num_warn_messages = self.health_com_query.value(1).toInt()[0]
+                elif statusVal == 3:
+                    num_err_messages = self.health_com_query.value(1).toInt()[0]
+                elif statusVal == 4:
+                    num_conn_lost_messages = self.health_com_query.value(1).toInt()[0]
+            
+            loc_brush = None
+            if num_err_messages > 0:
+                loc_brush = QtGui.QBrush(QtGui.QColor(255, 0, 0, 255))
+            elif num_conn_lost_messages > 0:
+                loc_brush = QtGui.QBrush(QtGui.QColor(255, 165, 0, 255))
+            elif num_warn_messages > 0:
+                loc_brush = QtGui.QBrush(QtGui.QColor(255, 255, 0, 255))
+            else:
+                loc_brush = QtGui.QBrush(QtGui.QColor(153, 217, 234, 255))
+            
+            
+            painter.setBrush(loc_brush)
+            if self.name != 'Internet':
+                painter.setPen(QtGui.QPen(QtGui.QColor(0,0,0)))
+                painter.drawRoundedRect(self.pos.x() + 20, self.pos.y() + 15, 210, 40, 2.0, 2.0)
+                painter.drawText(QtCore.QPoint(self.pos.x() + 30, self.pos.y() + 30), "No. Info: " + str(num_info_messages) + ", No. Warn: " + str(num_warn_messages))
+                painter.drawText(QtCore.QPointF(self.pos.x() + 30, self.pos.y() + 50), "No. Err: " + str(num_err_messages) + " , No. ConnLost: " + str(num_conn_lost_messages))
+                
+            #No. Info: " + str(num_info_messages) + "No. Warn: " + str(num_warn_messages) + "\n No. Err: " + str(num_err_messages) + "\n No. ConnLost: " + str(num_conn_lost_messages)
+                
+                
+        self.drawEllipticNode(painter, self.pos, self.w, self.h,self.name)
     
     def drawBars(self, painter, pos, width, height, name, health, health_labels, angle):
         painter.translate(pos.x(),pos.y())
@@ -112,7 +158,7 @@ class SiteNode(SlaveClass):
         #reset brush
         painter.setBrush(save_brush)
     
-    def drawEllipticNode(self,painter,pos,width,height,name):
+    def drawEllipticNode(self,painter,pos,width,height,name ):
         painter.translate(pos.x(),pos.y())
         linewidht = 1
         if (self.isOver or self.isSelected) and self.name != "Internet":

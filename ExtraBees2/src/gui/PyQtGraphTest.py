@@ -29,8 +29,8 @@ class PyQtGraphTest(QtGui.QFrame,SlaveClass):
         self.communicationQuery.prepare("""SELECT Starttime, (SumTotalBytesSrc + SumTotalBytesDest), (SumPacketSrc + SumPacketDest), SumConnections FROM datavis.macro_networkflow WHERE Starttime >= :starttime1
 AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
         
-        self.health_com_query = QtSql.QSqlQuery()
-        self.health_com_query.prepare("")
+        self.health_err_com_query = QtSql.QSqlQuery()
+        self.health_err_com_query.prepare("""SELECT receivedDate, COUNT(*) FROM datavis.healthserverbyesites WHERE statusVal = 3 GROUP BY receivedDate;""")
                 
         pg.setConfigOption('background', 'w')
         pg.setConfigOption('foreground', 'k')
