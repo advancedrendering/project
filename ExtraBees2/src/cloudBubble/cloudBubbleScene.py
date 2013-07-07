@@ -9,6 +9,7 @@ from atomicBubble import atomicBubble
 from bubbleAnimation import bubbleAnimation
 from math import sqrt
 from random import randint
+from cloudbubbledata import cloudbubbledata
 
 
 #bubblelist = [self.bubble1, self.bubble2, self.bubble3, self.bubble4, bubble5, bubble6]
@@ -20,7 +21,7 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
     This class is used to specify the bubble scene. 
     '''
 
-    def __init__(self):
+    def __init__(self,sitenumber):
         '''
         Constructor
         ''' 
@@ -144,24 +145,7 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
 
         for eachbubble in self.bubblelist:
             self.addItem(eachbubble)
-#        self.addItem(bubblelist[0])
-
-#     def detectCollides(self,radiuslist,locationlist):
-#         collidesBubble = []
-#         i=0
-#         k=1
-#         for i in range(0,len(bubblelist)-1):       
-#             for k in range(i+1,len(bubblelist)):
-#                 j=bubblelist[i].collidesWithItem(bubblelist[k])
-#                 if j:
-#                     collidesBubble.append(i)
-#                     collidesBubble.append(k)
-#                     print 'bubble %s collides with bubble %s' % (bubblelist[i].toolTip(),bubblelist[k].toolTip())
-#         if len(collidesBubble)==0:
-#             print 'Collides Bubbles is zero.'
-#         return collidesBubble
-    
-          
+        self.updatefactory = cloudbubbledata(sitenumber)
     '''
     Get All bubbles Current Location .
     @return: List of QtCore.QPointF
@@ -217,13 +201,34 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
     def newkeepTight(self):
 #        global bubblelist,bubbleAnimationlist,nextlocation
         padding =2
-        fakedata = self.getFakeData()
-        fakehealth = self.getFakeHealth()
-        fakename = self.getFakeName()
+#        fakedata = self.getFakeData()
+#        fakehealth = self.getFakeHealth()
+#        fakename = self.getFakeName()
+
+        '''These part for testing '''
+        self.updatefactory.updateSiteData()
+        trafficdict=self.updatefactory.trafficdict
+        healthdict = self.updatefactory.healthdict
+        
+        ''''''''''''''''''
+
+        trafficlist = self.updatefactory.trafficdict.items()
+        namelist = []
+        radiuslist = []
+        healthlist = []
+        print len(trafficlist)
+        for p in range(len(trafficlist)):
+            namelist.append(trafficlist[p][0])
+            radiuslist.append(trafficlist[p][1])
+            if self.updatefactory.healthdict.has_key(trafficlist[p][0]):
+                healthlist.append(self.updatefactory.healthdict.get(trafficlist[p][0],1))
+            else:
+                healthlist.append(1)
+             
         subduration = 5000000
         for k in range(10):
             for h in range(len(self.bubblelist)):
-                self.bubblelist[h].setNextRadius(fakedata[h])
+                self.bubblelist[h].setNextRadius(radiuslist[h])
             for i in range(len(self.bubblelist)):
                 circle1 = self.bubblelist[i]
                 for j in range(i+1, len(self.bubblelist)):
@@ -247,10 +252,10 @@ class cloudBubbleScene(QtGui.QGraphicsScene):
                         
 #        print len(self.nextlocation)  
         for i in range(len(self.bubbleAnimationlist)):
-            self.bubbleAnimationlist[i].setbubblesize(subduration,fakedata[i])
+            self.bubbleAnimationlist[i].setbubblesize(subduration,radiuslist[i])
             self.bubbleAnimationlist[i].setbubbleloc(subduration,self.nextlocation[i]) 
-            self.bubbleAnimationlist[i].setbubblecolor(fakehealth[i])
-            self.bubblelist[i].setBubbleName(str(fakename[i]))
+            self.bubbleAnimationlist[i].setbubblecolor(healthlist[i])
+            self.bubblelist[i].setBubbleName(str(namelist[i]))
             self.bubblelist[i].update()
  
     def distance(self,firstpoint,secondpoint):
