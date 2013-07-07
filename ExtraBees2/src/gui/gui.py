@@ -25,9 +25,10 @@ class MyWindow(QtGui.QMainWindow, SlaveClass):
         self.connect(self.ui.dateTimeEdit, QtCore.SIGNAL('dateTimeChanged(QDateTime)'),self.dateTimeChanged)
         self.connect(self.ui.widget, QtCore.SIGNAL("mouseOverSiteChanged"), self.loop)
         self.t.start()
+        comboBoxStrings = ["total Bytes","throughput","#Packages","#Packages/s","#Connections","#Errors","#Warnings","#Server n.a."]
+        self.ui.comboBox.addItems(comboBoxStrings)
+        self.connect(self.ui.comboBox, QtCore.SIGNAL("currentIndexChanged(int)"),self.comboBoxIndexChanged)
          
-        self.running = False
-        
 #Add hello world to scene, just for testing
 #         site1Scene = QtGui.QGraphicsScene()    
 #         site1Path = QtGui.QPainterPath()
@@ -49,13 +50,12 @@ class MyWindow(QtGui.QMainWindow, SlaveClass):
         self.ui.dateTimeEdit.setDateTime(self.manager.CT)
         self.ui.dateTimeEdit.blockSignals(False)
         self.updateGraph()
-        if self.running:     
-            if (self.tabWidget.currentIndex()==1): 
-                self.site1Scene.newkeepTight()
-            if (self.tabWidget.currentIndex()==2): 
-                self.site2Scene.newkeepTight()
-            if (self.tabWidget.currentIndex()==3):
-                self.site3Scene.newkeepTight()
+        if (self.tabWidget.currentIndex()==1): 
+            self.site1Scene.newkeepTight()
+        if (self.tabWidget.currentIndex()==2): 
+            self.site2Scene.newkeepTight()
+        if (self.tabWidget.currentIndex()==3):
+            self.site3Scene.newkeepTight()
                 
     def updateGraph(self):
         self.ui.widget.update()
@@ -70,6 +70,9 @@ class MyWindow(QtGui.QMainWindow, SlaveClass):
         self.manager.CT = deepcopy(self.ui.dateTimeEdit.dateTime())
         self.ui.chart.setLinePos()
         
+    def comboBoxIndexChanged(self,index):
+        self.manager.NetMode = index
+        self.ui.chart.updateData()
     #def chartClicked(self):
         #self.ui.timeSlider.setValue()
         

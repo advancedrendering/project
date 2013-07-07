@@ -45,8 +45,8 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
         self.plotWidgetBottom.getPlotItem().showAxis("right")
         self.plotWidgetTop = pg.PlotWidget(name="detail")
         self.plotWidgetTop.getPlotItem().showAxis("right")
-        self.plotWidgetBottom.getPlotItem().getAxis("left").setLabel(units="log\n byte/5min")
-        self.plotWidgetTop.getPlotItem().getAxis("left").setLabel(units="log\n byte/5min")
+        self.plotWidgetBottom.getPlotItem().getAxis("left").setLabel("log\n byte/5min",units=None)
+        self.plotWidgetTop.getPlotItem().getAxis("left").setLabel("log\n byte/5min",units=None)
         dayLabels = []
         date = self.manager.CT.date()
         for i in range(0,len(WEEKDAYS_SHORT)):
@@ -93,8 +93,12 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
         
     def updateData(self):
         
-        self.plotWidgetBottom.removeItem(self.top_data_plot)
-        self.plotWidgetTop.removeItem(self.bottom_data_plot)
+        #self.plotWidgetBottom.removeItem(self.top_data_plot)
+        #self.plotWidgetTop.removeItem(self.bottom_data_plot)
+        self.plotWidgetTop.getPlotItem().clear()
+        self.plotWidgetBottom.getPlotItem().clear()
+        self.plotWidgetTop.addItem(self.line)
+        self.plotWidgetBottom.addItem(self.regionSelection)
         
         self.data = np.zeros(12 * 24 * 7)
         
@@ -116,13 +120,39 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
             elif (self.manager.NetMode == self.manager.THROUGHPUT):
                 self.data[loc_index] = math.log(float(self.communicationQuery.value(1).toString()) / 300.0 + 1)
             elif (self.manager.NetMode == self.manager.NUM_PACKAGES):
-                self.data[loc_index] = math.log(float(self.communicationQuery.value(2).toString()) + 1)
+                self.data[loc_index] = (float(self.communicationQuery.value(2).toString()) + 1)
             elif (self.manager.NetMode == self.manager.NUM_PACKAGES_PER_SECOND):
-                self.data[loc_index] = math.log(float(self.communicationQuery.value(2).toString()) / 300.0 + 1)
+                self.data[loc_index] = (float(self.communicationQuery.value(2).toString()) / 300.0 + 1)
             elif (self.manager.NetMode == self.manager.NUM_CONNECTIONS):
-                self.data[loc_index] = math.log(float(self.communicationQuery.value(3).toString()) + 1)
-        self.top_data_plot = self.plotWidgetTop.plot(self.data,  pen=(0,0,0,200), fillLevel = 0.1,  fillBrush = QtGui.QBrush(QtGui.QColor(200,200,200, 100)))
-        self.bottom_data_plot = self.plotWidgetBottom.plot(self.data, pen=(0,0,0,200), fillLevel = 0.1,  fillBrush = QtGui.QBrush(QtGui.QColor(200,200,200, 100)))
+                self.data[loc_index] = (float(self.communicationQuery.value(3).toString()) + 1)
+                
+        if (self.manager.NetMode == self.manager.TOTALBYTES):
+            self.plotWidgetBottom.getPlotItem().getAxis("left").setLabel("log\n byte/5min",units=None)
+            self.plotWidgetTop.getPlotItem().getAxis("left").setLabel("log\n byte/5min",units=None)
+        elif (self.manager.NetMode == self.manager.THROUGHPUT):
+            self.plotWidgetBottom.getPlotItem().getAxis("left").setLabel("log\n byte/s",units=None)
+            self.plotWidgetTop.getPlotItem().getAxis("left").setLabel("log\n byte/s",units=None)
+        elif (self.manager.NetMode == self.manager.NUM_PACKAGES):
+            self.plotWidgetBottom.getPlotItem().getAxis("left").setLabel("Packages",units=None)
+            self.plotWidgetTop.getPlotItem().getAxis("left").setLabel("Packages",units=None)
+        elif (self.manager.NetMode == self.manager.NUM_PACKAGES_PER_SECOND):
+            self.plotWidgetBottom.getPlotItem().getAxis("left").setLabel("Packages/s",units=None)
+            self.plotWidgetTop.getPlotItem().getAxis("left").setLabel("Packages/s",units=None)
+        elif (self.manager.NetMode == self.manager.NUM_CONNECTIONS):
+            self.plotWidgetBottom.getPlotItem().getAxis("left").setLabel("Connections",units=None)
+            self.plotWidgetTop.getPlotItem().getAxis("left").setLabel("Connections",units=None)
+        elif (self.manager.NetMode == self.manager.NUM_ERRORS):
+            self.plotWidgetBottom.getPlotItem().getAxis("left").setLabel("Errors",units=None)
+            self.plotWidgetTop.getPlotItem().getAxis("left").setLabel("Errors",units=None)
+        elif (self.manager.NetMode == self.manager.NUM_WARNINGS):
+            self.plotWidgetBottom.getPlotItem().getAxis("left").setLabel("Warnings",units=None)
+            self.plotWidgetTop.getPlotItem().getAxis("left").setLabel("Warnings",units=None)
+        elif (self.manager.NetMode == self.manager.NUM_SERVER_NOT_AVAILABLE):
+            self.plotWidgetBottom.getPlotItem().getAxis("left").setLabel("Server n.a.",units=None)
+            self.plotWidgetTop.getPlotItem().getAxis("left").setLabel("Server n.a.",units=None)
+            
+        self.plotWidgetTop.plot(self.data,  pen=(0,0,0,200), fillLevel = 0.1,  fillBrush = QtGui.QBrush(QtGui.QColor(200,200,200, 100)))
+        self.plotWidgetBottom.plot(self.data, pen=(0,0,0,200), fillLevel = 0.1,  fillBrush = QtGui.QBrush(QtGui.QColor(200,200,200, 100)))
         
     def updatePlot(self):
         self.plotWidgetTop.setXRange(*self.regionSelection.getRegion(), padding=0)
