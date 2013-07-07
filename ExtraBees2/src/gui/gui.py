@@ -17,6 +17,7 @@ class MyWindow(QtGui.QMainWindow, SlaveClass):
         self.connect(self.t, QtCore.SIGNAL('update'),self.loop)
         self.connect(self.ui.chart, QtCore.SIGNAL('update'),self.loop)
         self.connect(self.ui.dateTimeEdit, QtCore.SIGNAL('dateTimeChanged(QDateTime)'),self.dateTimeChanged)
+        self.connect(self.ui.widget, QtCore.SIGNAL("mouseOverSiteChanged"), self.loop)
         self.t.start()
          
         self.running = False

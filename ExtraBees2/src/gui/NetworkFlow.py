@@ -179,10 +179,19 @@ class NetworkFlow(QtGui.QWidget, SlaveClass):
             xDistance = abs(n.pos.x()-(event.x()-(self.width()*CENTER_X_SCALE)))
             yDistance = abs(n.pos.y()-(event.y()-(self.height()*CENTER_Y_SCALE)))
             if(xDistance < (n.w*0.5) and yDistance < (n.h*0.5)):
+                if n.isOver == False:
+                    self.emit(QtCore.SIGNAL('mouseOverSiteChanged'))
                 n.isOver = True
             else:
+                if n.isOver == True:
+                    self.emit(QtCore.SIGNAL('mouseOverSiteChanged'))
                 n.isOver = False
-            print "isover", n.name, n.isOver
+                
+    def mouseEnter(self, event):
+        self.mouseOverNode(event)
+        
+    def mouseLeave(self, event):
+        self.mouseLeave(event)
     
     def mouseReleaseEvent(self,event):
         self.clickedOnNode(event)

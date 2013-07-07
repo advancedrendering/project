@@ -34,6 +34,7 @@ class SiteNode(SlaveClass):
         
         self.isOver = False
         
+        
     def mouseOver(self,event):
         xDistance = abs(self.pos.x()-(event.x()-self.xC))
         yDistance = abs(self.pos.y()-(event.y()-self.yC))
