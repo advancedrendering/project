@@ -206,6 +206,6 @@ class NetworkFlow(QtGui.QWidget, SlaveClass):
             if(xDistance < (n.w*0.5) and yDistance < (n.h*0.5)):
                 n.isSelected = not n.isSelected
                 self.emit(QtCore.SIGNAL('mouseOverSiteChanged'))
-                print "hit", n.name
+#                 print "hit", n.name
                 #newPoint = QtCore.QPoint(event.x()-(self.width()*CENTER_X_SCALE),event.y()-(self.height()*CENTER_Y_SCALE))
                 #n.setPos(newPoint)
