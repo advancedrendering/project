@@ -101,11 +101,13 @@ class SiteNode(SlaveClass):
             else:
                 loc_brush = QtGui.QBrush(QtGui.QColor(153, 217, 234, 255))
             
+            
             painter.setBrush(loc_brush)
-            painter.setPen(QtGui.QPen(QtGui.QColor(0,0,0)))
-            painter.drawRoundedRect(self.pos.x() + 20, self.pos.y() + 15, 210, 40, 2.0, 2.0)
-            painter.drawText(QtCore.QPoint(self.pos.x() + 30, self.pos.y() + 30), "No. Info: " + str(num_info_messages) + ", No. Warn: " + str(num_warn_messages))
-            painter.drawText(QtCore.QPointF(self.pos.x() + 30, self.pos.y() + 50), "No. Err: " + str(num_err_messages) + " , No. ConnLost: " + str(num_conn_lost_messages))
+            if self.name != 'Internet':
+                painter.setPen(QtGui.QPen(QtGui.QColor(0,0,0)))
+                painter.drawRoundedRect(self.pos.x() + 20, self.pos.y() + 15, 210, 40, 2.0, 2.0)
+                painter.drawText(QtCore.QPoint(self.pos.x() + 30, self.pos.y() + 30), "No. Info: " + str(num_info_messages) + ", No. Warn: " + str(num_warn_messages))
+                painter.drawText(QtCore.QPointF(self.pos.x() + 30, self.pos.y() + 50), "No. Err: " + str(num_err_messages) + " , No. ConnLost: " + str(num_conn_lost_messages))
                 
             #No. Info: " + str(num_info_messages) + "No. Warn: " + str(num_warn_messages) + "\n No. Err: " + str(num_err_messages) + "\n No. ConnLost: " + str(num_conn_lost_messages)
                 
