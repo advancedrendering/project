@@ -19,7 +19,6 @@ class MyWindow(QtGui.QMainWindow, SlaveClass):
         SlaveClass.__init__(self)
         
         self.ui = uic.loadUi('gui.ui', self)
-        self.connect(self.ui.playPauseButton, QtCore.SIGNAL("clicked()"), self.clickedPlayPause)
         self.t = GuiThread(1)
         self.connect(self.t, QtCore.SIGNAL('update'),self.loop)
         self.connect(self.ui.chart, QtCore.SIGNAL('update'),self.loop)
@@ -44,28 +43,6 @@ class MyWindow(QtGui.QMainWindow, SlaveClass):
         self.ui.site2GraphicsView.setScene(self.site2Scene)
         self.ui.site3GraphicsView.setScene(self.site3Scene)
         self.show()
-        
-    def clickedPlayPause(self):
-
-#        self.site1Scene.keepTight() 
-
-#        self.site1Scene.animation.setbubbleloc(1000000000, QtCore.QPointF(100,-100))
-#        self.site1Scene.animation.setbubblesize(1000000000, 2.0)
-
-        if self.running:
-            self.running = False
-            self.ui.playPauseButton.setText("Play")
-            print "Pause"
-        else:
-            self.running = True
-            self.ui.playPauseButton.setText("Pause")
-            print "Play"
-        self.ui.update()
-
-        
-    def clickedPause(self):
-        print "Pause"
-        self.running = False
         
     def loop(self):
         self.ui.dateTimeEdit.blockSignals(True)

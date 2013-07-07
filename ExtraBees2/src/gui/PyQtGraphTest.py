@@ -20,7 +20,7 @@ class PyQtGraphTest(QtGui.QFrame,SlaveClass):
         SlaveClass.__init__(self)
         self.setAutoFillBackground(True)
         p = self.palette()
-        p.setColor(self.backgroundRole(), QtGui.QColor(255,255,255,255))
+        #p.setColor(self.backgroundRole(), QtGui.QColor(255,255,255,255))
         self.setPalette(p)
         
         self.data = np.zeros(12 * 24 * 7)
@@ -36,10 +36,14 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
         self.layout.setMargin(2)
         self.setLayout(self.layout)
         self.timeSlots = 12*24*7
-        self.plotWidgetTop = pg.PlotWidget(name="week")
-        self.plotWidgetTop.getPlotItem().hideAxis("bottom")
-        self.plotWidgetTop.getPlotItem().showAxis("top")
-        self.plotWidgetBottom = pg.PlotWidget(name="detail")
+        self.plotWidgetBottom = pg.PlotWidget(name="week")
+        self.plotWidgetBottom.getPlotItem().hideAxis("top")
+        self.plotWidgetBottom.getPlotItem().showAxis("bottom")
+        self.plotWidgetBottom.getPlotItem().showAxis("right")
+        self.plotWidgetTop = pg.PlotWidget(name="detail")
+        self.plotWidgetTop.getPlotItem().showAxis("right")
+        self.plotWidgetBottom.getPlotItem().getAxis("left").setLabel(units="log\n byte/5min")
+        self.plotWidgetTop.getPlotItem().getAxis("left").setLabel(units="log\n byte/5min")
         dayLabels = []
         date = self.manager.CT.date()
         for i in range(0,len(WEEKDAYS_SHORT)):
@@ -52,42 +56,42 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
             string = str(hour).zfill(2)+":"+str(minute).zfill(2)
             timeLabels.append((i,string))
 
-        self.plotWidgetTop.getPlotItem().getAxis("top").setTicks([dayLabels])
-        #self.plotWidgetBottom.getPlotItem().getAxis("bottom").setTicks([timeLabels])
+        self.plotWidgetBottom.getPlotItem().getAxis("bottom").setTicks([dayLabels])
+        #self.plotWidgetTop.getPlotItem().getAxis("bottom").setTicks([timeLabels])
         
-        self.plotWidgetTop.getPlotItem().hideAxis("left")
-        self.plotWidgetBottom.getPlotItem().hideAxis("left")
+        #self.plotWidgetBottom.getPlotItem().hideAxis("left")
+        #self.plotWidgetTop.getPlotItem().hideAxis("left")
         
         self.layout.addWidget(self.plotWidgetTop)
         self.layout.addWidget(self.plotWidgetBottom)
                 
-        self.top_data_plot = self.plotWidgetTop.plot(self.data, pen=(0,0,0,200))
+        self.top_data_plot = self.plotWidgetBottom.plot(self.data, pen=(0,0,0,200))
         
         self.regionSelection = pg.LinearRegionItem([200,400])
         self.regionSelection.setBounds([0,self.timeSlots])
         self.regionSelection.setBrush(QtGui.QBrush(QtGui.QColor(100,100,255,50)))
         self.regionSelection.setZValue(-10)
         
-        self.plotWidgetTop.addItem(self.regionSelection)
-        self.bottom_data_plot = self.plotWidgetBottom.plot(self.data, pen=(0,0,0,200))
+        self.plotWidgetBottom.addItem(self.regionSelection)
+        self.bottom_data_plot = self.plotWidgetTop.plot(self.data, pen=(0,0,0,200))
         
         self.line = pg.InfiniteLine(angle=90, movable=True,pen=(255,0,0,200))
         self.line.setBounds([0,self.timeSlots])
         
-        self.plotWidgetBottom.addItem(self.line)
+        self.plotWidgetTop.addItem(self.line)
         
         self.regionSelection.sigRegionChanged.connect(self.updatePlot)
-        self.plotWidgetBottom.sigXRangeChanged.connect(self.updateRegion)
+        self.plotWidgetTop.sigXRangeChanged.connect(self.updateRegion)
         self.line.sigDragged.connect(self.setDateTime)
         
-		self.updatePlot()
+        self.updatePlot()
         self.updateData()
         
         
     def updateData(self):
         
-        self.plotWidgetTop.removeItem(self.top_data_plot)
-        self.plotWidgetBottom.removeItem(self.bottom_data_plot)
+        self.plotWidgetBottom.removeItem(self.top_data_plot)
+        self.plotWidgetTop.removeItem(self.bottom_data_plot)
         
         self.data = np.zeros(12 * 24 * 7)
         
@@ -106,11 +110,11 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
             loc_index = day_of_week_minutes + hour_minutes + minute
             self.data[loc_index] = math.log(int(self.communicationQuery.value(1).toString()) + 1)
             
-        self.top_data_plot = self.plotWidgetTop.plot(self.data,  pen=(0,0,0,200), fillLevel = 1.0,  fillBrush = QtGui.QBrush(QtGui.QColor(200,200,200, 100)))
-        self.bottom_data_plot = self.plotWidgetBottom.plot(self.data, pen=(0,0,0,200), fillLevel = 1.0,  fillBrush = QtGui.QBrush(QtGui.QColor(200,200,200, 100)))
+        self.top_data_plot = self.plotWidgetBottom.plot(self.data,  pen=(0,0,0,200), fillLevel = 0.0,  fillBrush = QtGui.QBrush(QtGui.QColor(200,200,200, 100)))
+        self.bottom_data_plot = self.plotWidgetTop.plot(self.data, pen=(0,0,0,200), fillLevel = 0.0,  fillBrush = QtGui.QBrush(QtGui.QColor(200,200,200, 100)))
         
     def updatePlot(self):
-        self.plotWidgetBottom.setXRange(*self.regionSelection.getRegion(), padding=0)
+        self.plotWidgetTop.setXRange(*self.regionSelection.getRegion(), padding=0)
         linePos = QtCore.QPointF((self.regionSelection.getRegion()[0]+self.regionSelection.getRegion()[1])/2,0)
         self.line.setPos(linePos)
         tickSpacing = (self.regionSelection.getRegion()[1]-self.regionSelection.getRegion()[0])/10
@@ -119,11 +123,11 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
         tickLabels = []
         for i in range(int(self.regionSelection.getRegion()[0]),int(self.regionSelection.getRegion()[1]),int(tickSpacing)):
             tickLabels.append((i,self.timeSlotToString(i)))
-        self.plotWidgetBottom.getPlotItem().getAxis("bottom").setTicks([tickLabels])
+        self.plotWidgetTop.getPlotItem().getAxis("bottom").setTicks([tickLabels])
         self.setDateTime()
         
     def updateRegion(self):
-        self.regionSelection.setRegion(self.plotWidgetBottom.getViewBox().viewRange()[0])
+        self.regionSelection.setRegion(self.plotWidgetTop.getViewBox().viewRange()[0])
         self.setDateTime()
         
     def timeSlotToString(self,timeslot):
