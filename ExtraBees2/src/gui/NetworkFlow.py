@@ -49,14 +49,15 @@ class NetworkFlow(QtGui.QWidget, SlaveClass):
             self.nodeList.append(node)
             
     def updateNodes(self,width,height):
-        nodeRadius = height *0.4
-        for i in range(0,len(self.nodeList)):
-            if not (i == 0):
-                point = QtCore.QPointF(nodeRadius *math.cos(math.radians(self.startAngle)),nodeRadius * math.sin(math.radians(self.startAngle)))
-                self.nodeList[i].pos = point
-            self.nodeList[i].w = width*NODE_WIDTH_SCALE
-            self.nodeList[i].h = width*NODE_HEIGHT_SCALE
-            self.startAngle = self.startAngle + self.angleStep
+        pass
+#         nodeRadius = height *0.4
+#         for i in range(0,len(self.nodeList)):
+#             if not (i == 0):
+#                 point = QtCore.QPointF(nodeRadius *math.cos(math.radians(self.startAngle)),nodeRadius * math.sin(math.radians(self.startAngle)))
+#                 self.nodeList[i].pos = point
+#             self.nodeList[i].w = width*NODE_WIDTH_SCALE
+#             self.nodeList[i].h = width*NODE_HEIGHT_SCALE
+#             self.startAngle = self.startAngle + self.angleStep
         
     def paintEvent(self, event):
         self.updateData()
@@ -176,11 +177,8 @@ class NetworkFlow(QtGui.QWidget, SlaveClass):
             xDistance = abs(n.pos.x()-(event.x()-(self.width()*CENTER_X_SCALE)))
             yDistance = abs(n.pos.y()-(event.y()-(self.height()*CENTER_Y_SCALE)))
             if(xDistance < (n.w*0.5) and yDistance < (n.h*0.5)):
-                newPoint = QtCore.QPoint(event.x()-(self.width()*CENTER_X_SCALE),event.y()-(self.height()*CENTER_Y_SCALE))
-                n.setPos(newPoint)
                 n.isOver = True
             else:
-                pass
                 n.isOver = False
             print "isover", n.name, n.isOver
     
