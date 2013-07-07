@@ -9,6 +9,7 @@ import pyqtgraph as pg
 from PyQt4 import QtGui, QtCore, QtSql
 from gui import SlaveClass
 from copy import deepcopy
+import math
 
 WEEKDAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
 WEEKDAYS_SHORT = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
@@ -24,29 +25,10 @@ class PyQtGraphTest(QtGui.QFrame,SlaveClass):
         
         self.data = np.zeros(12 * 24 * 7)
         
-        
         self.communicationQuery = QtSql.QSqlQuery()
-        self.communicationQuery.prepare("""SELECT Starttime, SumTotalBytesSrc + SumTotalBytesDest FROM datavis.macro_networkflow WHERE Starttime >= :starttime1
+        self.communicationQuery.prepare("""SELECT Starttime, (SumTotalBytesSrc + SumTotalBytesDest) FROM datavis.macro_networkflow WHERE Starttime >= :starttime1
 AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
-        self.communicationQuery.bindValue(":starttime1", self.manager.CW)
-        self.communicationQuery.bindValue(":starttime2", self.manager.CW)
-        self.communicationQuery.exec_()
-        
                 
-        while (self.communicationQuery.next()):
-            #print self.communicationQuery.value(1).toDateTime(), self.communicationQuery.value(0).toInt()[0]
-            #calc the index of the array using the datetime
-            loc_datetime = self.communicationQuery.value(0).toDateTime()
-            day_of_week_minutes = (loc_datetime.date().dayOfWeek() - 1) * 24 * 12#* 84 # 7 * 12 
-            hour_minutes = loc_datetime.time().hour() * 12
-            minute = loc_datetime.time().minute() / 5
-            loc_index = day_of_week_minutes + hour_minutes + minute
-            self.data[loc_index] = self.communicationQuery.value(1).toInt()[0]
-#         self.plotWidgetTop.plot(self.data, pen=(0,0,0,200))
-#         self.plotWidgetBottom.plot(self.data, pen=(0,0,0,200))
-        print self.communicationQuery.size()
-        print self.data
-        
         pg.setConfigOption('background', 'w')
         pg.setConfigOption('foreground', 'k')
         
@@ -102,26 +84,27 @@ AND Starttime <= DATE_ADD(:starttime2, INTERVAL 7 DAY);""")
         self.plotWidgetBottom.sigXRangeChanged.connect(self.updateRegion)
         self.line.sigDragged.connect(self.setDateTime)
         
-#         self.updateData()
+        self.updateData()
         self.updatePlot()
         
         
         
     def updateData(self):
-        self.communicationQuery.bindValue(":starttime1", self.manager.CW)
-        self.communicationQuery.bindValue(":starttime2", self.manager.CW)
+        loc_datetime = QtCore.QDateTime(self.manager.CW, QtCore.QTime(0,0,0))
+        self.communicationQuery.bindValue(":starttime1", loc_datetime)
+        self.communicationQuery.bindValue(":starttime2",loc_datetime)
         self.communicationQuery.exec_()
         
-        loc_array = np.zeros(self.communicationQuery.size())
-        
         while (self.communicationQuery.next()):
+            #print self.communicationQuery.value(1).toDateTime(), self.communicationQuery.value(0).toInt()[0]
             #calc the index of the array using the datetime
             loc_datetime = self.communicationQuery.value(0).toDateTime()
-            day_of_week_minutes = loc_datetime.date().dayOfWeek() * 84 # 7 * 12 
+            day_of_week_minutes = (loc_datetime.date().dayOfWeek() - 1) * 24 * 12#* 84 # 7 * 12 
             hour_minutes = loc_datetime.time().hour() * 12
-            minute = loc_datetime.time().minute()
+            minute = loc_datetime.time().minute() / 5
             loc_index = day_of_week_minutes + hour_minutes + minute
-            loc_array[loc_index] = self.communicationQuery.value(0).toInt()[0]
+            print int(self.communicationQuery.value(1).toString()) + 1
+            self.data[loc_index] = math.log(int(self.communicationQuery.value(1).toString()) + 1)
         self.plotWidgetTop.plot(self.data, pen=(0,0,0,200))
         self.plotWidgetBottom.plot(self.data, pen=(0,0,0,200))
         
