@@ -56,13 +56,13 @@ class SiteNode(SlaveClass):
             self.communicationQuery.exec_()
                     
             #construct new health list
-            loc_health = []
+            loc_health = [0,0,0,0]
             loc_health_labels = ["avg disk", "max disk", "avg cpu", "max cpu"]
             while(self.communicationQuery.next()):
-                loc_health.append(self.communicationQuery.value(self.avgDiskUsagePercent).toInt()[0])
-                loc_health.append(self.communicationQuery.value(self.maxDiskUsagePercent).toInt()[0])
-                loc_health.append(self.communicationQuery.value(self.avgLoadPercent).toInt()[0])
-                loc_health.append(self.communicationQuery.value(self.maxLoadPercent).toInt()[0])
+                loc_health[0] = self.communicationQuery.value(self.avgDiskUsagePercent).toInt()[0]
+                loc_health[1] = self.communicationQuery.value(self.maxDiskUsagePercent).toInt()[0]
+                loc_health[2] = self.communicationQuery.value(self.avgLoadPercent).toInt()[0]
+                loc_health[3] = self.communicationQuery.value(self.maxLoadPercent).toInt()[0]
             
 #             print self.name, loc_health
             self.drawBars(painter, self.pos, 10, self.h, self.name, loc_health, loc_health_labels, 135)
