@@ -30,6 +30,7 @@ class SiteNode(SlaveClass):
         self.maxDiskUsagePercent = 1
         self.avgLoadPercent = 2
         self.maxLoadPercent = 3
+        print "init!"
         
         self.isOver = False
         
