@@ -21,15 +21,15 @@ class cloudbubbledata(SlaveClass):
         '''
         SlaveClass.__init__(self)  
         self.sitenumber = sitenumber
-#         self.communicationQuery =QtSql.QSqlQuery()
-#         self.healthQuery = QtSql.QSqlQuery()
-#         self.trafficdict = {}
-#         self.averageValue=self.getAverageValue()
-#         self.basenumber = self.averageValue**(1.0/20) 
-#         self.healthdict = {}
-#         self.prepareSiteQuery()
-#         self.communicationQuery.prepare("Select * from networkflow.site1networkflow where Starttime=:time Order By Trafficload LIMIT 50 ")
-
+        self.communicationQuery =QtSql.QSqlQuery()
+        self.healthQuery = QtSql.QSqlQuery()
+        self.trafficdict = {}
+        self.averageValue=self.getAverageValue()
+        self.basenumber = self.averageValue**(1.0/20) 
+        self.healthdict = {}
+        self.prepareSiteQuery()
+        self.communicationQuery.prepare("Select * from networkflow.site1networkflow where Starttime=:time Order By Trafficload LIMIT 50 ")
+         
         '''
         @param sitenumber: Should be 1, 2 or 3 to specify the site number
         '''
