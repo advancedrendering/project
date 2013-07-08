@@ -25,5 +25,16 @@ class ManagerClass(object):
         self.DB.setPassword("DataVis")
         self.DB.open()
         
+        self.TOTALBYTES = 0
+        self.THROUGHPUT = 1
+        self.NUM_PACKAGES = 2
+        self.NUM_PACKAGES_PER_SECOND = 3 
+        self.NUM_CONNECTIONS = 4
+        self.NUM_ERRORS = 5
+        self.NUM_WARNINGS = 6
+        self.NUM_SERVER_NOT_AVAILABLE = 7 
+        
+        self.NetMode = self.TOTALBYTES
+        
     
         

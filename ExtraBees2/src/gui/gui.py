@@ -19,16 +19,16 @@ class MyWindow(QtGui.QMainWindow, SlaveClass):
         SlaveClass.__init__(self)
         
         self.ui = uic.loadUi('gui.ui', self)
-        self.connect(self.ui.playPauseButton, QtCore.SIGNAL("clicked()"), self.clickedPlayPause)
         self.t = GuiThread(1)
         self.connect(self.t, QtCore.SIGNAL('update'),self.loop)
         self.connect(self.ui.chart, QtCore.SIGNAL('update'),self.loop)
         self.connect(self.ui.dateTimeEdit, QtCore.SIGNAL('dateTimeChanged(QDateTime)'),self.dateTimeChanged)
         self.connect(self.ui.widget, QtCore.SIGNAL("mouseOverSiteChanged"), self.loop)
         self.t.start()
+        comboBoxStrings = ["total Bytes","throughput","#Packages","#Packages/s","#Connections","#Errors","#Warnings","#Server n.a."]
+        self.ui.comboBox.addItems(comboBoxStrings)
+        self.connect(self.ui.comboBox, QtCore.SIGNAL("currentIndexChanged(int)"),self.comboBoxIndexChanged)
          
-        self.running = False
-        
 #Add hello world to scene, just for testing
 #         site1Scene = QtGui.QGraphicsScene()    
 #         site1Path = QtGui.QPainterPath()
@@ -45,40 +45,17 @@ class MyWindow(QtGui.QMainWindow, SlaveClass):
         self.ui.site3GraphicsView.setScene(self.site3Scene)
         self.show()
         
-    def clickedPlayPause(self):
-
-#        self.site1Scene.keepTight() 
-
-#        self.site1Scene.animation.setbubbleloc(1000000000, QtCore.QPointF(100,-100))
-#        self.site1Scene.animation.setbubblesize(1000000000, 2.0)
-
-        if self.running:
-            self.running = False
-            self.ui.playPauseButton.setText("Play")
-            print "Pause"
-        else:
-            self.running = True
-            self.ui.playPauseButton.setText("Pause")
-            print "Play"
-        self.ui.update()
-
-        
-    def clickedPause(self):
-        print "Pause"
-        self.running = False
-        
     def loop(self):
         self.ui.dateTimeEdit.blockSignals(True)
         self.ui.dateTimeEdit.setDateTime(self.manager.CT)
         self.ui.dateTimeEdit.blockSignals(False)
         self.updateGraph()
-        if self.running:     
-            if (self.tabWidget.currentIndex()==1): 
-                self.site1Scene.newkeepTight()
-            if (self.tabWidget.currentIndex()==2): 
-                self.site2Scene.newkeepTight()
-            if (self.tabWidget.currentIndex()==3):
-                self.site3Scene.newkeepTight()
+        if (self.tabWidget.currentIndex()==1): 
+            self.site1Scene.newkeepTight()
+        if (self.tabWidget.currentIndex()==2): 
+            self.site2Scene.newkeepTight()
+        if (self.tabWidget.currentIndex()==3):
+            self.site3Scene.newkeepTight()
                 
     def updateGraph(self):
         self.ui.widget.update()
@@ -93,6 +70,9 @@ class MyWindow(QtGui.QMainWindow, SlaveClass):
         self.manager.CT = deepcopy(self.ui.dateTimeEdit.dateTime())
         self.ui.chart.setLinePos()
         
+    def comboBoxIndexChanged(self,index):
+        self.manager.NetMode = index
+        self.ui.chart.updateData()
     #def chartClicked(self):
         #self.ui.timeSlider.setValue()
         
