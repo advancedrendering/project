@@ -30,6 +30,7 @@ class MyWindow(QtGui.QMainWindow, SlaveClass):
         self.connect(self.ui.comboBox, QtCore.SIGNAL("currentIndexChanged(int)"),self.comboBoxIndexChanged)
         self.connect(self.ui.widget, QtCore.SIGNAL("siteDoubleClicked"),self.siteDoubleClicked)
         self.flagforbubble = self.manager.CT
+        self.flagfortab = self.ui.tabWidget.currentIndex()
 #Add hello world to scene, just for testing
 #         site1Scene = QtGui.QGraphicsScene()    
 #         site1Path = QtGui.QPainterPath()
@@ -51,6 +52,7 @@ class MyWindow(QtGui.QMainWindow, SlaveClass):
         self.ui.dateTimeEdit.setDateTime(self.manager.CT)
         self.ui.dateTimeEdit.blockSignals(False)
         self.updateGraph()
+        
         if not self.flagforbubble==self.manager.CT:
             if (self.ui.tabWidget.currentIndex()==1): 
                 self.site1Scene.newkeepTight()
@@ -59,6 +61,11 @@ class MyWindow(QtGui.QMainWindow, SlaveClass):
             if (self.ui.tabWidget.currentIndex()==3):
                 self.site3Scene.newkeepTight()
             self.flagforbubble=self.manager.CT
+        if not self.flagfortab ==self.ui.tabWidget.currentIndex():
+            self.site1Scene.newkeepTight()
+            self.site2Scene.newkeepTight()
+            self.site3Scene.newkeepTight()
+            self.flagfortab = self.ui.tabWidget.currentIndex()
     def updateGraph(self):
         self.ui.widget.update()
         
