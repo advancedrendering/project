@@ -71,7 +71,7 @@ class MyWindow(QtGui.QMainWindow, SlaveClass):
         self.manager.CT = deepcopy(self.ui.dateTimeEdit.dateTime())
         self.ui.chart.setLinePos()
     
-    def siteDoubleClicked(self,name):
+        eDoubleClicked(self,name):
         if name == "Site 1":
             self.ui.tabWidget.setCurrentIndex(1)
         if name == "Site 2":

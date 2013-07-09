@@ -28,15 +28,15 @@ class cloudbubbledata(SlaveClass):
         self.basenumber = self.averageValue**(1.0/20) 
         self.healthdict = {}
         self.prepareSiteQuery()
-        self.communicationQuery.prepare("Select * from networkflow.site1networkflow where Starttime=:time Order By Trafficload LIMIT 50 ")
+        #self.communicationQuery.prepare("Select * from networkflow.site1networkflow where Starttime=:time Order By Trafficload LIMIT 50 ")
          
         '''
         @param sitenumber: Should be 1, 2 or 3 to specify the site number
         '''
         
     def prepareSiteQuery(self):
-        trafficquery = "Select * from networkflow.site"+str(self.sitenumber)+"networkflow where Starttime=:time Order By Trafficload desc LIMIT 50 "
-        site1healthquery = "Select * from networkflow.site"+str(self.sitenumber)+"health where Starttime=:time"
+        trafficquery = "Select * from datavis.site"+str(self.sitenumber)+"totalflow where parsedDate=:time Order By totalBytes desc LIMIT 50;"
+        site1healthquery = "Select * from datavis.site"+str(self.sitenumber)+"health where parsedDate=:time;"
         self.communicationQuery.prepare(trafficquery)
         self.healthQuery.prepare(site1healthquery)
         
@@ -80,7 +80,7 @@ class cloudbubbledata(SlaveClass):
     
     def getAverageValue(self):
         averageQuery = QtSql.QSqlQuery()
-        query = "Select avg(Trafficload) from networkflow.site"+str(self.sitenumber)+"networkflow"
+        query = "Select avg(totalBytes) from datavis.site"+str(self.sitenumber)+"totalflow"
         averageQuery.prepare(query)
         averageQuery.exec_()
         while(averageQuery.next()):
