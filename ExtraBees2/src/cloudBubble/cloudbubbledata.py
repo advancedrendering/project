@@ -36,7 +36,7 @@ class cloudbubbledata(SlaveClass):
         
     def prepareSiteQuery(self):
         trafficquery = "Select * from datavis.site"+str(self.sitenumber)+"totalflow where parsedDate=:time Order By totalBytes desc LIMIT 50;"
-        site1healthquery = "Select * from datavis.site"+str(self.sitenumber)+"health where parsedDate=:time;"
+        site1healthquery = "Select * from datavis.site"+str(self.sitenumber)+"health where Starttime=:time;"
         self.communicationQuery.prepare(trafficquery)
         self.healthQuery.prepare(site1healthquery)
         
@@ -62,6 +62,7 @@ class cloudbubbledata(SlaveClass):
         self.healthQuery.exec_()
         while(self.healthQuery.next()):
             healthip = self.healthQuery.value(1).toString()
+            print healthip
             if self.trafficdict.has_key(healthip):
                 self.healthdict[self.healthQuery.value(1).toString()]= int(self.healthQuery.value(2).toString())
 
