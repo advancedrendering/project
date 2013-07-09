@@ -5,6 +5,7 @@ Created on 2013-7-7
 '''
 
 from PyQt4 import QtCore, QtSql
+import DBUser
 
 def singleton(cls):
     if not cls._instance:
@@ -20,9 +21,9 @@ class ManagerClass(object):
         self.CW = QtCore.QDate(2013,4,1)
         self.INTERVAL = 0
         self.DB = QtSql.QSqlDatabase.addDatabase("QMYSQL")
-        self.DB.setDatabaseName("datavis")
-        self.DB.setUserName("datavis")    
-        self.DB.setPassword("DataVis")
+        self.DB.setDatabaseName(DBUser.DB_NAME)
+        self.DB.setUserName(DBUser.NAME)    
+        self.DB.setPassword(DBUser.PW)
         self.DB.open()
         
         self.TOTALBYTES = 0

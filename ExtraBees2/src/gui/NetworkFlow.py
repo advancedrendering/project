@@ -203,6 +203,11 @@ class NetworkFlow(QtGui.QWidget, SlaveClass):
     
     def mouseReleaseEvent(self,event):
         self.clickedOnNode(event)
+    
+    def mouseDoubleClickEvent(self, event):
+        for n in self.nodeList:
+            if n.isOver == True:
+                self.emit(QtCore.SIGNAL('siteDoubleClicked'),n.name)
         
     def drawHeatMap(self,paint):
         lineThickness = self.height()/COLOR_MAP_STEPS

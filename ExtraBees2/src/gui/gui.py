@@ -28,6 +28,7 @@ class MyWindow(QtGui.QMainWindow, SlaveClass):
         comboBoxStrings = ["total Bytes","throughput","#Packages","#Packages/s","#Connections","#Errors","#Warnings","#Server n.a."]
         self.ui.comboBox.addItems(comboBoxStrings)
         self.connect(self.ui.comboBox, QtCore.SIGNAL("currentIndexChanged(int)"),self.comboBoxIndexChanged)
+        self.connect(self.ui.widget, QtCore.SIGNAL("siteDoubleClicked"),self.siteDoubleClicked)
          
 #Add hello world to scene, just for testing
 #         site1Scene = QtGui.QGraphicsScene()    
@@ -50,11 +51,11 @@ class MyWindow(QtGui.QMainWindow, SlaveClass):
         self.ui.dateTimeEdit.setDateTime(self.manager.CT)
         self.ui.dateTimeEdit.blockSignals(False)
         self.updateGraph()
-        if (self.tabWidget.currentIndex()==1): 
+        if (self.ui.tabWidget.currentIndex()==1): 
             self.site1Scene.newkeepTight()
-        if (self.tabWidget.currentIndex()==2): 
+        if (self.ui.tabWidget.currentIndex()==2): 
             self.site2Scene.newkeepTight()
-        if (self.tabWidget.currentIndex()==3):
+        if (self.ui.tabWidget.currentIndex()==3):
             self.site3Scene.newkeepTight()
                 
     def updateGraph(self):
@@ -69,6 +70,14 @@ class MyWindow(QtGui.QMainWindow, SlaveClass):
             self.ui.chart.updateData()
         self.manager.CT = deepcopy(self.ui.dateTimeEdit.dateTime())
         self.ui.chart.setLinePos()
+    
+    def siteDoubleClicked(self,name):
+        if name == "Site 1":
+            self.ui.tabWidget.setCurrentIndex(1)
+        if name == "Site 2":
+            self.ui.tabWidget.setCurrentIndex(2)
+        if name == "Site 3":
+            self.ui.tabWidget.setCurrentIndex(3)
         
     def comboBoxIndexChanged(self,index):
         self.manager.NetMode = index
