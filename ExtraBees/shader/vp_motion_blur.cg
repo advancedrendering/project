@@ -1,0 +1,61 @@
+struct vertexIN
+{
+  float4 position	: POSITION;
+  float3 normal		: NORMAL;
+  float2 decalCoords : TEXCOORD0;
+};
+
+
+struct vertexOut
+{
+  float4 hpos     : POSITION;
+  float3 velocity : TEXCOORD0;
+  float3 col0     : COLOR0;
+};
+
+// OpenGL state
+uniform float4x4 ModelViewProjection : state.matrix.mvp;
+
+vertexOut main(vertexIN vIn, uniform float4x4 modelView, uniform float4x4 prevModelView,  uniform float4x4 modelProj,  uniform float4x4 prevModelProj, uniform float3  halfWindowSize,  uniform float blurScale = 1.0)
+{
+  vertexOut vOut;
+  
+  float4x4 modelViewProj = ModelViewProjection; // mul(modelProj, modelView);
+  float4x4 prevModelViewProj = mul(prevModelProj, prevModelView);
+
+  // transform previous and current position to eye space
+  float4 P = mul(modelView, vIn.position);
+  // float4 Pprev = mul(prevModelView, vIn.prevCoord);
+  float4 Pprev = mul(prevModelView, vIn.position);
+
+  // transform normal to eye space
+  float3 N = mul((float3x3) modelView, vIn.normal);
+
+  // calculate eye space motion vector
+  float3 motionVector = P.xyz - Pprev.xyz;
+
+  // calculate window space motion vector
+  P = mul(modelViewProj, vIn.position);
+  // Pprev = mul(prevModelViewProj, vIn.prevCoord);
+  Pprev = mul(prevModelViewProj, vIn.position);
+
+  Pprev = lerp(P, Pprev, blurScale);
+
+  // choose previous or current position based on dot product between motion vector and normal
+  float flag = dot(motionVector, N) > 0;
+  float4 Pstretch = flag ? P : Pprev;
+  vOut.hpos = Pstretch;
+
+  // do divide by W -> NDC coordinates
+  P.xyz = P.xyz / P.w;
+  Pprev.xyz = Pprev.xyz / Pprev.w;
+  Pstretch.xyz = Pstretch.xyz / Pstretch.w;
+
+  // calculate window space velocity
+  float3 dP = (P.xyz - Pprev.xyz) * halfWindowSize.xyz;
+
+  vOut.velocity = dP;
+  vOut.col0.xy = 0.5 + (dP.xy * 0.005);
+
+  return vOut;
+}

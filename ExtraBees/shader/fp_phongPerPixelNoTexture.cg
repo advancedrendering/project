@@ -1,0 +1,53 @@
+// data interpolated from vertex program output
+struct vertexIN
+{
+  float2 texCoord : TEXCOORD0;
+  float3 objectSpacePos : TEXCOORD1;
+  float3 normal   : TEXCOORD2;
+  float4 color : COLOR;
+};
+
+// OpenGL state
+uniform float4x4 ModelViewInverse : state.matrix.modelview.inverse;
+uniform float4 Light0Position : state.light[0].position;
+uniform float4 Light0Ambient : state.light[0].ambient;
+uniform float4 Light0Diffuse : state.light[0].diffuse;
+uniform float4 Light0Specular : state.light[0].specular;
+uniform float4 MaterialAmbient : state.material.ambient;
+uniform float4 MaterialDiffuse : state.material.diffuse;
+uniform float4 MaterialSpecular : state.material.specular;
+uniform float MaterialShininess : state.material.shininess;
+
+
+float4 main(vertexIN vIn) : COLOR
+{
+  //light calculation is done in object space (normals) 
+  float3 P = vIn.objectSpacePos.xyz;
+  float3 N = normalize(vIn.normal);
+
+  //so we need to transform eye position 
+  float3 ePos = (mul(ModelViewInverse, float4(0, 0, 0, 1))).xyz;
+  
+  //set lightPosition
+  float3 lPos0 = (mul(ModelViewInverse, Light0Position)).xyz;
+
+  // compute ambient term
+  float4 ambient0 = MaterialAmbient * Light0Ambient;
+
+  // compute the diffuse term
+  float3 L0 = normalize(lPos0.xyz - P);
+  float diffuseLight0 = max(dot(L0, N), 0);
+  float4 diffuse0 = MaterialDiffuse * Light0Diffuse * diffuseLight0;
+  
+  // compute the specular term
+  float3 V = normalize(ePos - P);
+  float3 H0 = normalize(L0 + V);
+  float specularLight0 = pow(max(dot(H0, N), 0), MaterialShininess);
+  if (diffuseLight0 <= 0) specularLight0 = 0;
+  float4 specular0 = MaterialSpecular * Light0Specular * specularLight0;
+
+  float4 color;
+  color = ambient0 + diffuse0 + specular0;  
+  
+  return color; 
+}

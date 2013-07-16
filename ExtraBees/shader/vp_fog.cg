@@ -1,0 +1,44 @@
+// OpenGL input
+struct vertexIN
+{
+  float4 position	: POSITION;
+  float3 normal		: NORMAL;
+  float2 decalCoords : TEXCOORD0;
+};
+
+// vertex program output
+struct vertexOUT
+{
+  float4 cameraSpacePos : POSITION;
+  float2 decalCoords : TEXCOORD0;
+  float3 objectSpacePos : TEXCOORD1;
+  float3 normal   : TEXCOORD2;
+  float fogExponent : TEXCOORD3;
+};
+
+// OpenGL state
+uniform float4x4 ModelViewProjection : state.matrix.mvp;
+
+vertexOUT main(vertexIN vIn, uniform float fogDensity)
+{
+  vertexOUT vOut;
+
+  float4 eyePosition = mul(ModelViewProjection, vIn.position);
+  float fogDistance = length(eyePosition.xyz);
+  vOut.fogExponent = fogDistance * fogDensity;
+
+  // copy position
+  vOut.objectSpacePos = vIn.position.xyz;
+  
+  // copy Normal
+  vOut.normal = vIn.normal;
+  
+  // project point onto screen
+  vOut.cameraSpacePos = eyePosition;
+  
+  //hand texture coordinates over to fragment processor.
+  vOut.decalCoords = vIn.decalCoords;
+  
+  return vOut;
+}
+
