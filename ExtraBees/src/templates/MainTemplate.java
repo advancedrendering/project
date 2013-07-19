@@ -47,7 +47,7 @@ public class MainTemplate extends JoglTemplate {
 	private long timeOfFirstFrame = 0;
 	private int timeSinceFirstFrame = 0;
 	/* take screenshots? */
-	static boolean takeScreenshots = true;
+	static boolean takeScreenshots = false;
 	public static int xResolution = 1280, yResolution = 720;
 
 	public static int[] frame_as_tex = null;

@@ -16,7 +16,7 @@ CASE
 	ELSE 'Other'
 END as ESite, statusVal, SUM(numMessages) as numMessages,
 AVG(avgDiskUsagePercent) as avgDiskUsagePercent, MAX(maxDiskUsagePercent) as maxDiskUsagePercent,
-AVG(avgLoadPercent) as avgLoadPercent, MAX(maxLoadPercent) as maxLoadPercent FROM datavis.HealthServer 
+AVG(loadAveragePercent) as avgLoadPercent, MAX(loadAveragePercent) as maxLoadPercent FROM datavis.HealthServer 
 JOIN bigmktnetwork ON HealthServer.ipAddr = bigmktnetwork.ipAddr
 #WHERE bigmktnetwork.typ = 'HTTP'
 GROUP BY receivedDate, ESite, statusVal;
